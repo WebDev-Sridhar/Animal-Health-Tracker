@@ -21,7 +21,7 @@ router.use('/risk', protect, riskRoutes);
 router.use('/analytics', protect, analyticsRoutes);
 
 // Health check
-router.get('/health', (req, res) => {
+router.get('/', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Animal Health Tracker API is running',
