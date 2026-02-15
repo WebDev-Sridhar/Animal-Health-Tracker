@@ -16,7 +16,10 @@ app.use(requestLogger);
 
 // ✅ CORS middleware - allow your frontend to access backend
 app.use(cors({
-  origin: 'http://localhost:5173', // your Vite frontend URL
+  origin: [
+  'http://localhost:5173',
+  'https://animal-health-tracker.vercel.app'
+], // your Vite frontend URL
   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true, // if you use cookies
