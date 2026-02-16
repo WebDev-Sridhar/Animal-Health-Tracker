@@ -41,19 +41,13 @@ app.use(errorHandler);
 
 // Start server
 const startServer = async () => {
-  try {
-    console.log("Connecting to database...");
-    await connectDatabase();
-    console.log("Database connected successfully");
+  await connectDatabase();
 
-    app.listen(config.port, () => {
-      console.log(`Server running on port ${config.port}`);
-    });
-  } catch (error) {
-    console.error("Startup error:", error);
-    process.exit(1);
-  }
+  app.listen(config.port, () => {
+    console.log(`Server running in ${config.env} mode on port ${config.port}`);
+  });
 };
+
 startServer().catch((err) => {
   console.error('Failed to start server:', err);
   process.exit(1);

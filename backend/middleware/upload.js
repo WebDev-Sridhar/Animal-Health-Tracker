@@ -31,6 +31,7 @@ const fileFilter = (req, file, cb) => {
   cb(null, true);
 };
 
+
 const multerUpload = multer({
   storage,
   fileFilter,
@@ -61,6 +62,7 @@ const uploadReportPhoto = [
         );
         stream.end(req.file.buffer);
       });
+      console.log("File:", req.file);
       req.body.photo = result.secure_url;
     } catch (err) {
       return next(new AppError('Image upload failed', 500));

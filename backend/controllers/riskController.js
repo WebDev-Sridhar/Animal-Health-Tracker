@@ -2,7 +2,7 @@
  * Risk controller - admin endpoints for risk recalculation
  */
 
-const riskService = require('../services/risk.service');
+const riskService = require('../services/riskService');
 
 const AppError = require('../utils/AppError');
 

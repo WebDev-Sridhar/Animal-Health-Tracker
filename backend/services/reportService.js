@@ -1,16 +1,47 @@
 /**
  * Report service - business logic for reports
  */
+
+const Animal = require('../models/Animal');
 const Report = require('../models/Report');
+const Zone = require('../models/Zone');
+const riskService = require('./riskService');
 const AppError = require('../utils/AppError');
 
+
+
+  
 const createReport = async (data, userId) => {
+
+  let zone = await Zone.findOne({ name: data.zone });
+
+if (!zone) {
+  zone = await Zone.create({ name: data.zone });
+}
+  
+  const animal = await Animal.create({
+  species: data.species,
+  gender: data.gender,
+  approxAge: data.approxAge,
+  condition: data.condition,
+  vaccinationStatus: data.vaccinationStatus,
+  zone: data.zone,
+  location: {
+    type: "Point",
+    coordinates: data.location.coordinates
+  }
+});
+  
   const report = await Report.create({
     ...data,
+    animal: animal._id,
+    zone: zone.name,
     reportedBy: userId,
     status: 'pending',
   });
-  return report.populate(['animal', 'reportedBy']);
+
+    await riskService.recalculateAllZones();
+  return report.populate(['animal', 'reportedBy', 'zone']);
 };
 
 const getReportsByZone = async (zone, currentUser) => {

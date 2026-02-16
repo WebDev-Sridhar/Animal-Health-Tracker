@@ -35,15 +35,15 @@ const animalSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  healthStatus: {
+  condition: {
     type: String,
-    enum: ['healthy', 'sick', 'critical'],
+    enum: ['healthy', 'sick', 'critical', 'aggressive', 'injured', 'vaccination-needed', 'for-adoption'],
     default: 'healthy',
   },
   vaccinationStatus: {
     type: String,
-    enum: ['none', 'partial', 'complete'],
-    default: 'none',
+    enum: ['up-to-date', 'unknown', 'not-vaccinated'],
+    default: 'unknown',
   },
   vaccinations: [vaccinationSchema],
   location: {

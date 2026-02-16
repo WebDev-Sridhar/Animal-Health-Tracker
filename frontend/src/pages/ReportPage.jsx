@@ -9,7 +9,10 @@ const CONDITION_OPTIONS = [
   { value: 'injured', label: 'Injured' },
   { value: 'sick', label: 'Sick' },
   { value: 'aggressive', label: 'Aggressive' },
-  { value: 'vaccination_needed', label: 'Vaccination Needed' },
+  { value: 'vaccination-needed', label: 'Vaccination Needed' },
+  { value: 'critical', label: 'Critical' },
+  { value: 'for-adoption', label: 'For Adoption' },
+
 ];
 
 const SPECIES_OPTIONS = [
@@ -24,6 +27,12 @@ const GENDER_OPTIONS = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' },
   { value: 'unknown', label: 'Unknown' },
+];
+
+const VACCINATION_STATUS_OPTIONS = [
+  { value: 'up-to-date', label: 'Up-to-date' },
+  { value: 'unknown', label: 'Unknown' },
+  { value: 'not-vaccinated', label: 'Not Vaccinated' },
 ];
 
 async function reverseGeocode(lat, lng) {
@@ -118,45 +127,58 @@ export default function ReportPage() {
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!isAuthenticated) return navigate('/login');
-    setError('');
-    setSuccess(false);
-    setLoading(true);
+  e.preventDefault();
 
-    try {
-      const formData = new FormData();
-      Object.keys(form).forEach((key) => {
-        if (form[key]) {
-          if (key === 'location') {
-            formData.append(key, JSON.stringify(form[key]));
-          } else {
-            formData.append(key, form[key]);
-          }
-        }
-      });
-      if (form.photoFile) formData.append('photo', form.photoFile);
-      await apiClient.post('/reports', formData);
+  if (!isAuthenticated) return navigate('/login');
 
-      setForm({
-        species: 'dog',
-        gender: 'unknown',
-        approxAge: '',
-        vaccinationStatus: '',
-        description: '',
-        condition: 'injured',
-        photo: '',
-        photoFile: null,
-        zone: '',
-        location: null,
-      });
-      setSuccess(true);
-    } catch (err) {
-      setError(err.message || 'Failed to submit report');
-    } finally {
-      setLoading(false);
+  setError('');
+  setSuccess(false);
+  setLoading(true);
+
+  try {
+    const formData = new FormData();
+
+    // Append all non-file fields
+    Object.keys(form).forEach((key) => {
+      if (!form[key] || key === 'photoFile') return; // skip empty and the File object
+      if (key === 'location') {
+        formData.append(key, JSON.stringify(form[key])); // stringify location object
+      } else {
+        formData.append(key, form[key]);
+      }
+    });
+
+    // Append the file separately with correct field name 'photo'
+    if (form.photoFile) {
+      formData.append('photo', form.photoFile);
     }
-  };
+
+    // Send to backend
+    await apiClient.post('/reports', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    // Reset form
+    setForm({
+      species: 'dog',
+      gender: 'unknown',
+      approxAge: '',
+      vaccinationStatus: '',
+      description: '',
+      condition: 'injured',
+      photo: '',
+      photoFile: null,
+      zone: '',
+      location: null,
+    });
+
+    setSuccess(true);
+  } catch (err) {
+    setError(err.response?.data?.error || err.message || 'Failed to submit report');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="max-w-lg mx-auto">
@@ -198,13 +220,16 @@ export default function ReportPage() {
         {/* Approx Age */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">Approx Age (years)</label>
-          <input type="number" name="approxAge" value={form.approxAge} onChange={handleChange} className="w-full border border-slate-300 rounded-lg px-3 py-2.5" min="0" />
+          <input type="number" name="approxAge" value={form.approxAge} onChange={handleChange} className="w-full border border-slate-300 rounded-lg px-3 py-2.5"  />
         </div>
 
         {/* Vaccination Status */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">Vaccination Status</label>
-          <input type="text" name="vaccinationStatus" value={form.vaccinationStatus} onChange={handleChange} placeholder="e.g., up-to-date" className="w-full border border-slate-300 rounded-lg px-3 py-2.5" />
+          <select name="vaccinationStatus" value={form.vaccinationStatus} onChange={handleChange} className="w-full border border-slate-300 rounded-lg px-3 py-2.5">
+            <option value="">Select status</option>
+            {VACCINATION_STATUS_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+          </select>
         </div>
 
         {/* Condition */}

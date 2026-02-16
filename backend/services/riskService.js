@@ -3,8 +3,8 @@
  * Modular logic for zone risk scoring based on sick/critical animals
  */
 
-const Animal = require('../models/Animal');
-const Zone = require('../models/Zone');
+const Animal = require("../models/Animal");
+const Zone = require("../models/Zone");
 
 // Configurable thresholds
 const DEFAULT_RADIUS_KM = 1;
@@ -29,8 +29,8 @@ const countSickCriticalInRadius = async (lng, lat, radiusMeters, daysBack) => {
   const radiusRadians = radiusMeters / EARTH_RADIUS_METERS;
 
   const count = await Animal.countDocuments({
-    healthStatus: { $in: ['sick', 'critical'] },
-    'location.coordinates': { $exists: true, $ne: [] },
+    condition: { $in: ["sick", "critical"] },
+    "location.coordinates": { $exists: true, $ne: [] },
     $or: [
       { createdAt: { $gte: cutoffDate } },
       { updatedAt: { $gte: cutoffDate } },
@@ -63,15 +63,18 @@ const calculateRiskScore = (count) => {
  * @param {number} daysBack
  * @returns {Promise<Map<string, number>>}
  */
-const findZoneRiskCounts = async (radiusMeters = DEFAULT_RADIUS_KM * 1000, daysBack = DEFAULT_DAYS_BACK) => {
+const findZoneRiskCounts = async (
+  radiusMeters = DEFAULT_RADIUS_KM * 1000,
+  daysBack = DEFAULT_DAYS_BACK,
+) => {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - daysBack);
 
   const sickAnimals = await Animal.find({
-    healthStatus: { $in: ['sick', 'critical'] },
-    'location.coordinates.0': { $exists: true },
-    'location.coordinates.1': { $exists: true },
-    zone: { $exists: true, $ne: '' },
+    condition: { $in: ["sick", "critical"] },
+    "location.coordinates.0": { $exists: true },
+    "location.coordinates.1": { $exists: true },
+    zone: { $exists: true, $ne: "" },
     $or: [
       { createdAt: { $gte: cutoffDate } },
       { updatedAt: { $gte: cutoffDate } },
@@ -82,8 +85,13 @@ const findZoneRiskCounts = async (radiusMeters = DEFAULT_RADIUS_KM * 1000, daysB
 
   for (const animal of sickAnimals) {
     const [lng, lat] = animal.location.coordinates;
-    const count = await countSickCriticalInRadius(lng, lat, radiusMeters, daysBack);
-    const zone = animal.zone?.trim() || 'Unknown';
+    const count = await countSickCriticalInRadius(
+      lng,
+      lat,
+      radiusMeters,
+      daysBack,
+    );
+    const zone = animal.zone?.trim() || "Unknown";
 
     const current = zoneMaxCounts.get(zone) ?? 0;
     if (count > current) {
@@ -114,7 +122,7 @@ const recalculateAllZones = async (options = {}) => {
     await Zone.findOneAndUpdate(
       { name: zoneName },
       { riskScore, updatedAt: new Date() },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
     results.push({ zone: zoneName, riskScore });
   }
@@ -123,7 +131,7 @@ const recalculateAllZones = async (options = {}) => {
   const updatedZones = new Set(zoneMaxCounts.keys());
   await Zone.updateMany(
     { name: { $nin: [...updatedZones] } },
-    { riskScore: 0, updatedAt: new Date() }
+    { riskScore: 0, updatedAt: new Date() },
   );
 
   return results;

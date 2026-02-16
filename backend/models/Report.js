@@ -9,6 +9,22 @@ const reportSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Animal',
   },
+   species: {
+    type: String,
+    required: true,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female", "unknown"],
+    default: "unknown",
+  },
+  approxAge: {
+    type: String,
+  },
+  vaccinationStatus: {
+    type: String,
+  },
+
   reportedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -21,7 +37,7 @@ const reportSchema = new mongoose.Schema({
   },
   condition: {
     type: String,
-    enum: ['injured', 'sick', 'aggressive', 'vaccination_needed'],
+      enum: ['healthy', 'sick', 'critical', 'aggressive', 'injured', 'vaccination-needed', 'for-adoption'],
     required: [true, 'Condition is required'],
   },
   photo: {

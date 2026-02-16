@@ -8,7 +8,6 @@ export default function VolunteerDashboard() {
   const [zone, setZone] = useState('');
   const { user } = useAuth();
 
-  console.log(user.id)
 
 
   useEffect(() => {
@@ -86,16 +85,30 @@ const acceptReport = async (id) => {
               key={r._id}
               className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm"
             >
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="text-sm font-medium text-slate-800">{r.condition}</span>
-                  <span className="ml-2 text-xs px-2 py-0.5 rounded bg-slate-100">{r.status}</span>
+
+              <div className="flex-wrap flex justify-between items-center">
+                 {r.photo && (
+            <a href={r.photo} download={`report-${r._id}.jpg`}>
+              <img
+                src={r.photo}
+                alt="Animal"
+                className="mt-2 w-48 h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition"
+              />
+            </a>
+          )}
+                <div className="flex-1 mx-4">
+                  <p className="text-sm font-medium text-slate-800">{r.animal?.species?.toUpperCase() || 'Unknown Species'}</p>
+                  <span className="text-sm font-medium text-slate-800">{r.condition?.toUpperCase()}</span>
+                 
+                    <span className="ml-2 text-xs px-2 py-0.5 rounded bg-slate-100">{r.status}</span>
+                  
+                  
                   <p className="text-slate-600 text-sm mt-1">{r.description}</p>
-                  <p className="text-xs text-slate-400 mt-1">Zone: {r.zone || '—'}</p>
+                  <p className="text-xs text-slate-400 mt-1 py-2 md:py-0">Zone: {r.zone || '—'}</p>
 
                 </div>
                 {r.reportedBy && (
-  <div className="mt-3 p-3 bg-slate-50 rounded text-sm">
+  <div className="text-sm font-semibold text-slate-700 ">
     <p className="font-medium text-slate-700">Reporter Details</p>
     <p>Name: {r.reportedBy.name}</p>
     <p>Email: {r.reportedBy.email}</p>
@@ -104,7 +117,7 @@ const acceptReport = async (id) => {
 )}
               
                
-                <div className="flex gap-2">
+                <div className="flex gap-2 ml-4">
 
   {/* Pending */}
   {r.status === 'pending' && (

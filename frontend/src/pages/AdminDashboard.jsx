@@ -28,7 +28,9 @@ const CHART_COLORS = {
   sick:  '#8b5cf6' ,
   critical: '#ef4444',
   injured: '#f59e0b',
-  vaccination_needed: '#3b82f6',
+  "vaccination-needed": '#3b82f6',
+  aggressive: '#f97316',
+  "for-adoption": '#10b981',
 };
 
 export default function AdminDashboard() {
