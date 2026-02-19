@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors'); // <-- add this
+const cors = require('cors'); 
 
 const config = require('./config');
 const { connectDatabase } = require('./config/database');
