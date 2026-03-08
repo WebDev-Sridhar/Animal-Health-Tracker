@@ -40,7 +40,7 @@ export default function LoginPage() {
       </Helmet>
       <div className="card p-8 w-full max-w-md fade-in-up">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-pink-300 to-purple-300 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 bg-linear-to-br from-pink-300 to-purple-300 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <svg
               className="w-8 h-8 text-white"
               fill="currentColor"

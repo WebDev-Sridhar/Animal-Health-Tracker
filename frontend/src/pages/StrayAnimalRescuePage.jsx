@@ -17,7 +17,7 @@ export default function StrayAnimalRescuePage() {
 
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
+        <section className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">
             Stray Animal Rescue Guide
           </h1>
@@ -130,7 +130,7 @@ export default function StrayAnimalRescuePage() {
               },
             ].map((item) => (
               <div key={item.step} className="flex gap-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full text-white flex items-center justify-center font-bold">
+                <div className="shrink-0 w-10 h-10 bg-blue-600 rounded-full text-white flex items-center justify-center font-bold">
                   {item.step}
                 </div>
                 <div>
@@ -194,7 +194,7 @@ export default function StrayAnimalRescuePage() {
         </section>
 
         {/* Resources */}
-        <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-8">
+        <section className="bg-linear-to-r from-green-50 to-emerald-50 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-slate-800 mb-4">
             Emergency Resources in Tamil Nadu
           </h2>

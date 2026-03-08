@@ -17,7 +17,7 @@ export default function ResponsiblePetOwnershipPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-8 text-center">
+        <section className="bg-linear-to-r from-green-50 to-emerald-50 rounded-xl p-8 text-center">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">
             Responsible Pet Ownership
           </h1>
@@ -373,7 +373,7 @@ export default function ResponsiblePetOwnershipPage() {
         </section>
 
         {/* Community Responsibility */}
-        <section className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-8">
+        <section className="bg-linear-to-r from-emerald-50 to-green-50 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-slate-800 mb-4">
             Community and Societal Responsibility
           </h2>

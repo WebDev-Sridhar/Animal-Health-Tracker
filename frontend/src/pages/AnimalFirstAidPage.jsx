@@ -17,7 +17,7 @@ export default function AnimalFirstAidPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-8 text-center">
+        <section className="bg-linear-to-r from-red-50 to-orange-50 rounded-xl p-8 text-center">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">
             Animal First Aid Tips
           </h1>
@@ -56,7 +56,7 @@ export default function AnimalFirstAidPage() {
               }
             ].map((item) => (
               <div key={item.letter} className="flex gap-4 pb-4 border-b last:border-b-0">
-                <div className="flex-shrink-0 w-12 h-12 bg-red-600 rounded-lg text-white flex items-center justify-center font-bold text-lg">
+                <div className="shrink-0 w-12 h-12 bg-red-600 rounded-lg text-white flex items-center justify-center font-bold text-lg">
                   {item.letter}
                 </div>
                 <div className="flex-1">
@@ -75,7 +75,7 @@ export default function AnimalFirstAidPage() {
           </h2>
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-slate-800 mb-2 text-red-600">Minor Wounds</h3>
+              <h3 className="font-semibold text-slate-800 mb-2 ">Minor Wounds</h3>
               <ol className="text-sm text-slate-600 space-y-1 ml-4">
                 <li>1. Clean the area with cool, clean water</li>
                 <li>2. Use mild antiseptic soap if available</li>
@@ -86,7 +86,7 @@ export default function AnimalFirstAidPage() {
               </ol>
             </div>
             <div className="border-t pt-4">
-              <h3 className="font-semibold text-slate-800 mb-2 text-red-600">Severe Bleeding</h3>
+              <h3 className="font-semibold text-slate-800 mb-2 ">Severe Bleeding</h3>
               <ol className="text-sm text-slate-600 space-y-1 ml-4">
                 <li>1. Apply direct pressure with clean cloth</li>
                 <li>2. DO NOT remove cloth; add layers if soaked</li>
@@ -172,7 +172,7 @@ export default function AnimalFirstAidPage() {
               </ol>
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 mb-2 text-red-600">Common Toxins</h3>
+              <h3 className="font-semibold text-slate-800 mb-2 ">Common Toxins</h3>
               <ul className="text-sm text-slate-600 space-y-1 ml-4">
                 <li>• Pesticides and rat poison</li>
                 <li>• Chocolate, xylitol, grapes, onions</li>
@@ -197,7 +197,7 @@ export default function AnimalFirstAidPage() {
                 <li>• Drooling and weakness</li>
                 <li>• Glazed eyes</li>
                 <li>• Staggering</li>
-                <li>• Elevated body temperature (>40°C)</li>
+                <li>• Elevated body temperature greater than 40°C</li>
               </ul>
             </div>
             <div>

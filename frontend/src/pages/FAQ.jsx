@@ -103,7 +103,7 @@ export default function FAQ() {
 
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
+        <section className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">
             Frequently Asked Questions
           </h1>
@@ -153,7 +153,7 @@ export default function FAQ() {
                           {faq.question}
                         </h3>
                         <span
-                          className={`flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold ml-4 transition-transform ${
+                          className={`shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold ml-4 transition-transform ${
                             expandedId === faq.id ? "rotate-180" : ""
                           }`}
                         >
@@ -177,7 +177,7 @@ export default function FAQ() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg p-8 text-center">
+        <section className="bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-lg p-8 text-center">
           <h2 className="text-2xl font-bold mb-3">Still Have Questions?</h2>
           <p className="mb-6 text-blue-100 max-w-2xl mx-auto">
             Couldn't find the answer you're looking for? We're here to help.

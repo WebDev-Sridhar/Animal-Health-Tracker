@@ -18,7 +18,7 @@ export default function PetAdoptionPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-8 text-center">
+        <section className="bg-linear-to-r from-purple-50 to-pink-50 rounded-xl p-8 text-center">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">
             Pet Adoption Process
           </h1>
@@ -125,7 +125,7 @@ export default function PetAdoptionPage() {
               },
             ].map((item) => (
               <div key={item.step} className="flex gap-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-full text-white flex items-center justify-center font-bold">
+                <div className="shrink-0 w-10 h-10 bg-purple-600 rounded-full text-white flex items-center justify-center font-bold">
                   {item.step}
                 </div>
                 <div>
@@ -264,7 +264,7 @@ export default function PetAdoptionPage() {
         </section>
 
         {/* Adjustment Tips */}
-        <section className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-8">
+        <section className="bg-linear-to-r from-purple-50 to-pink-50 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-slate-800 mb-4">
             Helping Your Adopted Pet Adjust
           </h2>
