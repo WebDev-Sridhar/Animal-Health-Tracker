@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
-import {apiClient} from "../api/client";
+import { useAuth } from "../context/AuthContext";
+import { apiClient } from "../api/client";
 
 export default function AccountPage() {
+  const { user: authUser } = useAuth();
   const [user, setUser] = useState(null);
   const [reports, setReports] = useState([]);
 
   useEffect(() => {
-    fetchAccount();
-  }, []);
+    // Use user from auth context
+    if (authUser) {
+      setUser(authUser);
+    }
+    fetchReports();
+  }, [authUser]);
 
-  const fetchAccount = async () => {
+  const fetchReports = async () => {
     try {
-      const userRes = await apiClient.get("/auth/me");
       const reportRes = await apiClient.get("/reports?mine=true");
-
-      setUser(userRes.data);
       setReports(reportRes.data);
     } catch (err) {
       console.error(err);
@@ -36,7 +39,6 @@ export default function AccountPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
-
       {/* Account Header */}
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
         <h1 className="text-2xl font-semibold text-slate-800 mb-4">
@@ -44,7 +46,6 @@ export default function AccountPage() {
         </h1>
 
         <div className="grid md:grid-cols-2 gap-4 text-sm">
-
           <div>
             <p className="text-slate-400">Name</p>
             <p className="font-medium">{user.name}</p>
@@ -71,25 +72,21 @@ export default function AccountPage() {
               {new Date(user.createdAt).toLocaleDateString()}
             </p>
           </div>
-
         </div>
       </div>
 
       {/* User Reports */}
       <div>
-
         <h2 className="text-xl font-semibold text-slate-800 mb-4">
           My Reports
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-
           {reports.map((r) => (
             <div
               key={r._id}
               className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden"
             >
-
               {r.photo && (
                 <img
                   src={r.photo}
@@ -99,7 +96,6 @@ export default function AccountPage() {
               )}
 
               <div className="p-4 space-y-2">
-
                 <h3 className="font-medium text-slate-800">
                   {r.animal?.species?.toUpperCase()}
                 </h3>
@@ -108,9 +104,7 @@ export default function AccountPage() {
                   Condition: {r.condition}
                 </p>
 
-                <p className="text-sm text-slate-500">
-                  Zone: {r.zone}
-                </p>
+                <p className="text-sm text-slate-500">Zone: {r.zone}</p>
 
                 <p className="text-xs text-slate-400">
                   Posted: {new Date(r.createdAt).toLocaleDateString()}
@@ -122,10 +116,7 @@ export default function AccountPage() {
 
                 {/* Buttons */}
                 <div className="flex gap-2 pt-3">
-
-                  <button
-                    className="flex-1 bg-blue-600 text-white text-sm rounded-lg py-2 hover:bg-blue-700"
-                  >
+                  <button className="flex-1 bg-blue-600 text-white text-sm rounded-lg py-2 hover:bg-blue-700">
                     Edit
                   </button>
 
@@ -135,18 +126,12 @@ export default function AccountPage() {
                   >
                     Delete
                   </button>
-
                 </div>
-
               </div>
-
             </div>
           ))}
-
         </div>
-
       </div>
-
     </div>
   );
 }
