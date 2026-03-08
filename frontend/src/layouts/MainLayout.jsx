@@ -100,10 +100,10 @@ export default function MainLayout() {
                 Logout
               </button>
             ) : (
-              <div className="flex gap-3">
+              <div className="flex gap-3 items-center">
                 <Link
                   to="/login"
-                  className="text-gray-700 hover:text-purple-700 font-medium transition-colors"
+                  className="btn-secondary text-sm"
                 >
                   Login
                 </Link>
@@ -155,6 +155,12 @@ export default function MainLayout() {
                 onClick={closeMobileMenu}
               >
                 Home
+              </Link>
+              <Link
+                to="/adoption"
+                className="block text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"  
+              >
+                Adoption
               </Link>
               <Link
                 to="/report"

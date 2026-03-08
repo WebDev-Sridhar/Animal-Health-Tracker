@@ -13,7 +13,7 @@ export default function AdoptionPage() {
   ];
 
   const categories = [
-    "dog","cat","bird","goat","cow","fish"
+    "dog","cat","bird","goat","cow"
   ];
 
   useEffect(() => {
@@ -108,16 +108,21 @@ export default function AdoptionPage() {
             key={r._id}
             className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
           >
+           {r.photo ? (
             <img
               src={r.photo}
               alt="animal"
               className="w-full h-48 object-cover"
-            />
+            />) : (
+                <div className="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">
+                    No Image Available
+                </div>
+            )}
 
             <div className="p-4 space-y-2">
 
-              <h3 className="font-semibold text-lg text-slate-800">
-                {r.animal?.name || "Unnamed Animal"}
+              <h3 className="font-semibold text-md text-slate-800">
+            Details
               </h3>
 
               <p className="text-sm text-slate-500">
@@ -134,6 +139,9 @@ export default function AdoptionPage() {
 
               <p className="text-sm text-slate-500">
                 Health: {r.condition}
+              </p>
+                 <p className="text-sm text-slate-500">
+                Description: {r.description || "No description provided."}
               </p>
 
               <p className="text-sm text-slate-400">
