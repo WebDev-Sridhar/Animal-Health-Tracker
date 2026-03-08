@@ -2,12 +2,12 @@
  * Report controller - handles HTTP requests for reports
  */
 
-const reportService = require('../services/reportService');
+const reportService = require("../services/reportService");
 
 const createReport = async (req, res, next) => {
   try {
     const body = { ...req.body };
-    if (typeof body.location === 'string') {
+    if (typeof body.location === "string") {
       try {
         body.location = JSON.parse(body.location);
       } catch {
@@ -55,13 +55,13 @@ const acceptReport = async (req, res, next) => {
   try {
     const report = await reportService.acceptReport(
       req.params.id,
-      req.user._id
+      req.user._id,
     );
 
     res.status(200).json({
       success: true,
       data: report,
-      message: 'Report accepted',
+      message: "Report accepted",
     });
   } catch (error) {
     next(error);
@@ -70,15 +70,12 @@ const acceptReport = async (req, res, next) => {
 
 const resolveReport = async (req, res, next) => {
   try {
-    const report = await reportService.resolveReport(
-      req.params.id,
-      req.user
-    );
+    const report = await reportService.resolveReport(req.params.id, req.user);
 
     res.status(200).json({
       success: true,
       data: report,
-      message: 'Report marked as resolved',
+      message: "Report marked as resolved",
     });
   } catch (error) {
     next(error);
@@ -87,21 +84,35 @@ const resolveReport = async (req, res, next) => {
 
 const unassignReport = async (req, res, next) => {
   try {
-    const report = await reportService.unassignReport(
-      req.params.id,
-      req.user
-    );
+    const report = await reportService.unassignReport(req.params.id, req.user);
 
     res.status(200).json({
       success: true,
       data: report,
-      message: 'Report returned to pending',
+      message: "Report returned to pending",
     });
   } catch (error) {
     next(error);
   }
 };
 
+const updateReport = async (req, res, next) => {
+  try {
+    const report = await reportService.updateReport(
+      req.params.id,
+      req.user._id,
+      req.body,
+    );
+
+    res.status(200).json({
+      success: true,
+      data: report,
+      message: "Report updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getAdoptionAnimals = async (req, res, next) => {
   try {
@@ -110,9 +121,8 @@ const getAdoptionAnimals = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: animals.length,
-      data: animals
+      data: animals,
     });
-
   } catch (error) {
     next(error);
   }
@@ -126,4 +136,5 @@ module.exports = {
   acceptReport,
   unassignReport,
   resolveReport,
+  updateReport,
 };

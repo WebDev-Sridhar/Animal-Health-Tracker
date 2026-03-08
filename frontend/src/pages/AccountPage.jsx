@@ -3,14 +3,24 @@ import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
 
 export default function AccountPage() {
-  const { user: authUser } = useAuth();
+  const { user: authUser, login } = useAuth();
   const [user, setUser] = useState(null);
   const [reports, setReports] = useState([]);
+  const [editingUser, setEditingUser] = useState(false);
+  const [editingReportId, setEditingReportId] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [reportFormData, setReportFormData] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Use user from auth context
     if (authUser) {
       setUser(authUser);
+      setFormData({
+        name: authUser.name,
+        phone: authUser.phone || "",
+        zone: authUser.zone || "",
+      });
     }
     fetchReports();
   }, [authUser]);
@@ -21,6 +31,59 @@ export default function AccountPage() {
       setReports(reportRes.data);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleEditUser = () => {
+    setEditingUser(true);
+    setFormData({
+      name: user.name,
+      phone: user.phone || "",
+      zone: user.zone || "",
+    });
+  };
+
+  const handleSaveUser = async () => {
+    setLoading(true);
+    try {
+      const res = await apiClient.patch("/auth/profile", formData);
+      const updatedUser = { ...user, ...res.data };
+      setUser(updatedUser);
+      login(updatedUser, localStorage.getItem("token"));
+      setEditingUser(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditReport = (report) => {
+    setEditingReportId(report._id);
+    setReportFormData({
+      condition: report.condition,
+      zone: report.zone,
+      description: report.description || "",
+    });
+  };
+
+  const handleSaveReport = async (reportId) => {
+    setLoading(true);
+    try {
+      await apiClient.patch(`/reports/${reportId}`, reportFormData);
+      setReports(
+        reports.map((r) =>
+          r._id === reportId ? { ...r, ...reportFormData } : r,
+        ),
+      );
+      setEditingReportId(null);
+      alert("Report updated successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update report");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,38 +104,105 @@ export default function AccountPage() {
     <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
       {/* Account Header */}
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-800 mb-4">
-          My Account
-        </h1>
-
-        <div className="grid md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-slate-400">Name</p>
-            <p className="font-medium">{user.name}</p>
-          </div>
-
-          <div>
-            <p className="text-slate-400">Email</p>
-            <p className="font-medium">{user.email}</p>
-          </div>
-
-          <div>
-            <p className="text-slate-400">Phone</p>
-            <p className="font-medium">{user.phone || "Not added"}</p>
-          </div>
-
-          <div>
-            <p className="text-slate-400">Role</p>
-            <p className="font-medium capitalize">{user.role}</p>
-          </div>
-
-          <div>
-            <p className="text-slate-400">Joined</p>
-            <p className="font-medium">
-              {new Date(user.createdAt).toLocaleDateString()}
-            </p>
-          </div>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-semibold text-slate-800">My Account</h1>
+          {!editingUser && (
+            <button
+              onClick={handleEditUser}
+              className="text-blue-600 hover:text-blue-700 p-2"
+              title="Edit profile"
+            >
+              ✏️
+            </button>
+          )}
         </div>
+
+        {editingUser ? (
+          <div className="space-y-4">
+            <div>
+              <label className="text-slate-600 font-medium">Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-slate-600 font-medium">Phone</label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
+                className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-slate-600 font-medium">Zone</label>
+              <input
+                type="text"
+                value={formData.zone}
+                onChange={(e) =>
+                  setFormData({ ...formData, zone: e.target.value })
+                }
+                className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
+              />
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={handleSaveUser}
+                disabled={loading}
+                className="flex-1 bg-green-600 text-white rounded-lg py-2 hover:bg-green-700 disabled:opacity-50"
+              >
+                {loading ? "Saving..." : "Save"}
+              </button>
+              <button
+                onClick={() => setEditingUser(false)}
+                className="flex-1 bg-slate-400 text-white rounded-lg py-2 hover:bg-slate-500"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-slate-400">Name</p>
+              <p className="font-medium">{user.name}</p>
+            </div>
+
+            <div>
+              <p className="text-slate-400">Email</p>
+              <p className="font-medium">{user.email}</p>
+            </div>
+
+            <div>
+              <p className="text-slate-400">Phone</p>
+              <p className="font-medium">{user.phone || "Not added"}</p>
+            </div>
+
+            <div>
+              <p className="text-slate-400">Role</p>
+              <p className="font-medium capitalize">{user.role}</p>
+            </div>
+
+            <div>
+              <p className="text-slate-400">Zone</p>
+              <p className="font-medium">{user.zone || "Not added"}</p>
+            </div>
+
+            <div>
+              <p className="text-slate-400">Joined</p>
+              <p className="font-medium">
+                {new Date(user.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* User Reports */}
@@ -96,37 +226,116 @@ export default function AccountPage() {
               )}
 
               <div className="p-4 space-y-2">
-                <h3 className="font-medium text-slate-800">
-                  {r.animal?.species?.toUpperCase()}
-                </h3>
+                {editingReportId === r._id ? (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-slate-600 text-sm font-medium">
+                        Condition
+                      </label>
+                      <input
+                        type="text"
+                        value={reportFormData.condition}
+                        onChange={(e) =>
+                          setReportFormData({
+                            ...reportFormData,
+                            condition: e.target.value,
+                          })
+                        }
+                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-600 text-sm font-medium">
+                        Zone
+                      </label>
+                      <input
+                        type="text"
+                        value={reportFormData.zone}
+                        onChange={(e) =>
+                          setReportFormData({
+                            ...reportFormData,
+                            zone: e.target.value,
+                          })
+                        }
+                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-600 text-sm font-medium">
+                        Description
+                      </label>
+                      <textarea
+                        value={reportFormData.description}
+                        onChange={(e) =>
+                          setReportFormData({
+                            ...reportFormData,
+                            description: e.target.value,
+                          })
+                        }
+                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
+                        rows="2"
+                      />
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <button
+                        onClick={() => handleSaveReport(r._id)}
+                        disabled={loading}
+                        className="flex-1 bg-green-600 text-white text-sm rounded-lg py-2 hover:bg-green-700 disabled:opacity-50"
+                      >
+                        {loading ? "Saving..." : "Save"}
+                      </button>
+                      <button
+                        onClick={() => setEditingReportId(null)}
+                        className="flex-1 bg-slate-400 text-white text-sm rounded-lg py-2 hover:bg-slate-500"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h3 className="font-medium text-slate-800">
+                      {r.animal?.species?.toUpperCase()}
+                    </h3>
 
-                <p className="text-sm text-slate-600">
-                  Condition: {r.condition}
-                </p>
+                    <p className="text-sm text-slate-600">
+                      Condition: {r.condition}
+                    </p>
 
-                <p className="text-sm text-slate-500">Zone: {r.zone}</p>
+                    <p className="text-sm text-slate-500">Zone: {r.zone}</p>
 
-                <p className="text-xs text-slate-400">
-                  Posted: {new Date(r.createdAt).toLocaleDateString()}
-                </p>
+                    {r.description && (
+                      <p className="text-sm text-slate-600">{r.description}</p>
+                    )}
 
-                <span className="inline-block text-xs px-2 py-1 rounded bg-slate-100">
-                  {r.status}
-                </span>
+                    <p className="text-xs text-slate-400">
+                      Posted: {new Date(r.createdAt).toLocaleDateString()}
+                    </p>
 
-                {/* Buttons */}
-                <div className="flex gap-2 pt-3">
-                  <button className="flex-1 bg-gray-600 text-white text-sm rounded-lg py-2 hover:bg-gray-700">
-                    Edit
-                  </button>
+                    <span className="inline-block text-xs px-2 py-1 rounded bg-slate-100">
+                      {r.status}
+                    </span>
 
-                  <button
-                    onClick={() => deleteReport(r._id)}
-                    className="flex-1 bg-red-600 text-white text-sm rounded-lg py-2 hover:bg-red-700"
-                  >
-                    Delete
-                  </button>
-                </div>
+                    {/* Buttons */}
+                    <div className="flex gap-2 pt-3">
+                      {r.status === "pending" && (
+                        <button
+                          onClick={() => handleEditReport(r)}
+                          className="flex-1 bg-blue-600 text-white text-sm rounded-lg py-2 hover:bg-blue-700"
+                        >
+                          ✏️ Edit
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => deleteReport(r._id)}
+                        className="flex-1 bg-red-600 text-white text-sm rounded-lg py-2 hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ))}

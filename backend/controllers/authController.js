@@ -2,7 +2,7 @@
  * Auth controller - handles HTTP requests for authentication
  */
 
-const authService = require('../services/authService');
+const authService = require("../services/authService");
 
 const register = async (req, res, next) => {
   try {
@@ -29,7 +29,21 @@ const login = async (req, res, next) => {
   }
 };
 
+const updateProfile = async (req, res, next) => {
+  try {
+    const user = await authService.updateProfile(req.user._id, req.body);
+    res.status(200).json({
+      success: true,
+      data: user,
+      message: "Profile updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
+  updateProfile,
 };

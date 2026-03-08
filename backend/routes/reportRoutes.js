@@ -13,6 +13,7 @@ router
   .post(uploadReportPhoto, reportController.createReport);
 
 router.get("/:id", reportController.getReport);
+router.patch("/:id", reportController.updateReport);
 
 // PROTECTED ROUTES
 router.patch("/:id/accept", volunteerOrAdmin, reportController.acceptReport);
