@@ -148,6 +148,15 @@ const unassignReport = async (reportId, user) => {
 
   return report;
 };
+
+const getAdoptionAnimals = async () => {
+  const animals = await Report.find({ condition: 'for-adoption' })
+    .populate('animal')
+    .populate('reportedBy', 'name email phone')
+    .sort({ createdAt: -1 });
+
+  return animals;
+};
 module.exports = {
   createReport,
   getReportsByZone,
@@ -155,4 +164,5 @@ module.exports = {
   acceptReport,
   resolveReport,
   unassignReport,
+  getAdoptionAnimals,
 };

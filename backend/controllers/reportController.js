@@ -102,21 +102,19 @@ const unassignReport = async (req, res, next) => {
   }
 };
 
-const getAdoptionAnimals = async (req, res) => {
-  try {
-    const animals = await Report.find({ condition: 'for-adoption' })
-      .populate('animal')
-      .populate('reportedBy')
-      .populate('zone')
-      .sort({ createdAt: -1 });
 
-    res.status(200).json(animals);
+const getAdoptionAnimals = async (req, res, next) => {
+  try {
+    const animals = await reportService.getAdoptionAnimals();
+
+    res.status(200).json({
+      success: true,
+      count: animals.length,
+      data: animals
+    });
 
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to fetch adoption animals',
-      error: error.message
-    });
+    next(error);
   }
 };
 
