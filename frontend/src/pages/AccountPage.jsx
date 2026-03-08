@@ -116,13 +116,13 @@ export default function AccountPage() {
 
                 {/* Buttons */}
                 <div className="flex gap-2 pt-3">
-                  <button className="flex-1 bg-blue-600 text-white text-sm rounded-lg py-2 hover:bg-blue-700">
+                  <button className="flex-1 bg-gray-600 text-white text-sm rounded-lg py-2 hover:bg-gray-700">
                     Edit
                   </button>
 
                   <button
                     onClick={() => deleteReport(r._id)}
-                    className="flex-1 bg-red-500 text-white text-sm rounded-lg py-2 hover:bg-red-600"
+                    className="flex-1 bg-red-600 text-white text-sm rounded-lg py-2 hover:bg-red-700"
                   >
                     Delete
                   </button>
