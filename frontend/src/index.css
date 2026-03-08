@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Lato:wght@300;400;700&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Lato:wght@300;400;700&display=swap"); */
 
 :root {
   --primary-lavender: #d4c5e8;
@@ -18,7 +18,7 @@
 
 body {
   margin: 0;
-  font-family: "Lato", sans-serif;
+  font-family: "Delius", cursive;
   min-height: 100vh;
   background: var(--bg-gradient);
   color: var(--text-dark);
@@ -31,7 +31,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Abril Fatface", serif;
+  font-family: "Viga", sans-serif;
   font-weight: 400;
   letter-spacing: 0.5px;
 }

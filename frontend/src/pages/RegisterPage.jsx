@@ -126,7 +126,7 @@ export default function RegisterPage() {
             >
               <option value="public">Public User</option>
               <option value="volunteer">Volunteer</option>
-              <option value="admin">Administrator</option>
+              {/* <option value="admin">Administrator</option> */}
             </select>
           </div>
           <div>
