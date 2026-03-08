@@ -26,6 +26,7 @@ export default function Footer() {
             <li><Link to="/report">Report Injured Animal</Link></li>
             <li><Link to="/adoption">Pet Adoption</Link></li>
             <li><Link to="/petcaretips">Pet Care Tips</Link></li>
+            <li><Link to="/faq">FAQ</Link></li>
           </ul>
         </div>
 
@@ -33,7 +34,6 @@ export default function Footer() {
         <div>
           <h3 className="text-white font-medium mb-3">Resources</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/petcaretips">PetCare Tips</Link></li>
             <li><Link to="/strayanimalrescue">Stray Animal Rescue Guide</Link></li>
             <li><Link to="/petadoption">Pet Adoption Process</Link></li>
             <li><Link to="/animalfirstaid">Animal First Aid Tips</Link></li>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { apiClient } from "../api/client";
 
 export default function AdoptionPage() {
@@ -197,6 +198,15 @@ export default function AdoptionPage() {
           <li>Rescue animals are vaccinated and health checked.</li>
           <li>You support ethical animal care.</li>
         </ul>
+
+        <p className="text-slate-600 mt-4">
+          <Link
+            to="/faq"
+            className="text-blue-600 font-semibold hover:text-blue-700 underline"
+          >
+            Learn more in our FAQ page
+          </Link>
+        </p>
       </div>
     </div>
   );

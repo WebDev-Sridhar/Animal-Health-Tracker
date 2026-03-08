@@ -541,6 +541,26 @@ export default function ReportPage() {
           </button>
         </form>
       </div>
+
+      {/* FAQ Info Section */}
+      <div className="mt-12 bg-green-50 rounded-xl p-8">
+        <h2 className="text-2xl font-semibold text-slate-800 mb-4">
+          Questions About Reporting?
+        </h2>
+
+        <p className="text-slate-600 mb-4">
+          Have questions about how to report injured animals, what information
+          to provide, or how the rescue process works? Check out our
+          comprehensive FAQ section.
+        </p>
+
+        <Link
+          to="/faq"
+          className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg transition"
+        >
+          Learn more in our FAQ page →
+        </Link>
+      </div>
     </div>
   );
 }

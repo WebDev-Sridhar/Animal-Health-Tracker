@@ -15,6 +15,7 @@ import StrayAnimalRescuePage from "./pages/StrayAnimalRescuePage";
 import PetAdoptionPage from "./pages/PetAdoptionPage";
 import AnimalFirstAidPage from "./pages/AnimalFirstAidPage";
 import ResponsiblePetOwnershipPage from "./pages/ResponsiblePetOwnershipPage";
+import FAQ from "./pages/FAQ";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/petcaretips" element={<PetCareTipsPage />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route
               path="/strayanimalrescue"
               element={<StrayAnimalRescuePage />}
