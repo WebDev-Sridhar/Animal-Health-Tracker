@@ -3,7 +3,7 @@ import { apiClient } from '../api/client';
 
 export default function AdoptionPage() {
   const [animals, setAnimals] = useState([]);
-  const [filtered, setFiltered] = useState([]);
+//   const [filtered, setFiltered] = useState([]);
   const [district, setDistrict] = useState("");
   const [category, setCategory] = useState("");
 
@@ -25,7 +25,7 @@ export default function AdoptionPage() {
       const res = await apiClient.get("/reports/adoptions");
       console.log(res.data.data)
    setAnimals(res.data.data);
-      setFiltered(adoptionAnimals);
+    //   setFiltered(adoptionAnimals);
     } catch (err) {
       console.error(err);
     }
@@ -101,7 +101,7 @@ export default function AdoptionPage() {
       {/* Cards */}
       <div className="grid md:grid-cols-3 gap-6">
 
-        {filtered.map((r) => (
+        {animals.map((r) => (
           <div
             key={r._id}
             className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
