@@ -23,4 +23,9 @@
 <loc>https://ourpetcare.vercel.app/register</loc>
 </url>
 
+<url>
+<loc>https://ourpetcare.vercel.app/petcaretips</loc>
+<priority>0.8</priority>
+</url>
+
 </urlset>

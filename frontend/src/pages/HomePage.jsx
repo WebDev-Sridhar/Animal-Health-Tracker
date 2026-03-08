@@ -82,7 +82,9 @@ export default function HomePage() {
             <Link to="/report" className="btn-primary">
               Report a Pet
             </Link>
-            <button className="btn-secondary">Learn More</button>
+            <Link to="/adoption" className="btn-secondary">
+              Adopt a Pet
+            </Link>
           </div>
         </div>
       </section>

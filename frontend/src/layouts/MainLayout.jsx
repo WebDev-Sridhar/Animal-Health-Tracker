@@ -1,6 +1,7 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
+import Footer from "../components/Footer";
 
 export default function MainLayout() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -242,14 +243,7 @@ export default function MainLayout() {
           <Outlet />
         </div>
       </main>
-      <footer className="bg-white/50 backdrop-blur-sm border-t border-white/20 py-6 px-6">
-        <div className="max-w-7xl mx-auto text-center text-gray-600 text-sm">
-          <p>
-            © 2026 PetCare Companion. Caring for your furry family members, one
-            paw at a time.
-          </p>
-        </div>
-      </footer>
+<Footer/>
     </div>
   );
 }
