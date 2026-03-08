@@ -23,7 +23,7 @@ export default function AdoptionPage() {
   const fetchAnimals = async () => {
     try {
       const res = await apiClient.get("/reports/adoptions");
-      console.log(res.data)
+    //   console.log(res.data)
    setAnimals(res.data);
     //   setFiltered(adoptionAnimals);
     } catch (err) {
@@ -55,9 +55,9 @@ export default function AdoptionPage() {
       {/* Banner */}
       <div className="rounded-xl overflow-hidden mb-10">
         <img
-          src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b"
+        src="/img/adoptionBanner.jpeg"
           alt="Adopt pets"
-          className="w-full h-72 object-cover"
+          className="w-full h-100 object-cover"
         />
       </div>
 
