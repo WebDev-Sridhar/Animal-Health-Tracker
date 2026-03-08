@@ -1,19 +1,22 @@
 const express = require('express');
 const router = express.Router();
+
 const reportController = require('../controllers/reportController');
 const { authorize } = require('../middleware/auth');
 const { uploadReportPhoto } = require('../middleware/upload');
 
 const volunteerOrAdmin = authorize('volunteer', 'admin');
 
+// PUBLIC ROUTES
+router.get('/adoptions', reportController.getAdoptionAnimals);
+
 router.route('/')
-  .get(reportController.getReports) // PUBLIC
-  .post(uploadReportPhoto, reportController.createReport); // PUBLIC
+  .get(reportController.getReports)
+  .post(uploadReportPhoto, reportController.createReport);
 
-  router.get('/adoptions', reportController.getAdoptionAnimals);
+router.get('/:id', reportController.getReport);
 
-router.get('/:id', reportController.getReport); // PUBLIC
-
+// PROTECTED ROUTES
 router.patch('/:id/accept', volunteerOrAdmin, reportController.acceptReport);
 router.patch('/:id/resolve', volunteerOrAdmin, reportController.resolveReport);
 router.patch('/:id/unassign', volunteerOrAdmin, reportController.unassignReport);
