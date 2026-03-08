@@ -46,7 +46,7 @@ export default function AdoptionPage() {
       );
     }
 
-    setFiltered(result);
+    setAnimals(result);
   }, [district, category, animals]);
 
   return (
