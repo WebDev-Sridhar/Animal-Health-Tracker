@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import MapComponent from "../components/MapComponent";
 import { animalsApi } from "../api/animals";
 
@@ -59,6 +60,13 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8">
+      <Helmet>
+        <title>OurPetCare - Animal Health Tracker in Tamil Nadu</title>
+        <meta
+          name="description"
+          content="Track animal health, report animal welfare concerns, and adopt rescued pets across Tamil Nadu with OurPetCare."
+        />
+      </Helmet>
       {/* Hero Section */}
       <section className="text-center py-12 fade-in-up">
         <div className="card p-8 max-w-4xl mx-auto">
@@ -117,7 +125,7 @@ export default function HomePage() {
 
           <div className="relative">
             {loading && (
-              <div className="absolute inset-0 z-1000 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-xl">
+              <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-xl">
                 <div className="text-center">
                   <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-2"></div>
                   <span className="text-gray-600">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { authApi } from "../api/auth";
 
@@ -30,6 +31,13 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
+      <Helmet>
+        <title>Sign In | OurPetCare</title>
+        <meta
+          name="description"
+          content="Sign in to your OurPetCare account to track animal health and contribute to animal welfare."
+        />
+      </Helmet>
       <div className="card p-8 w-full max-w-md fade-in-up">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-pink-300 to-purple-300 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">

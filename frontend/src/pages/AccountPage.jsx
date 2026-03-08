@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
 
@@ -146,6 +147,13 @@ export default function AccountPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+      <Helmet>
+        <title>My Account | OurPetCare</title>
+        <meta
+          name="description"
+          content="Manage your OurPetCare account, view your reports, and track your contribution to animal welfare."
+        />
+      </Helmet>
       {/* Account Header */}
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
         <div className="flex justify-between items-center mb-4">

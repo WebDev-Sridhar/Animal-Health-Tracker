@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,10 +9,10 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Bar, Doughnut } from 'react-chartjs-2';
-import { apiClient } from '../api/client';
-import { analyticsApi } from '../api/analytics';
+} from "chart.js";
+import { Bar, Doughnut } from "react-chartjs-2";
+import { apiClient } from "../api/client";
+import { analyticsApi } from "../api/analytics";
 
 ChartJS.register(
   CategoryScale,
@@ -20,32 +21,32 @@ ChartJS.register(
   ArcElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const CHART_COLORS = {
-  healthy: '#22c55e',
-  sick:  '#8b5cf6' ,
-  critical: '#ef4444',
-  injured: '#f59e0b',
-  "vaccination-needed": '#3b82f6',
-  aggressive: '#f97316',
-  "for-adoption": '#10b981',
+  healthy: "#22c55e",
+  sick: "#8b5cf6",
+  critical: "#ef4444",
+  injured: "#f59e0b",
+  "vaccination-needed": "#3b82f6",
+  aggressive: "#f97316",
+  "for-adoption": "#10b981",
 };
 
 export default function AdminDashboard() {
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [recalcLoading, setRecalcLoading] = useState(false);
 
   const fetchAnalytics = useCallback(async () => {
     try {
       const res = await analyticsApi.getAnalytics();
       setAnalytics(res.data);
-      setError('');
+      setError("");
     } catch (err) {
-      setError(err.message || 'Failed to load analytics');
+      setError(err.message || "Failed to load analytics");
       setAnalytics(null);
     } finally {
       setLoading(false);
@@ -59,10 +60,10 @@ export default function AdminDashboard() {
   const recalculateRisk = async () => {
     setRecalcLoading(true);
     try {
-      await apiClient.post('/risk/recalculate');
+      await apiClient.post("/risk/recalculate");
       await fetchAnalytics();
     } catch (err) {
-      setError(err.message || 'Recalculation failed');
+      setError(err.message || "Recalculation failed");
     } finally {
       setRecalcLoading(false);
     }
@@ -79,25 +80,45 @@ export default function AdminDashboard() {
   if (error && !analytics) {
     return (
       <div className="max-w-6xl mx-auto">
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">{error}</div>
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
+          {error}
+        </div>
       </div>
     );
   }
 
   const stats = [
-    { label: 'Total Animals', value: analytics?.totalAnimals ?? 0, color: 'bg-slate-600' },
-    { label: 'Sick Animals', value: analytics?.sickAnimals ?? 0, color: 'bg-amber-500' },
-    { label: 'Vaccinated', value: analytics?.vaccinatedAnimals ?? 0, color: 'bg-emerald-500' },
-    { label: 'Reports This Week', value: analytics?.reportsThisWeek ?? 0, color: 'bg-blue-500' },
+    {
+      label: "Total Animals",
+      value: analytics?.totalAnimals ?? 0,
+      color: "bg-slate-600",
+    },
+    {
+      label: "Sick Animals",
+      value: analytics?.sickAnimals ?? 0,
+      color: "bg-amber-500",
+    },
+    {
+      label: "Vaccinated",
+      value: analytics?.vaccinatedAnimals ?? 0,
+      color: "bg-emerald-500",
+    },
+    {
+      label: "Reports This Week",
+      value: analytics?.reportsThisWeek ?? 0,
+      color: "bg-blue-500",
+    },
   ];
 
   const healthData = {
-    labels: Object.keys(analytics?.healthBreakdown ?? {}).map((k) => k.charAt(0).toUpperCase() + k.slice(1)),
+    labels: Object.keys(analytics?.healthBreakdown ?? {}).map(
+      (k) => k.charAt(0).toUpperCase() + k.slice(1),
+    ),
     datasets: [
       {
         data: Object.values(analytics?.healthBreakdown ?? {}),
         backgroundColor: Object.keys(analytics?.healthBreakdown ?? {}).map(
-          (k) => CHART_COLORS[k] || CHART_COLORS.unknown
+          (k) => CHART_COLORS[k] || CHART_COLORS.unknown,
         ),
         borderWidth: 0,
       },
@@ -108,10 +129,14 @@ export default function AdminDashboard() {
     labels: (analytics?.zones ?? []).map((z) => z.name),
     datasets: [
       {
-        label: 'Risk Score',
+        label: "Risk Score",
         data: (analytics?.zones ?? []).map((z) => z.riskScore),
         backgroundColor: (analytics?.zones ?? []).map((z) =>
-          z.riskScore >= 80 ? '#ef4444' : z.riskScore >= 50 ? '#f59e0b' : '#22c55e'
+          z.riskScore >= 80
+            ? "#ef4444"
+            : z.riskScore >= 50
+              ? "#f59e0b"
+              : "#22c55e",
         ),
         borderRadius: 4,
       },
@@ -122,7 +147,7 @@ export default function AdminDashboard() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'bottom' },
+      legend: { position: "bottom" },
     },
   };
 
@@ -138,8 +163,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto">
+      <Helmet>
+        <title>Admin Dashboard | OurPetCare</title>
+        <meta
+          name="description"
+          content="Monitor animal health statistics and reports across all of Tamil Nadu."
+        />
+      </Helmet>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <h1 className="text-2xl font-semibold text-slate-800">Admin Analytics Dashboard</h1>
+        <h1 className="text-2xl font-semibold text-slate-800">
+          Admin Analytics Dashboard
+        </h1>
         <div className="flex gap-2">
           <button
             onClick={fetchAnalytics}
@@ -152,7 +186,7 @@ export default function AdminDashboard() {
             disabled={recalcLoading}
             className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 disabled:opacity-50 text-sm"
           >
-            {recalcLoading ? 'Recalculating...' : 'Recalc Zone Risk'}
+            {recalcLoading ? "Recalculating..." : "Recalc Zone Risk"}
           </button>
         </div>
       </div>
@@ -171,7 +205,9 @@ export default function AdminDashboard() {
             className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm"
           >
             <p className="text-sm text-slate-500 mb-1">{stat.label}</p>
-            <p className="text-2xl font-semibold text-slate-800">{stat.value}</p>
+            <p className="text-2xl font-semibold text-slate-800">
+              {stat.value}
+            </p>
             <div className={`mt-2 h-1 w-12 rounded ${stat.color}`} />
           </div>
         ))}
@@ -180,18 +216,24 @@ export default function AdminDashboard() {
       {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-8">
         <div className="bg-white border border-slate-200 rounded-lg p-6 shadow-sm">
-          <h2 className="text-lg font-medium text-slate-800 mb-4">Health Status Breakdown</h2>
+          <h2 className="text-lg font-medium text-slate-800 mb-4">
+            Health Status Breakdown
+          </h2>
           <div className="h-64">
             {Object.keys(analytics?.healthBreakdown ?? {}).length > 0 ? (
               <Doughnut data={healthData} options={chartOptions} />
             ) : (
-              <p className="text-slate-500 flex items-center justify-center h-full">No animal data</p>
+              <p className="text-slate-500 flex items-center justify-center h-full">
+                No animal data
+              </p>
             )}
           </div>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-lg p-6 shadow-sm">
-          <h2 className="text-lg font-medium text-slate-800 mb-4">Zone Risk Scores</h2>
+          <h2 className="text-lg font-medium text-slate-800 mb-4">
+            Zone Risk Scores
+          </h2>
           <div className="h-64">
             {(analytics?.zones ?? []).length > 0 ? (
               <Bar data={zoneData} options={barOptions} />
@@ -207,7 +249,9 @@ export default function AdminDashboard() {
       {/* Zone table */}
       {(analytics?.zones ?? []).length > 0 && (
         <div className="mt-8 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-          <h2 className="text-lg font-medium text-slate-800 px-6 pt-6 pb-2">Zone Risk Details</h2>
+          <h2 className="text-lg font-medium text-slate-800 px-6 pt-6 pb-2">
+            Zone Risk Details
+          </h2>
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
@@ -225,13 +269,17 @@ export default function AdminDashboard() {
                     <span
                       className={
                         z.riskScore >= 80
-                          ? 'text-red-600 font-medium'
+                          ? "text-red-600 font-medium"
                           : z.riskScore >= 50
-                            ? 'text-amber-600'
-                            : 'text-slate-500'
+                            ? "text-amber-600"
+                            : "text-slate-500"
                       }
                     >
-                      {z.riskScore >= 80 ? 'High Risk' : z.riskScore >= 50 ? 'Medium' : 'Low'}
+                      {z.riskScore >= 80
+                        ? "High Risk"
+                        : z.riskScore >= 50
+                          ? "Medium"
+                          : "Low"}
                     </span>
                   </td>
                 </tr>

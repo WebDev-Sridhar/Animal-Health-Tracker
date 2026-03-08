@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
 
@@ -189,6 +190,13 @@ export default function ReportPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      <Helmet>
+        <title>Report Animal | OurPetCare</title>
+        <meta
+          name="description"
+          content="Report injured, sick, or abandoned animals in Tamil Nadu. Help protect animal welfare."
+        />
+      </Helmet>
       <div className="text-center fade-in-up">
         <h1 className="text-4xl font-bold text-gray-800 mb-4">Report a Pet</h1>
         <p className="text-lg text-gray-600 max-w-xl mx-auto">
@@ -455,7 +463,7 @@ export default function ReportPage() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Location
             </label>
-            <div className="space-y-3 ">
+            <div className="space-y-3">
               <button
                 type="button"
                 onClick={detectLocation}
@@ -468,9 +476,9 @@ export default function ReportPage() {
                     Detecting location...
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2">
+                  <>
                     <svg
-                      className="w-4 h-4 "
+                      className="w-4 h-4 mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -480,8 +488,8 @@ export default function ReportPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Use My Location
-                  </div>
+                    Auto-detect location
+                  </>
                 )}
               </button>
               {locationError && (

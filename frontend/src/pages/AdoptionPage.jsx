@@ -1,20 +1,30 @@
 import { useEffect, useState } from "react";
-import { apiClient } from '../api/client';
+import { Helmet } from "react-helmet-async";
+import { apiClient } from "../api/client";
 
 export default function AdoptionPage() {
   const [animals, setAnimals] = useState([]);
-//   const [filtered, setFiltered] = useState([]);
+  //   const [filtered, setFiltered] = useState([]);
   const [district, setDistrict] = useState("");
   const [category, setCategory] = useState("");
 
   const districts = [
-    "Chennai","Coimbatore","Madurai","Trichy","Salem","Tirunelveli","Erode",
-    "Vellore","Thoothukudi","Thanjavur","Dindigul","Karur","Kanchipuram"
+    "Chennai",
+    "Coimbatore",
+    "Madurai",
+    "Trichy",
+    "Salem",
+    "Tirunelveli",
+    "Erode",
+    "Vellore",
+    "Thoothukudi",
+    "Thanjavur",
+    "Dindigul",
+    "Karur",
+    "Kanchipuram",
   ];
 
-  const categories = [
-    "dog","cat","bird","goat","cow"
-  ];
+  const categories = ["dog", "cat", "bird", "goat", "cow"];
 
   useEffect(() => {
     fetchAnimals();
@@ -23,9 +33,9 @@ export default function AdoptionPage() {
   const fetchAnimals = async () => {
     try {
       const res = await apiClient.get("/reports/adoptions");
-    //   console.log(res.data)
-   setAnimals(res.data);
-    //   setFiltered(adoptionAnimals);
+      //   console.log(res.data)
+      setAnimals(res.data);
+      //   setFiltered(adoptionAnimals);
     } catch (err) {
       console.error(err);
     }
@@ -36,13 +46,13 @@ export default function AdoptionPage() {
 
     if (district) {
       result = result.filter((a) =>
-        a.zone?.toLowerCase().includes(district.toLowerCase())
+        a.zone?.toLowerCase().includes(district.toLowerCase()),
       );
     }
 
     if (category) {
-      result = result.filter((a) =>
-        a.animal?.species?.toLowerCase() === category
+      result = result.filter(
+        (a) => a.animal?.species?.toLowerCase() === category,
       );
     }
 
@@ -51,11 +61,18 @@ export default function AdoptionPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
+      <Helmet>
+        <title>Adopt Pets in Tamil Nadu | OurPetCare</title>
+        <meta
+          name="description"
+          content="Find rescued animals available for adoption across Tamil Nadu on OurPetCare."
+        />
+      </Helmet>
 
       {/* Banner */}
       <div className="rounded-xl overflow-hidden mb-10">
         <img
-        src="/img/adoptionBanner.jpeg"
+          src="/img/adoptionBanner.jpeg"
           alt="Adopt pets"
           className="w-full h-auto md:h-100 md:object-cover"
         />
@@ -73,7 +90,6 @@ export default function AdoptionPage() {
 
       {/* Filters */}
       <div className="flex flex-wrap gap-4 mb-10 justify-center">
-
         <select
           className="border rounded-lg px-4 py-2"
           value={district}
@@ -95,55 +111,54 @@ export default function AdoptionPage() {
             <option key={c}>{c}</option>
           ))}
         </select>
-
       </div>
 
       {/* Cards */}
       <div className="grid md:grid-cols-3 gap-6">
-
         {animals.map((r) => (
           <div
             key={r._id}
             className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
           >
-           {r.photo ? (
-            <img
-              src={r.photo}
-              alt="animal"
-              className="w-full h-48 object-cover"
-            />) : (
-                <div className="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">
-                    No Image Available
-                </div>
+            {r.photo ? (
+              <img
+                src={r.photo}
+                alt="animal"
+                className="w-full h-48 object-cover"
+              />
+            ) : (
+              <div className="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">
+                No Image Available
+              </div>
             )}
 
             <div className="p-4 space-y-2">
-
-              <h3 className="font-semibold text-md text-slate-800">
-            Details
-              </h3>
+              <h3 className="font-semibold text-md text-slate-800">Details</h3>
 
               <p className="text-sm text-slate-500">
-              <span className="text-slate-800"> Species:</span>  {r.animal?.species}
+                <span className="text-slate-800"> Species:</span>{" "}
+                {r.animal?.species}
               </p>
 
               <p className="text-sm text-slate-500">
-                    Age: {r.animal?.approxAge || "Unknown"}
+                Age: {r.animal?.approxAge || "Unknown"}
               </p>
 
               <p className="text-sm text-slate-500">
-                <span className="text-slate-800">Vaccination:</span> {r.animal?.vaccinationStatus || "Unknown"}
+                <span className="text-slate-800">Vaccination:</span>{" "}
+                {r.animal?.vaccinationStatus || "Unknown"}
               </p>
 
               <p className="text-sm text-slate-500">
                 <span className="text-slate-800">Health:</span> {r.condition}
               </p>
-                 <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500">
                 Description: {r.description || "No description provided."}
               </p>
 
               <p className="text-sm text-slate-400">
-                <span className="text-slate-800">Location:</span> {r.zone || "Unknown"}
+                <span className="text-slate-800">Location:</span>{" "}
+                {r.zone || "Unknown"}
               </p>
 
               <p className="text-xs text-slate-400">
@@ -159,16 +174,13 @@ export default function AdoptionPage() {
                   Call Reporter
                 </a>
               )}
-
             </div>
           </div>
         ))}
-
       </div>
 
       {/* Adoption Info Section */}
       <div className="mt-16 bg-slate-50 rounded-xl p-8">
-
         <h2 className="text-2xl font-semibold text-slate-800 mb-4">
           Why Adopt a Pet?
         </h2>
@@ -185,9 +197,7 @@ export default function AdoptionPage() {
           <li>Rescue animals are vaccinated and health checked.</li>
           <li>You support ethical animal care.</li>
         </ul>
-
       </div>
-
     </div>
   );
 }
