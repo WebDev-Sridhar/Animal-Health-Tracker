@@ -33,8 +33,8 @@ export default function AccountPage() {
         phone: authUser.phone || "",
         zone: authUser.zone || "",
       });
+      fetchReports();
     }
-    fetchReports();
   }, [authUser]);
 
   const fetchReports = async () => {
