@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
 
@@ -13,7 +14,8 @@ const CONDITION_OPTIONS = [
 ];
 
 export default function AccountPage() {
-  const { user: authUser, login } = useAuth();
+  const navigate = useNavigate();
+  const { user: authUser, login, isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
   const [reports, setReports] = useState([]);
   const [editingUser, setEditingUser] = useState(false);
@@ -107,6 +109,38 @@ export default function AccountPage() {
       console.error(err);
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="max-w-md w-full text-center space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800 mb-2">
+              My Account
+            </h1>
+            <p className="text-slate-600">
+              Please sign in to view your account details and reports
+            </p>
+          </div>
+          <button
+            onClick={() => navigate("/login")}
+            className="w-full btn-primary"
+          >
+            Sign In
+          </button>
+          <p className="text-slate-600 text-sm">
+            Don't have an account?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Register here
+            </button>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) return <div className="p-10">Loading...</div>;
 
