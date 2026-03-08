@@ -478,7 +478,7 @@ export default function ReportPage() {
                 ) : (
                   <div className="flex items-center gap-2">
                     <svg
-                      className="w-4 h-4"
+                      className="w-4 h-4 "
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
