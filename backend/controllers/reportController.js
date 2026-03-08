@@ -128,6 +128,22 @@ const getAdoptionAnimals = async (req, res, next) => {
   }
 };
 
+const deleteReport = async (req, res, next) => {
+  try {
+    const result = await reportService.deleteReport(
+      req.params.id,
+      req.user._id,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createReport,
   getReports,
@@ -137,4 +153,5 @@ module.exports = {
   unassignReport,
   resolveReport,
   updateReport,
+  deleteReport,
 };

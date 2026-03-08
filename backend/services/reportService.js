@@ -174,6 +174,26 @@ const updateReport = async (reportId, userId, data) => {
   return report.populate(["animal", "reportedBy", "acceptedBy"]);
 };
 
+const deleteReport = async (reportId, userId) => {
+  const report = await Report.findById(reportId);
+  if (!report) {
+    throw new AppError("Report not found", 404);
+  }
+
+  // Only allow deletion if user is the owner
+  if (report.reportedBy.toString() !== userId.toString()) {
+    throw new AppError("Not authorized to delete this report", 403);
+  }
+
+  // Only allow deletion if report is pending
+  if (report.status !== "pending") {
+    throw new AppError("Can only delete pending reports", 400);
+  }
+
+  await Report.findByIdAndDelete(reportId);
+  return { message: "Report deleted successfully" };
+};
+
 const getAdoptionAnimals = async () => {
   const animals = await Report.find({ condition: "for-adoption" })
     .populate("animal")
@@ -190,5 +210,6 @@ module.exports = {
   resolveReport,
   unassignReport,
   updateReport,
+  deleteReport,
   getAdoptionAnimals,
 };

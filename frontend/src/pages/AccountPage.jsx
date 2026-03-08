@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
 
+const CONDITION_OPTIONS = [
+  { value: "healthy", label: "Healthy" },
+  { value: "injured", label: "Injured" },
+  { value: "sick", label: "Sick" },
+  { value: "aggressive", label: "Aggressive" },
+  { value: "vaccination-needed", label: "Vaccination Needed" },
+  { value: "critical", label: "Critical" },
+  { value: "for-adoption", label: "For Adoption" },
+];
+
 export default function AccountPage() {
   const { user: authUser, login } = useAuth();
   const [user, setUser] = useState(null);
@@ -232,8 +242,7 @@ export default function AccountPage() {
                       <label className="text-slate-600 text-sm font-medium">
                         Condition
                       </label>
-                      <input
-                        type="text"
+                      <select
                         value={reportFormData.condition}
                         onChange={(e) =>
                           setReportFormData({
@@ -242,7 +251,14 @@ export default function AccountPage() {
                           })
                         }
                         className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
-                      />
+                      >
+                        <option value="">Select Condition</option>
+                        {CONDITION_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div>
                       <label className="text-slate-600 text-sm font-medium">
