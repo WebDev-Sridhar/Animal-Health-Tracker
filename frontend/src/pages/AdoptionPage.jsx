@@ -57,7 +57,7 @@ export default function AdoptionPage() {
         <img
         src="/img/adoptionBanner.jpeg"
           alt="Adopt pets"
-          className="w-full h-100 object-cover"
+          className="w-full h-auto md:h-100 md:object-cover"
         />
       </div>
 

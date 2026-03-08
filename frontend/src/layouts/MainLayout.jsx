@@ -178,6 +178,13 @@ export default function MainLayout() {
               >
                 Report
               </Link>
+              <Link
+                to="/account"
+                className="block text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"
+                onClick={closeMobileMenu}
+              >
+                Account
+              </Link>
               {user?.role === "volunteer" && (
                 <Link
                   to="/volunteer"
