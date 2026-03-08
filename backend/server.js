@@ -1,11 +1,11 @@
-const express = require('express');
-const cors = require('cors'); 
+const express = require("express");
+const cors = require("cors");
 
-const config = require('./config');
-const { connectDatabase } = require('./config/database');
-const routes = require('./routes');
-const requestLogger = require('./middleware/logger');
-const errorHandler = require('./middleware/errorHandler');
+const config = require("./config");
+const { connectDatabase } = require("./config/database");
+const routes = require("./routes");
+const requestLogger = require("./middleware/logger");
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
@@ -15,24 +15,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 // ✅ CORS middleware - allow your frontend to access backend
-app.use(cors({
-  origin: [
-  'http://localhost:5173',
-  'https://animal-health-tracker.vercel.app'
-], // your Vite frontend URL
-  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // if you use cookies
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://ourpetcare.vercel.app",
+      "https://animal-health-tracker.vercel.app",
+    ], // your Vite frontend URL
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // if you use cookies
+  }),
+);
 
 // API routes
-app.use('/api', routes);
+app.use("/api", routes);
 
 // 404 handler
 app.use((req, res, next) => {
   res.status(404).json({
     success: false,
-    error: 'Route not found',
+    error: "Route not found",
   });
 });
 
@@ -49,6 +52,6 @@ const startServer = async () => {
 };
 
 startServer().catch((err) => {
-  console.error('Failed to start server:', err);
+  console.error("Failed to start server:", err);
   process.exit(1);
 });
