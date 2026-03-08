@@ -190,7 +190,7 @@ export default function AdoptionPage() {
             >
                      
                     <svg
-                      className="w-4 h-4 mr-2"
+                      className="w-4 h-4 "
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >

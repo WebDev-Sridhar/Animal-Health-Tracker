@@ -476,7 +476,7 @@ export default function ReportPage() {
                     Detecting location...
                   </div>
                 ) : (
-                  <>
+                  <div className="flex items-center gap-2">
                     <svg
                       className="w-4 h-4 mr-2"
                       fill="currentColor"
@@ -489,7 +489,7 @@ export default function ReportPage() {
                       />
                     </svg>
                     Auto-detect location
-                  </>
+                  </div>
                 )}
               </button>
               {locationError && (
