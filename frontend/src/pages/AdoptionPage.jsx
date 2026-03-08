@@ -114,71 +114,119 @@ export default function AdoptionPage() {
         </select>
       </div>
 
-      {/* Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {animals.map((r) => (
-          <div
-            key={r._id}
-            className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
-          >
-            {r.photo ? (
-              <img
-                src={r.photo}
-                alt="animal"
-                className="w-full h-48 object-cover"
-              />
-            ) : (
-              <div className="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">
-                No Image Available
-              </div>
-            )}
+    {/* Cards */}
+<div className="grid md:grid-cols-3 gap-6">
+  {animals.map((r) => {
+    const lat = r.location?.coordinates?.[1];
+    const lng = r.location?.coordinates?.[0];
 
-            <div className="p-4 space-y-2">
-              <h3 className="font-semibold text-md text-slate-800">Details</h3>
+    const mapsUrl =
+      lat && lng
+        ? `https://www.google.com/maps?q=${lat},${lng}`
+        : null;
 
-              <p className="text-sm text-slate-500">
-                <span className="text-slate-800"> Species:</span>{" "}
-                {r.animal?.species}
-              </p>
+    const whatsappUrl = r.reportedBy?.phone
+      ? `https://wa.me/${r.reportedBy.phone}`
+      : null;
 
-              <p className="text-sm text-slate-500">
-                Age: {r.animal?.approxAge || "Unknown"}
-              </p>
-
-              <p className="text-sm text-slate-500">
-                <span className="text-slate-800">Vaccination:</span>{" "}
-                {r.animal?.vaccinationStatus || "Unknown"}
-              </p>
-
-              <p className="text-sm text-slate-500">
-                <span className="text-slate-800">Health:</span> {r.condition}
-              </p>
-              <p className="text-sm text-slate-500">
-                Description: {r.description || "No description provided."}
-              </p>
-
-              <p className="text-sm text-slate-400">
-                <span className="text-slate-800">Location:</span>{" "}
-                {r.zone || "Unknown"}
-              </p>
-
-              <p className="text-xs text-slate-400">
-                Posted: {new Date(r.createdAt).toLocaleDateString()}
-              </p>
-
-              {/* Contact Button */}
-              {r.reportedBy?.phone && (
-                <a
-                  href={`tel:${r.reportedBy.phone}`}
-                  className="block text-center bg-green-600 hover:bg-green-700 text-white rounded-lg py-2 mt-3"
-                >
-                  Call Reporter
-                </a>
-              )}
-            </div>
+    return (
+      <div
+        key={r._id}
+        className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
+      >
+        {r.photo ? (
+          <img
+            src={r.photo}
+            alt="animal"
+            className="w-full h-48 object-cover"
+          />
+        ) : (
+          <div className="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">
+            No Image Available
           </div>
-        ))}
+        )}
+
+        <div className="p-4 space-y-2">
+          <h3 className="font-semibold text-md text-slate-800">Details</h3>
+
+          <p className="text-sm text-slate-500">
+            <span className="text-slate-800">Species:</span>{" "}
+            {r.animal?.species}
+          </p>
+
+          <p className="text-sm text-slate-500">
+            Age: {r.animal?.approxAge || "Unknown"}
+          </p>
+
+          <p className="text-sm text-slate-500">
+            <span className="text-slate-800">Vaccination:</span>{" "}
+            {r.animal?.vaccinationStatus || "Unknown"}
+          </p>
+
+          <p className="text-sm text-slate-500">
+            <span className="text-slate-800">Health:</span> {r.condition}
+          </p>
+
+          <p className="text-sm text-slate-500">
+            Description: {r.description || "No description provided."}
+          </p>
+
+          <p className="text-sm text-slate-400">
+            <span className="text-slate-800">Location:</span>{" "}
+            {r.zone || "Unknown"}
+          </p>
+
+          <p className="text-xs text-slate-400">
+            Posted: {new Date(r.createdAt).toLocaleDateString()}
+          </p>
+
+          {/* Get Directions */}
+          {mapsUrl && (
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-blue-600 text-sm mt-2 hover:underline"
+            >
+              📍 Get Directions
+            </a>
+          )}
+
+          {/* Pet Details Page */}
+          <a
+            href={`/pet/${r._id}`}
+            className="block text-center border border-slate-300 text-slate-700 rounded-lg py-2 mt-3 hover:bg-slate-100"
+          >
+            Know more about the pet
+          </a>
+
+          {/* Contact Section */}
+          {r.reportedBy?.phone && (
+            <div className="flex gap-3 mt-2">
+              {/* WhatsApp */}
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center bg-green-500 hover:bg-green-600 text-white rounded-lg py-2"
+              >
+                WhatsApp
+              </a>
+
+              {/* Call */}
+              <a
+                href={`tel:${r.reportedBy.phone}`}
+                className="flex-1 text-center bg-green-700 hover:bg-green-800 text-white rounded-lg py-2"
+              >
+                Call Reporter
+              </a>
+            </div>
+          )}
+        </div>
       </div>
+    );
+  })}
+</div>
 
       {/* Adoption Info Section */}
       <div className="mt-16 bg-slate-50 rounded-xl p-8">
