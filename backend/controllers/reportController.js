@@ -102,10 +102,29 @@ const unassignReport = async (req, res, next) => {
   }
 };
 
+const getAdoptionAnimals = async (req, res) => {
+  try {
+    const animals = await Report.find({ condition: 'for-adoption' })
+      .populate('animal')
+      .populate('reportedBy')
+      .populate('zone')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(animals);
+
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch adoption animals',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   createReport,
   getReports,
   getReport,
+  getAdoptionAnimals,
   acceptReport,
   unassignReport,
   resolveReport,

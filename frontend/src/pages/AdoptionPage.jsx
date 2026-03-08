@@ -22,7 +22,7 @@ export default function AdoptionPage() {
 
   const fetchAnimals = async () => {
     try {
-      const res = await apiClient.get("/reports");
+      const res = await apiClient.get("/reports/adoptions");
       const adoptionAnimals = res.data.filter(
         (r) => r.condition === "for-adoption"
       );

@@ -10,6 +10,8 @@ router.route('/')
   .get(reportController.getReports) // PUBLIC
   .post(uploadReportPhoto, reportController.createReport); // PUBLIC
 
+  router.get('/adoptions', reportController.getAdoptionAnimals);
+
 router.get('/:id', reportController.getReport); // PUBLIC
 
 router.patch('/:id/accept', volunteerOrAdmin, reportController.acceptReport);
