@@ -1,24 +1,26 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const reportController = require('../controllers/reportController');
-const { authorize } = require('../middleware/auth');
-const { uploadReportPhoto } = require('../middleware/upload');
+const reportController = require("../controllers/reportController");
+const { authorize } = require("../middleware/auth");
+const { uploadReportPhoto } = require("../middleware/upload");
 
-const volunteerOrAdmin = authorize('volunteer', 'admin');
+const volunteerOrAdmin = authorize("volunteer", "admin");
 
-// PUBLIC ROUTES
-router.get('/adoptions', reportController.getAdoptionAnimals);
-
-router.route('/')
+router
+  .route("/")
   .get(reportController.getReports)
   .post(uploadReportPhoto, reportController.createReport);
 
-router.get('/:id', reportController.getReport);
+router.get("/:id", reportController.getReport);
 
 // PROTECTED ROUTES
-router.patch('/:id/accept', volunteerOrAdmin, reportController.acceptReport);
-router.patch('/:id/resolve', volunteerOrAdmin, reportController.resolveReport);
-router.patch('/:id/unassign', volunteerOrAdmin, reportController.unassignReport);
+router.patch("/:id/accept", volunteerOrAdmin, reportController.acceptReport);
+router.patch("/:id/resolve", volunteerOrAdmin, reportController.resolveReport);
+router.patch(
+  "/:id/unassign",
+  volunteerOrAdmin,
+  reportController.unassignReport,
+);
 
 module.exports = router;
