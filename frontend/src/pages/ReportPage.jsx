@@ -455,7 +455,7 @@ export default function ReportPage() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Location
             </label>
-            <div className="space-y-3">
+            <div className="space-y-3 ">
               <button
                 type="button"
                 onClick={detectLocation}
@@ -468,9 +468,9 @@ export default function ReportPage() {
                     Detecting location...
                   </div>
                 ) : (
-                  <>
+                  <div className="flex items-center gap-2">
                     <svg
-                      className="w-4 h-4 mr-2"
+                      className="w-4 h-4 "
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -480,8 +480,8 @@ export default function ReportPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Auto-detect location
-                  </>
+                    Use My Location
+                  </div>
                 )}
               </button>
               {locationError && (

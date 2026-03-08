@@ -117,7 +117,7 @@ export default function HomePage() {
 
           <div className="relative">
             {loading && (
-              <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-xl">
+              <div className="absolute inset-0 z-1000 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-xl">
                 <div className="text-center">
                   <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-2"></div>
                   <span className="text-gray-600">
