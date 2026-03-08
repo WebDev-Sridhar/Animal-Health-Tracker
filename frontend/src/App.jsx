@@ -9,6 +9,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AdoptionPage from './pages/AdoptionPage';
+import AccountPage from './pages/AccountPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
               <Route path="/adoption" element={<AdoptionPage />} />
             <Route path="/report" element={<ReportPage />} />
+            <Route path="/account" element={<AccountPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route

@@ -124,26 +124,26 @@ export default function AdoptionPage() {
               </h3>
 
               <p className="text-sm text-slate-500">
-                Species: {r.animal?.species}
+              <span className="text-slate-800"> Species:</span>  {r.animal?.species}
               </p>
 
               <p className="text-sm text-slate-500">
-                Age: {r.animal?.approxAge || "Unknown"}
+                    Age: {r.animal?.approxAge || "Unknown"}
               </p>
 
               <p className="text-sm text-slate-500">
-                Vaccination: {r.animal?.vaccinationStatus || "Unknown"}
+                <span className="text-slate-800">Vaccination:</span> {r.animal?.vaccinationStatus || "Unknown"}
               </p>
 
               <p className="text-sm text-slate-500">
-                Health: {r.condition}
+                <span className="text-slate-800">Health:</span> {r.condition}
               </p>
                  <p className="text-sm text-slate-500">
                 Description: {r.description || "No description provided."}
               </p>
 
               <p className="text-sm text-slate-400">
-                Location: {r.zone || "Unknown"}
+                <span className="text-slate-800">Location:</span> {r.zone || "Unknown"}
               </p>
 
               <p className="text-xs text-slate-400">
