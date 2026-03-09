@@ -123,7 +123,7 @@ function PetDetailsPage() {
         <div className="grid md:grid-cols-3 gap-8 mb-12 items-stretch">
           {/* Left: Image */}
           <div className="md:col-span-2 flex flex-col">
-            <div className="rounded-2xl overflow-hidden shadow-2xl flex-1 flex flex-col">
+            <div className="rounded-2xl overflow-hidden shadow-2xl  flex flex-col">
               {pet.photo ? (
                 <img
                   src={pet.photo}
