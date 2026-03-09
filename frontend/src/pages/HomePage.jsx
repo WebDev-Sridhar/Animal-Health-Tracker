@@ -175,12 +175,16 @@ export default function HomePage() {
       <section className="grid md:grid-cols-3 gap-6 fade-in-up">
         <div className="card p-6 text-center">
           <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
+                    <svg
               className="w-6 h-6 text-pink-600"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
           <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -215,7 +219,7 @@ export default function HomePage() {
               <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">500+</h3>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">100+</h3>
           <p className="text-gray-600">Pet Owners</p>
         </div>
       </section>

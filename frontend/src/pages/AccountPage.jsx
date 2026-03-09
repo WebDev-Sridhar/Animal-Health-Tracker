@@ -19,6 +19,7 @@ export default function AccountPage() {
   const { user: authUser, login, isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
   const [reports, setReports] = useState([]);
+  const [loadingReports, setLoadingReports] = useState(true);
   const [editingUser, setEditingUser] = useState(false);
   const [editingReportId, setEditingReportId] = useState(null);
   const [formData, setFormData] = useState({});
@@ -39,11 +40,14 @@ export default function AccountPage() {
   }, [authUser]);
 
   const fetchReports = async () => {
+    setLoadingReports(true);
     try {
       const reportRes = await apiClient.get("/reports?mine=true");
       setReports(reportRes.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoadingReports(false);
     }
   };
 
@@ -264,7 +268,25 @@ export default function AccountPage() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {reports.map((r) => (
+          {loadingReports ? (
+            <div className="col-span-full flex items-center justify-center py-20">
+              <div className="text-center">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                <p className="text-slate-600 text-lg">Loading...</p>
+              </div>
+            </div>
+          ) : reports.length === 0 ? (
+            <div className="col-span-full flex items-center justify-center py-20">
+              <div className="text-center">
+                <svg className="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p className="text-slate-600 text-lg font-medium">No reports yet</p>
+                <p className="text-slate-500 mt-2">Start by creating a report to help animals in need</p>
+              </div>
+            </div>
+          ) : (
+            reports.map((r) => (
             <div
               key={r._id}
               className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden"
@@ -396,7 +418,8 @@ export default function AccountPage() {
                 )}
               </div>
             </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

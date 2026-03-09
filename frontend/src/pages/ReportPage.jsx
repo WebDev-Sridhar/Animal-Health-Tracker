@@ -471,12 +471,12 @@ export default function ReportPage() {
                 className="btn-secondary text-sm"
               >
                 {locationLoading ? (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center  gap-2">
                     <div className="animate-spin w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full"></div>
                     Detecting location...
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 text-xs justify-center">
                     <svg
                       className="w-4 h-4 "
                       fill="currentColor"
@@ -488,7 +488,7 @@ export default function ReportPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Auto-detect location
+                    Use current location
                   </div>
                 )}
               </button>
