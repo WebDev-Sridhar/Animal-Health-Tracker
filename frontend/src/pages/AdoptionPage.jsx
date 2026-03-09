@@ -172,10 +172,10 @@ export default function AdoptionPage() {
                   <img
                     src={r.photo}
                     alt="animal"
-                    className="w-full h-48 object-cover"
+                    className="w-full h-60 object-cover"
                   />
                 ) : (
-                  <div className="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">
+                  <div className="w-full h-60 bg-slate-100 flex items-center justify-center text-slate-400">
                     No Image Available
                   </div>
                 )}
