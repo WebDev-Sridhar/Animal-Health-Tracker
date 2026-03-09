@@ -9,7 +9,7 @@ function PetDetailsPage() {
 
   useEffect(() => {
     const fetchPet = async () => {
-      const res = await axios.get(`/api/reports/${id}`);
+     const res = await apiClient.get(`/reports/${id}`);
       setPet(res.data.data);
     };
 
