@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { apiClient } from "../api/client";
 
 export default function AdoptionPage() {
+  const [allAnimals, setAllAnimals] = useState([]);
   const [animals, setAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
-  //   const [filtered, setFiltered] = useState([]);
   const [district, setDistrict] = useState("");
   const [category, setCategory] = useState("");
 
@@ -36,9 +36,8 @@ export default function AdoptionPage() {
     setLoading(true);
     try {
       const res = await apiClient.get("/reports/adoptions");
-      //   console.log(res.data)
+      setAllAnimals(res.data);
       setAnimals(res.data);
-      //   setFiltered(adoptionAnimals);
     } catch (err) {
       console.error(err);
     } finally {
@@ -47,7 +46,7 @@ export default function AdoptionPage() {
   };
 
   useEffect(() => {
-    let result = animals;
+    let result = allAnimals;
 
     if (district) {
       result = result.filter((a) =>
@@ -62,7 +61,7 @@ export default function AdoptionPage() {
     }
 
     setAnimals(result);
-  }, [district, category, animals]);
+  }, [district, category, allAnimals]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -147,7 +146,9 @@ export default function AdoptionPage() {
                 No pets available for adoption
               </p>
               <p className="text-slate-500 mt-2">
-                Check back later or adjust your filters
+                {allAnimals.length === 0
+                  ? "Check back later"
+                  : "Adjust your filters"}
               </p>
             </div>
           </div>
@@ -198,11 +199,6 @@ export default function AdoptionPage() {
                   <p className="text-sm text-slate-500">
                     <span className="text-slate-800">Vaccination:</span>{" "}
                     {r.animal?.vaccinationStatus || "Unknown"}
-                  </p>
-
-                  <p className="text-sm text-slate-500">
-                    <span className="text-slate-800">Health:</span>{" "}
-                    {r.condition}
                   </p>
 
                   <p className="text-sm text-slate-500">
