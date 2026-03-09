@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import axios from "axios";
+import { apiClient } from "../api/apiClient";
 
 function PetDetailsPage() {
   const { id } = useParams();
@@ -10,7 +10,7 @@ function PetDetailsPage() {
   useEffect(() => {
     const fetchPet = async () => {
      const res = await apiClient.get(`/reports/${id}`);
-      setPet(res.data.data);
+      setPet(res.data);
     };
 
     fetchPet();
