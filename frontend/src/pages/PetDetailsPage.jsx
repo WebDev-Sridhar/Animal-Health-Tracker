@@ -122,16 +122,16 @@ function PetDetailsPage() {
         {/* Main Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-12 items-stretch">
           {/* Left: Image */}
-          <div className="md:col-span-2 flex flex-col">
-            <div className="rounded-2xl overflow-hidden shadow-2xl  flex flex-col">
+          <div className="md:col-span-2">
+            <div className="rounded-2xl overflow-hidden shadow-2xl">
               {pet.photo ? (
                 <img
                   src={pet.photo}
                   alt="Pet"
-                  className="w-full h-full object-cover"
+                  className="w-full h-96 object-cover"
                 />
               ) : (
-                <div className="h-full flex items-center justify-center bg-linear-to-br from-slate-100 to-slate-200">
+                <div className="h-96 flex items-center justify-center bg-linear-to-br from-slate-100 to-slate-200">
                   <div className="text-center">
                     <svg
                       className="w-16 h-16 text-slate-400 mx-auto mb-2"
