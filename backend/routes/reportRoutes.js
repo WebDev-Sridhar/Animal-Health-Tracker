@@ -12,7 +12,10 @@ router
   .get(reportController.getReports)
   .post(uploadReportPhoto, reportController.createReport);
 
-router.get("/:id", reportController.getReport);
+// Note: GET /:id is now defined as a public route in routes/index.js
+// This route is left here for reference but won't be reached due to route ordering
+// router.get("/:id", reportController.getReport);
+
 router.patch("/:id", reportController.updateReport);
 router.delete("/:id", reportController.deleteReport);
 

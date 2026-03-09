@@ -18,6 +18,11 @@ router.get(
   "/reports/adoptions",
   require("../controllers/reportController").getAdoptionAnimals,
 );
+// Public single report details endpoint (no auth required for viewing pet details)
+router.get(
+  "/reports/:id",
+  require("../controllers/reportController").getReport,
+);
 
 // Protected routes (require authentication)
 router.use("/animals", animalRoutes);

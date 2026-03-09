@@ -70,7 +70,7 @@ const getReportsByZone = async (zone, currentUser) => {
 const getReportById = async (id) => {
   const report = await Report.findById(id)
     .populate("animal")
-    .populate("reportedBy", "name email role")
+    .populate("reportedBy", "name email phone role")
     .populate("acceptedBy", "name email");
   if (!report) {
     throw new AppError("Report not found", 404);

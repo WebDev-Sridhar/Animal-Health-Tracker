@@ -104,13 +104,6 @@ function PetDetailsPage() {
 
             <p>
               <span className="font-medium text-slate-800">
-                Health Condition:
-              </span>{" "}
-              {pet.condition}
-            </p>
-
-            <p>
-              <span className="font-medium text-slate-800">
                 Location:
               </span>{" "}
               {pet.zone}
@@ -137,7 +130,7 @@ function PetDetailsPage() {
                 href={`tel:${pet.reportedBy.phone}`}
                 className="flex-1 text-center bg-green-700 text-white rounded-lg py-2 hover:bg-green-800"
               >
-                Call Rescuer
+                Call Reporter
               </a>
             )}
 
