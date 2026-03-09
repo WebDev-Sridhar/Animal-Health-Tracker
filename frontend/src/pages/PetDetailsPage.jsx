@@ -128,10 +128,10 @@ function PetDetailsPage() {
                 <img
                   src={pet.photo}
                   alt="Pet"
-                  className="w-full h-[480px] object-cover"
+                  className="w-full h-120 object-cover"
                 />
               ) : (
-                <div className="h-[480px] flex items-center justify-center bg-linear-to-br from-slate-100 to-slate-200">
+                <div className="h-120 flex items-center justify-center bg-linear-to-br from-slate-100 to-slate-200">
                   <div className="text-center">
                     <svg
                       className="w-16 h-16 text-slate-400 mx-auto mb-2"

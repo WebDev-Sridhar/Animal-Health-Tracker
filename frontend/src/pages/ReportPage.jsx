@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
 
 const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
 const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
 const MIN_DESCRIPTION_LENGTH = 10;
 const MAX_DESCRIPTION_LENGTH = 1000;
@@ -69,7 +69,7 @@ export default function ReportPage() {
     species: "dog",
     gender: "unknown",
     approxAge: "Unknown",
-    vaccinationStatus: "Unknown",
+    vaccinationStatus: "",
     description: "",
     condition: "injured",
     photo: "",
@@ -422,7 +422,7 @@ export default function ReportPage() {
           {/* Condition */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Condition
+              Status
             </label>
             <select
               name="condition"
@@ -514,12 +514,12 @@ export default function ReportPage() {
                     Click to upload photo
                   </span>
                   <span className="text-gray-400 text-sm mt-1 block">
-                    JPEG, PNG, or WebP (Maximum 5MB)
+                   jpg, JPEG, PNG, or WebP (Maximum 5MB)
                   </span>
                 </div>
                 <input
                   type="file"
-                  accept="image/jpeg,image/png,image/webp"
+                  accept="image/jpeg,image/png,image/webp,image/jpg"
                   onChange={handlePhotoChange}
                   className="hidden"
                 />
