@@ -219,7 +219,7 @@ export default function MainLayout() {
                   <div className="space-y-2">
                     <Link
                       to="/login"
-                      className="block w-full text-center text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"
+                      className="block w-full text-center btn-secondary text-sm"
                       onClick={closeMobileMenu}
                     >
                       Login
