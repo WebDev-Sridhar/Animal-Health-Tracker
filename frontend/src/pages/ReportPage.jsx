@@ -5,6 +5,10 @@ import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
 
 const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
+const MIN_DESCRIPTION_LENGTH = 10;
+const MAX_DESCRIPTION_LENGTH = 1000;
 const CONDITION_OPTIONS = [
   { value: "healthy", label: "Healthy" },
   { value: "injured", label: "Injured" },
@@ -64,8 +68,8 @@ export default function ReportPage() {
   const [form, setForm] = useState({
     species: "dog",
     gender: "unknown",
-    approxAge: "",
-    vaccinationStatus: "",
+    approxAge: "Unknown",
+    vaccinationStatus: "Unknown",
     description: "",
     condition: "injured",
     photo: "",
@@ -83,10 +87,37 @@ export default function ReportPage() {
   const handlePhotoChange = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > MAX_PHOTO_SIZE) {
-      setError(`Photo must be under ${MAX_PHOTO_SIZE / 1024}KB`);
+
+    // Validate file type
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setError(
+        `Invalid image format. Allowed formats: JPEG, PNG, WebP. You selected: ${file.type || "unknown"}`
+      );
       return;
     }
+
+    // Validate file extension
+    const fileName = file.name.toLowerCase();
+    const hasValidExtension = ALLOWED_EXTENSIONS.some((ext) =>
+      fileName.endsWith(ext)
+    );
+    if (!hasValidExtension) {
+      setError(
+        `Invalid file extension. Allowed: ${ALLOWED_EXTENSIONS.join(", ")}`
+      );
+      return;
+    }
+
+    // Validate file size
+    if (file.size > MAX_PHOTO_SIZE) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      const maxMB = (MAX_PHOTO_SIZE / (1024 * 1024)).toFixed(0);
+      setError(
+        `Image size too large. File: ${sizeMB}MB, Maximum allowed: ${maxMB}MB. Please compress or resize your image.`
+      );
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = () =>
       setForm((p) => ({ ...p, photo: reader.result, photoFile: file }));
@@ -97,6 +128,45 @@ export default function ReportPage() {
     () => setForm((p) => ({ ...p, photo: "", photoFile: null })),
     [],
   );
+
+  // Form validation function
+  const validateForm = () => {
+    // Check required fields
+    if (!form.description.trim()) {
+      setError("Description is required. Please describe the pet's condition.");
+      return false;
+    }
+
+    if (form.description.trim().length < MIN_DESCRIPTION_LENGTH) {
+      setError(
+        `Description must be at least ${MIN_DESCRIPTION_LENGTH} characters. Current: ${form.description.trim().length} characters.`
+      );
+      return false;
+    }
+
+    if (form.description.trim().length > MAX_DESCRIPTION_LENGTH) {
+      setError(
+        `Description exceeds maximum length of ${MAX_DESCRIPTION_LENGTH} characters. Current: ${form.description.trim().length} characters.`
+      );
+      return false;
+    }
+
+    if (!form.zone.trim()) {
+      setError(
+        "Location/Zone is required. Please enter a location or use 'Use current location'."
+      );
+      return false;
+    }
+
+    if (!form.location && !form.zone.trim()) {
+      setError(
+        "Please provide location coordinates by using 'Use current location' or manually enter a zone."
+      );
+      return false;
+    }
+
+    return true;
+  };
 
   const detectLocation = useCallback(async () => {
     if (!navigator.geolocation) {
@@ -139,6 +209,12 @@ export default function ReportPage() {
 
     setError("");
     setSuccess(false);
+
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -180,9 +256,15 @@ export default function ReportPage() {
 
       setSuccess(true);
     } catch (err) {
-      setError(
-        err.response?.data?.error || err.message || "Failed to submit report",
-      );
+      const errorMessage = err.response?.data?.error || err.message;
+      // Provide more user-friendly error messages
+      if (errorMessage.includes("file") || errorMessage.includes("photo")) {
+        setError(
+          `Image upload failed: ${errorMessage}. Please ensure your image is under 5MB and in a supported format (JPEG, PNG, WebP).`
+        );
+      } else {
+        setError(errorMessage || "Failed to submit report");
+      }
     } finally {
       setLoading(false);
     }
@@ -383,6 +465,9 @@ export default function ReportPage() {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Description
+              <span className="text-gray-500 font-normal text-xs ml-2">
+                ({form.description.length}/{MAX_DESCRIPTION_LENGTH})
+              </span>
             </label>
             <textarea
               name="description"
@@ -390,9 +475,16 @@ export default function ReportPage() {
               onChange={handleChange}
               required
               rows={4}
+              maxLength={MAX_DESCRIPTION_LENGTH}
               className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
-              placeholder="Describe the pet's condition, appearance, behavior, and where you saw it..."
+              placeholder="Describe the pet's condition, appearance, behavior, and where you saw it... (minimum 10 characters)"
             />
+            {form.description.length < MIN_DESCRIPTION_LENGTH && (
+              <p className="text-amber-600 text-xs mt-1">
+                Minimum {MIN_DESCRIPTION_LENGTH} characters required (currently{" "}
+                {form.description.length})
+              </p>
+            )}
           </div>
 
           {/* Photo */}
@@ -441,16 +533,14 @@ export default function ReportPage() {
                       d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                     />
                   </svg>
-                  <span className="text-gray-600 font-medium">
-                    Click to upload photo
-                  </span>
+                  <span className="text-gray-600 font-medium">Click to upload photo</span>
                   <span className="text-gray-400 text-sm mt-1 block">
-                    PNG, JPG, WebP up to 5MB
+                    JPEG, PNG, or WebP (Maximum 5MB)
                   </span>
                 </div>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp"
                   onChange={handlePhotoChange}
                   className="hidden"
                 />
@@ -516,6 +606,7 @@ export default function ReportPage() {
               <input
                 type="text"
                 name="zone"
+                required
                 value={form.zone}
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
