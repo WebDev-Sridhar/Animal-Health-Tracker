@@ -278,146 +278,162 @@ export default function AccountPage() {
           ) : reports.length === 0 ? (
             <div className="col-span-full flex items-center justify-center py-20">
               <div className="text-center">
-                <svg className="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  className="w-16 h-16 text-slate-300 mx-auto mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
-                <p className="text-slate-600 text-lg font-medium">No reports yet</p>
-                <p className="text-slate-500 mt-2">Start by creating a report to help animals in need</p>
+                <p className="text-slate-600 text-lg font-medium">
+                  No reports yet
+                </p>
+                <p className="text-slate-500 mt-2">
+                  Start by creating a report to help animals in need
+                </p>
               </div>
             </div>
           ) : (
             reports.map((r) => (
-            <div
-              key={r._id}
-              className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden"
-            >
-              {r.photo && (
-                <img
-                  src={r.photo}
-                  alt="animal"
-                  className="w-full h-40 object-cover"
-                />
-              )}
+              <div
+                key={r._id}
+                className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden"
+              >
+                {r.photo && (
+                  <img
+                    src={r.photo}
+                    alt="animal"
+                    className="w-full h-40 object-cover"
+                  />
+                )}
 
-              <div className="p-4 space-y-2">
-                {editingReportId === r._id ? (
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-slate-600 text-sm font-medium">
-                        Condition
-                      </label>
-                      <select
-                        value={reportFormData.condition}
-                        onChange={(e) =>
-                          setReportFormData({
-                            ...reportFormData,
-                            condition: e.target.value,
-                          })
-                        }
-                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
-                      >
-                        <option value="">Select Condition</option>
-                        {CONDITION_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-slate-600 text-sm font-medium">
-                        Zone
-                      </label>
-                      <input
-                        type="text"
-                        value={reportFormData.zone}
-                        onChange={(e) =>
-                          setReportFormData({
-                            ...reportFormData,
-                            zone: e.target.value,
-                          })
-                        }
-                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-slate-600 text-sm font-medium">
-                        Description
-                      </label>
-                      <textarea
-                        value={reportFormData.description}
-                        onChange={(e) =>
-                          setReportFormData({
-                            ...reportFormData,
-                            description: e.target.value,
-                          })
-                        }
-                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
-                        rows="2"
-                      />
-                    </div>
-                    <div className="flex gap-2 pt-2">
-                      <button
-                        onClick={() => handleSaveReport(r._id)}
-                        disabled={loading}
-                        className="flex-1 bg-green-600 text-white text-sm rounded-lg py-2 hover:bg-green-700 disabled:opacity-50"
-                      >
-                        {loading ? "Saving..." : "Save"}
-                      </button>
-                      <button
-                        onClick={() => setEditingReportId(null)}
-                        className="flex-1 bg-slate-400 text-white text-sm rounded-lg py-2 hover:bg-slate-500"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <h3 className="font-medium text-slate-800">
-                      {r.animal?.species?.toUpperCase()}
-                    </h3>
-
-                    <p className="text-sm text-slate-600">
-                      Condition: {r.condition}
-                    </p>
-
-                    <p className="text-sm text-slate-500">Zone: {r.zone}</p>
-
-                    {r.description && (
-                      <p className="text-sm text-slate-600">{r.description}</p>
-                    )}
-
-                    <p className="text-xs text-slate-400">
-                      Posted: {new Date(r.createdAt).toLocaleDateString()}
-                    </p>
-
-                    <span className="inline-block text-xs px-2 py-1 rounded bg-slate-100">
-                      {r.status}
-                    </span>
-
-                    {/* Buttons */}
-                    <div className="flex gap-2 pt-3">
-                      {r.status === "pending" && (
-                        <button
-                          onClick={() => handleEditReport(r)}
-                          className="flex-1 bg-blue-600 text-white text-sm rounded-lg py-2 hover:bg-blue-700"
+                <div className="p-4 space-y-2">
+                  {editingReportId === r._id ? (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-slate-600 text-sm font-medium">
+                          Condition
+                        </label>
+                        <select
+                          value={reportFormData.condition}
+                          onChange={(e) =>
+                            setReportFormData({
+                              ...reportFormData,
+                              condition: e.target.value,
+                            })
+                          }
+                          className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
                         >
-                          ✏️ Edit
+                          <option value="">Select Condition</option>
+                          {CONDITION_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-slate-600 text-sm font-medium">
+                          Zone
+                        </label>
+                        <input
+                          type="text"
+                          value={reportFormData.zone}
+                          onChange={(e) =>
+                            setReportFormData({
+                              ...reportFormData,
+                              zone: e.target.value,
+                            })
+                          }
+                          className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-slate-600 text-sm font-medium">
+                          Description
+                        </label>
+                        <textarea
+                          value={reportFormData.description}
+                          onChange={(e) =>
+                            setReportFormData({
+                              ...reportFormData,
+                              description: e.target.value,
+                            })
+                          }
+                          className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
+                          rows="2"
+                        />
+                      </div>
+                      <div className="flex gap-2 pt-2">
+                        <button
+                          onClick={() => handleSaveReport(r._id)}
+                          disabled={loading}
+                          className="flex-1 bg-green-600 text-white text-sm rounded-lg py-2 hover:bg-green-700 disabled:opacity-50"
+                        >
+                          {loading ? "Saving..." : "Save"}
                         </button>
+                        <button
+                          onClick={() => setEditingReportId(null)}
+                          className="flex-1 bg-slate-400 text-white text-sm rounded-lg py-2 hover:bg-slate-500"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <h3 className="font-medium text-slate-800">
+                        {r.animal?.species?.toUpperCase()}
+                      </h3>
+
+                      <p className="text-sm text-slate-600">
+                        Condition: {r.condition}
+                      </p>
+
+                      <p className="text-sm text-slate-500">Zone: {r.zone}</p>
+
+                      {r.description && (
+                        <p className="text-sm text-slate-600">
+                          {r.description}
+                        </p>
                       )}
 
-                      <button
-                        onClick={() => deleteReport(r._id)}
-                        className="flex-1 bg-red-600 text-white text-sm rounded-lg py-2 hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </>
-                )}
+                      <p className="text-xs text-slate-400">
+                        Posted: {new Date(r.createdAt).toLocaleDateString()}
+                      </p>
+
+                      <span className="inline-block text-xs px-2 py-1 rounded bg-slate-100">
+                        {r.status}
+                      </span>
+
+                      {/* Buttons */}
+                      <div className="flex gap-2 pt-3">
+                        {r.status === "pending" && (
+                          <button
+                            onClick={() => handleEditReport(r)}
+                            className="flex-1 bg-blue-600 text-white text-sm rounded-lg py-2 hover:bg-blue-700"
+                          >
+                            ✏️ Edit
+                          </button>
+                        )}
+
+                        <button
+                          onClick={() => deleteReport(r._id)}
+                          className="flex-1 bg-red-600 text-white text-sm rounded-lg py-2 hover:bg-red-700"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
             ))
           )}
         </div>
