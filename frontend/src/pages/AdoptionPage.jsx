@@ -239,12 +239,12 @@ export default function AdoptionPage() {
                   )}
 
                   {/* Pet Details Page */}
-                  <a
-                    href={`/pet/${r._id}`}
+                  <Link
+                    to={`/pet/${r._id}`}
                     className="block text-center border border-slate-300 text-slate-700 rounded-lg py-2 mt-3 hover:bg-slate-100"
                   >
                     Know more about the pet
-                  </a>
+                  </Link>
 
                   {/* Contact Section */}
                   {r.reportedBy?.phone && (
