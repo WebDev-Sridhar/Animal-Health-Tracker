@@ -91,7 +91,7 @@ export default function ReportPage() {
     // Validate file type
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       setError(
-        `Invalid image format. Allowed formats: JPEG, PNG, WebP. You selected: ${file.type || "unknown"}`
+        `Invalid image format. Allowed formats: JPEG, PNG, WebP. You selected: ${file.type || "unknown"}`,
       );
       return;
     }
@@ -99,11 +99,11 @@ export default function ReportPage() {
     // Validate file extension
     const fileName = file.name.toLowerCase();
     const hasValidExtension = ALLOWED_EXTENSIONS.some((ext) =>
-      fileName.endsWith(ext)
+      fileName.endsWith(ext),
     );
     if (!hasValidExtension) {
       setError(
-        `Invalid file extension. Allowed: ${ALLOWED_EXTENSIONS.join(", ")}`
+        `Invalid file extension. Allowed: ${ALLOWED_EXTENSIONS.join(", ")}`,
       );
       return;
     }
@@ -113,7 +113,7 @@ export default function ReportPage() {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
       const maxMB = (MAX_PHOTO_SIZE / (1024 * 1024)).toFixed(0);
       setError(
-        `Image size too large. File: ${sizeMB}MB, Maximum allowed: ${maxMB}MB. Please compress or resize your image.`
+        `Image size too large. File: ${sizeMB}MB, Maximum allowed: ${maxMB}MB. Please compress or resize your image.`,
       );
       return;
     }
@@ -139,28 +139,28 @@ export default function ReportPage() {
 
     if (form.description.trim().length < MIN_DESCRIPTION_LENGTH) {
       setError(
-        `Description must be at least ${MIN_DESCRIPTION_LENGTH} characters. Current: ${form.description.trim().length} characters.`
+        `Description must be at least ${MIN_DESCRIPTION_LENGTH} characters. Current: ${form.description.trim().length} characters.`,
       );
       return false;
     }
 
     if (form.description.trim().length > MAX_DESCRIPTION_LENGTH) {
       setError(
-        `Description exceeds maximum length of ${MAX_DESCRIPTION_LENGTH} characters. Current: ${form.description.trim().length} characters.`
+        `Description exceeds maximum length of ${MAX_DESCRIPTION_LENGTH} characters. Current: ${form.description.trim().length} characters.`,
       );
       return false;
     }
 
     if (!form.zone.trim()) {
       setError(
-        "Location/Zone is required. Please enter a location or use 'Use current location'."
+        "Location/Zone is required. Please enter a location or use 'Use current location'.",
       );
       return false;
     }
 
     if (!form.location && !form.zone.trim()) {
       setError(
-        "Please provide location coordinates by using 'Use current location' or manually enter a zone."
+        "Please provide location coordinates by using 'Use current location' or manually enter a zone.",
       );
       return false;
     }
@@ -257,14 +257,32 @@ export default function ReportPage() {
       setSuccess(true);
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.message;
-      // Provide more user-friendly error messages
-      if (errorMessage.includes("file") || errorMessage.includes("photo")) {
-        setError(
-          `Image upload failed: ${errorMessage}. Please ensure your image is under 5MB and in a supported format (JPEG, PNG, WebP).`
-        );
-      } else {
-        setError(errorMessage || "Failed to submit report");
+
+      // Parse and enhance error messages
+      let displayError = errorMessage;
+
+      if (
+        errorMessage.includes("5MB") ||
+        errorMessage.includes("too large") ||
+        errorMessage.includes("exceeds")
+      ) {
+        displayError = `Image Size Exceeded: Image file must be under 5MB. ${errorMessage}`;
+      } else if (
+        errorMessage.includes("File") ||
+        errorMessage.includes("file")
+      ) {
+        displayError = `Image Error: ${errorMessage}`;
+      } else if (
+        errorMessage.includes("format") ||
+        errorMessage.includes("type")
+      ) {
+        displayError = `Invalid Image Format: Only JPEG, PNG, and WebP are supported. ${errorMessage}`;
       }
+
+      setError(
+        displayError ||
+          "Failed to submit report. Please check your form and try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -318,47 +336,6 @@ export default function ReportPage() {
                 to submit a report.
               </p>
             </div>
-          </div>
-        </div>
-      )}
-
-      {error && (
-        <div className="card p-4 bg-red-50 border-red-200 fade-in-up">
-          <div className="flex items-center gap-3">
-            <svg
-              className="w-5 h-5 text-red-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <p className="text-red-800">{error}</p>
-          </div>
-        </div>
-      )}
-
-      {success && (
-        <div className="card p-4 bg-green-50 border-green-200 fade-in-up">
-          <div className="flex items-center gap-3">
-            <svg
-              className="w-5 h-5 text-green-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <p className="text-green-800">
-              Report submitted successfully. Thank you for helping care for
-              pets!
-            </p>
           </div>
         </div>
       )}
@@ -533,7 +510,9 @@ export default function ReportPage() {
                       d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                     />
                   </svg>
-                  <span className="text-gray-600 font-medium">Click to upload photo</span>
+                  <span className="text-gray-600 font-medium">
+                    Click to upload photo
+                  </span>
                   <span className="text-gray-400 text-sm mt-1 block">
                     JPEG, PNG, or WebP (Maximum 5MB)
                   </span>
@@ -631,6 +610,54 @@ export default function ReportPage() {
             )}
           </button>
         </form>
+
+        {/* Messages below form */}
+        {error && (
+          <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl fade-in-up">
+            <div className="flex items-start gap-3">
+              <svg
+                className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <div>
+                <p className="text-red-800 font-semibold">Error</p>
+                <p className="text-red-700 text-sm mt-1">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {success && (
+          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl fade-in-up">
+            <div className="flex items-start gap-3">
+              <svg
+                className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <div>
+                <p className="text-green-800 font-semibold">Success!</p>
+                <p className="text-green-700 text-sm mt-1">
+                  Report submitted successfully. Thank you for helping care for
+                  pets!
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* FAQ Info Section */}
