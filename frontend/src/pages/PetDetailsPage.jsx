@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { apiClient } from "../api/apiClient";
+import { apiClient } from "../api/client";
 
 function PetDetailsPage() {
   const { id } = useParams();
