@@ -87,7 +87,7 @@ function PetDetailsPage() {
               <h1 className="text-4xl md:text-5xl font-bold text-white capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
                 {pet.animal?.species || "Animal"}
               </h1>
-              <p className="text-lg" style={{ color: "#eaf5f1" }}>📍 Available for Adoption in {pet.zone}</p>
+              <p className="text-lg" style={{ color: "#eaf5f1" }}>Available for Adoption in {pet.zone}</p>
             </div>
           </div>
         </div>
@@ -130,11 +130,11 @@ function PetDetailsPage() {
 
               <div className="space-y-4 mb-7">
                 {[
-                  { label: "Species", value: pet.animal?.species, emoji: "🐾" },
-                  { label: "Age", value: pet.animal?.approxAge || "Unknown", emoji: "📅" },
-                  { label: "Vaccination", value: pet.animal?.vaccinationStatus || "Unknown", emoji: "💉" },
-                  { label: "Location", value: pet.zone, emoji: "📍" },
-                  { label: "Posted", value: new Date(pet.createdAt).toLocaleDateString(), emoji: "🗓️" },
+                  { label: "Species", value: pet.animal?.species,},
+                  { label: "Age", value: pet.animal?.approxAge || "Unknown",},
+                  { label: "Vaccination", value: pet.animal?.vaccinationStatus || "Unknown",},
+                  { label: "Location", value: pet.zone,},
+                  { label: "Posted", value: new Date(pet.createdAt).toLocaleDateString('en-GB'),},
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-3 pb-4 border-b border-gray-100 last:border-0">
                     <span className="text-xl mt-0.5">{item.emoji}</span>
@@ -152,14 +152,14 @@ function PetDetailsPage() {
                   <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-white transition-all hover:scale-105 shadow-md"
                     style={{ background: "#25D366" }}>
-                    💬 WhatsApp Rescuer
+                    WhatsApp 
                   </a>
                 )}
                 {pet.reportedBy?.phone && (
                   <a href={`tel:${pet.reportedBy.phone}`}
                     className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-white transition-all hover:scale-105 shadow-md"
                     style={{ background: "var(--primary)" }}>
-                    📞 Call Rescuer
+                    Call
                   </a>
                 )}
                 {mapsUrl && (
@@ -168,7 +168,7 @@ function PetDetailsPage() {
                     style={{ color: "#2e6b5a", background: "#eaf5f1" }}
                     onMouseEnter={e => e.currentTarget.style.background = "#d0ece5"}
                     onMouseLeave={e => e.currentTarget.style.background = "#eaf5f1"}>
-                    📍 Get Directions
+                    Get Directions
                   </a>
                 )}
               </div>

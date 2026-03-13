@@ -352,7 +352,7 @@ export default function HomePage() {
                     <div className="space-y-1.5 text-sm text-gray-500 mb-4">
                       <p>{pet.zone || "Tamil Nadu"}</p>
                       <p>{pet.animal?.vaccinationStatus || "Unknown"}</p>
-                      <p>{new Date(pet.createdAt).toLocaleDateString()}</p>
+                      <p>{new Date(pet.createdAt).toLocaleDateString('en-GB')}</p>
                     </div>
                     <Link to={`/pet/${pet._id}`} className="block text-center btn-primary text-sm py-2.5">
                       View Details

@@ -157,7 +157,7 @@ export default function VolunteerDashboard() {
                       <p className="text-gray-600 text-sm mb-2 line-clamp-2">{r.description}</p>
                     )}
                     <p className="text-xs text-gray-400">
-                      📅 {new Date(r.createdAt).toLocaleDateString()}
+                      📅 {new Date(r.createdAt).toLocaleDateString('en-GB')}
                     </p>
                   </div>
 

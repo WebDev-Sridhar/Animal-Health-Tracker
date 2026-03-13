@@ -259,7 +259,7 @@ export default function AccountPage() {
                 { label: "Phone", value: user.phone || "Not added", },
                 { label: "Role", value: user.role, capitalize: true },
                 { label: "Zone", value: user.zone || "Not added", },
-                { label: "Member Since", value: new Date(user.createdAt).toLocaleDateString(), },
+                { label: "Member Since", value: new Date(user.createdAt).toLocaleDateString('en-GB'), },
               ].map(({ label, value, capitalize }) => (
                 <div key={label} className="p-4 rounded-2xl bg-gray-50">
                   <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{label}</p>
@@ -374,7 +374,7 @@ export default function AccountPage() {
                         )}
 
                         <p className="text-xs text-gray-400 mb-4">
-                          Posted: {new Date(r.createdAt).toLocaleDateString()}
+                          Posted: {new Date(r.createdAt).toLocaleDateString('en-GB')}
                         </p>
 
                         <div className="flex gap-2">

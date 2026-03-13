@@ -158,7 +158,7 @@ export default function AdoptionPage() {
                     </div>
                     <div className="absolute top-3 right-3">
                       <span className="badge" style={{ background: "rgba(0,0,0,0.5)", color: "white", fontSize: "0.7rem" }}>
-                        {new Date(r.createdAt).toLocaleDateString()}
+                        {new Date(r.createdAt).toLocaleDateString('en-GB')}
                       </span>
                     </div>
                   </div>
