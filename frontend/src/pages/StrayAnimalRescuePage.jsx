@@ -12,12 +12,12 @@ export default function StrayAnimalRescuePage() {
 
       {/* Hero */}
       <section className="relative py-16 px-6 text-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="text-5xl mb-3">🐕</div>
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
           Stray Animal Rescue Guide
         </h1>
-        <p className="text-teal-100 text-lg max-w-2xl mx-auto">
+        <p className="text-lg max-w-2xl mx-auto" style={{ color: "#f7ede2" }}>
           Learn how to safely identify, approach, and rescue injured or distressed stray animals across Tamil Nadu.
         </p>
       </section>
@@ -231,17 +231,20 @@ export default function StrayAnimalRescuePage() {
         </section>
 
         {/* CTA */}
-        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
           <div className="text-4xl mb-3">🐾</div>
           <h2 className="text-2xl font-bold mb-3 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
             Help Save Animals Today
           </h2>
-          <p className="mb-6 text-teal-100 max-w-md mx-auto">
+          <p className="mb-6 max-w-md mx-auto" style={{ color: "#f7ede2" }}>
             Have you spotted an injured animal? Report it immediately through
             OurPetCare and connect with rescue networks across Tamil Nadu.
           </p>
           <Link to="/report"
-            className="inline-block px-8 py-3 rounded-full font-extrabold text-teal-700 bg-white hover:bg-teal-50 transition-all hover:scale-105">
+            className="inline-block px-8 py-3 rounded-full font-extrabold bg-white transition-all hover:scale-105"
+            style={{ color: "#2e6b5a" }}
+            onMouseEnter={e => e.currentTarget.style.background = "#eaf5f1"}
+            onMouseLeave={e => e.currentTarget.style.background = "white"}>
             Report an Animal Now
           </Link>
         </section>

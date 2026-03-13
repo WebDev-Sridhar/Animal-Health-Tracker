@@ -5,8 +5,10 @@ const TIPS = [
   {
     icon: "🤕",
     title: "How to Help an Injured Animal",
-    color: "bg-orange-50 border-orange-100",
-    iconBg: "from-orange-400 to-orange-500",
+    color: "",
+    colorStyle: { background: "#fdf6d0", border: "2px solid #f0c030" },
+    iconBg: "",
+    iconBgStyle: { background: "linear-gradient(to bottom right, #f0c030, #d4a828)" },
     content: (
       <p className="text-gray-600 text-sm leading-relaxed">
         If you find an injured dog or stray animal, stay calm and approach slowly.
@@ -31,7 +33,7 @@ const TIPS = [
           "Transport safely to a veterinarian or rescue center.",
         ].map((tip) => (
           <li key={tip} className="flex items-start gap-2 text-gray-600 text-sm">
-            <span className="text-teal-500 font-extrabold mt-0.5">✓</span>
+            <span className="text-[#3d8c78] font-extrabold mt-0.5">✓</span>
             {tip}
           </li>
         ))}
@@ -41,8 +43,10 @@ const TIPS = [
   {
     icon: "🏡",
     title: "Responsible Pet Adoption",
-    color: "bg-teal-50 border-teal-100",
-    iconBg: "from-teal-500 to-teal-600",
+    color: "",
+    colorStyle: { background: "#eaf5f1", border: "2px solid #b0ddd3" },
+    iconBg: "",
+    iconBgStyle: { background: "linear-gradient(to bottom right, #3d8c78, #2e6b5a)" },
     content: (
       <p className="text-gray-600 text-sm leading-relaxed">
         Pet adoption is a long-term commitment. Before adopting a dog or cat,
@@ -67,7 +71,7 @@ const TIPS = [
           "Spay or neuter to prevent overpopulation.",
         ].map((tip) => (
           <li key={tip} className="flex items-start gap-2 text-gray-600 text-sm">
-            <span className="text-teal-500 font-extrabold mt-0.5">✓</span>
+            <span className="text-[#3d8c78] font-extrabold mt-0.5">✓</span>
             {tip}
           </li>
         ))}
@@ -103,7 +107,7 @@ const TIPS = [
           "Brush teeth with pet-safe toothpaste.",
         ].map((tip) => (
           <li key={tip} className="flex items-start gap-2 text-gray-600 text-sm">
-            <span className="text-teal-500 font-extrabold mt-0.5">✓</span>
+            <span className="text-[#3d8c78] font-extrabold mt-0.5">✓</span>
             {tip}
           </li>
         ))}
@@ -122,7 +126,7 @@ export default function PetCareTipsPage() {
 
       {/* ─── Hero ─── */}
       <section className="relative py-16 px-6 text-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="absolute top-4 left-8 text-3xl opacity-20 float-anim">🐾</div>
         <div className="absolute bottom-4 right-8 text-2xl opacity-20 float-anim" style={{ animationDelay: "1s" }}>🐾</div>
         <div className="relative z-10">
@@ -130,7 +134,7 @@ export default function PetCareTipsPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
             Essential Pet Care Tips
           </h1>
-          <p className="text-teal-100 text-lg max-w-xl mx-auto">
+          <p className="text-lg max-w-xl mx-auto" style={{ color: "#f7ede2" }}>
             Everything you need to know to help injured animals, care for your pets, and adopt responsibly.
           </p>
         </div>
@@ -140,8 +144,9 @@ export default function PetCareTipsPage() {
         <div className="grid md:grid-cols-2 gap-6">
           {TIPS.map((tip, i) => (
             <div key={tip.title} className={`card card-lift p-7 border-2 ${tip.color} fade-in-up`}
-              style={{ animationDelay: `${i * 0.08}s` }}>
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tip.iconBg} flex items-center justify-center mb-5 shadow-md text-3xl`}>
+              style={{ animationDelay: `${i * 0.08}s`, ...(tip.colorStyle || {}) }}>
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tip.iconBg} flex items-center justify-center mb-5 shadow-md text-3xl`}
+                style={tip.iconBgStyle || {}}>
                 {tip.icon}
               </div>
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
@@ -153,17 +158,17 @@ export default function PetCareTipsPage() {
         </div>
 
         {/* CTA */}
-        <div className="mt-12 card p-10 text-center" style={{ background: "linear-gradient(135deg, #0f766e, #0d9488)" }}>
+        <div className="mt-12 card p-10 text-center" style={{ background: "linear-gradient(135deg, #2e6b5a, #3d8c78)" }}>
           <div className="text-5xl mb-4">🚨</div>
           <h2 className="text-3xl font-bold mb-3 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
             Found an Injured Animal?
           </h2>
-          <p className="text-teal-100 mb-6 max-w-md mx-auto">
+          <p className="mb-6 max-w-md mx-auto" style={{ color: "#f7ede2" }}>
             Don't hesitate — use OurPetCare to report the animal and get help from a nearby volunteer.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/report"
-              className="px-8 py-3 rounded-full font-extrabold text-teal-700 bg-white hover:bg-teal-50 transition-all hover:scale-105 text-sm">
+              className="px-8 py-3 rounded-full font-extrabold bg-white hover:bg-[#eaf5f1] transition-all hover:scale-105 text-sm" style={{ color: "#2e6b5a" }}>
               Report an Animal
             </Link>
             <Link to="/animalfirstaid"

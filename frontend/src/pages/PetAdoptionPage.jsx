@@ -18,12 +18,12 @@ export default function PetAdoptionPage() {
 
       {/* Hero */}
       <section className="relative py-16 px-6 text-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="text-5xl mb-3">🏠</div>
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
           Pet Adoption Process
         </h1>
-        <p className="text-teal-100 text-lg max-w-2xl mx-auto">
+        <p className="text-lg max-w-2xl mx-auto" style={{ color: "#f7ede2" }}>
           Give a loving home to a rescued animal. Learn how to adopt a dog, cat, or other pet through OurPetCare and make a difference in a stray animal's life across Tamil Nadu.
         </p>
       </section>
@@ -36,7 +36,7 @@ export default function PetAdoptionPage() {
             Why Adopt a Rescued Animal?
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="border-l-4 border-teal-500 pl-4">
+            <div className="pl-4" style={{ borderLeft: "4px solid #3d8c78" }}>
               <h3 className="font-semibold text-slate-800 mb-2">Save a Life</h3>
               <p className="text-slate-600 text-sm">
                 Thousands of stray dogs, cats, and animals in Tamil Nadu need loving homes. Adoption directly saves a life and makes space for rescuing more animals.
@@ -112,7 +112,7 @@ export default function PetAdoptionPage() {
               },
             ].map((item) => (
               <div key={item.step} className="flex gap-4">
-                <div className="shrink-0 w-10 h-10 bg-teal-600 rounded-full text-white flex items-center justify-center font-bold">
+                <div className="shrink-0 w-10 h-10 rounded-full text-white flex items-center justify-center font-bold" style={{ background: "#3d8c78" }}>
                   {item.step}
                 </div>
                 <div>
@@ -141,7 +141,7 @@ export default function PetAdoptionPage() {
                 { label: "References", desc: "Optional but helpful - references from veterinarians or community members" },
               ].map((req) => (
                 <li key={req.label} className="flex gap-3">
-                  <span className="text-teal-600 font-bold">✓</span>
+                  <span className="font-bold" style={{ color: "#3d8c78" }}>✓</span>
                   <span><strong>{req.label}:</strong> {req.desc}</span>
                 </li>
               ))}
@@ -158,7 +158,7 @@ export default function PetAdoptionPage() {
             <p className="text-slate-700">
               Adoption fees vary by animal and location, but typically range from ₹500 to ₹3,000. These fees support animal rescue, veterinary care, and shelter operations.
             </p>
-            <div className="bg-teal-50 p-4 rounded-xl">
+            <div className="p-4 rounded-xl" style={{ background: "#eaf5f1" }}>
               <h3 className="font-semibold text-slate-800 mb-3">Adoption Fee Includes:</h3>
               <ul className="grid md:grid-cols-2 gap-2 text-sm text-slate-700">
                 <li>✓ Vaccination (if applicable)</li>
@@ -226,7 +226,7 @@ export default function PetAdoptionPage() {
                 "Connect with other adopters in OurPetCare community for support",
               ].map((tip) => (
                 <li key={tip} className="flex gap-3">
-                  <span className="text-teal-600 font-bold">→</span>
+                  <span className="font-bold" style={{ color: "#3d8c78" }}>→</span>
                   <span>{tip}</span>
                 </li>
               ))}
@@ -235,16 +235,17 @@ export default function PetAdoptionPage() {
         </section>
 
         {/* CTA */}
-        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #f97316, #ea580c)" }}>
+        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
           <div className="text-4xl mb-3">🐾</div>
           <h2 className="text-2xl font-bold mb-3 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
             Find Your Perfect Pet Today
           </h2>
-          <p className="mb-6 text-orange-100 max-w-md mx-auto">
+          <p className="mb-6 max-w-md mx-auto" style={{ color: "#f7ede2" }}>
             Browse animals available for adoption across Tamil Nadu and give a loving home to a rescued dog, cat, or other pet.
           </p>
           <Link to="/adoption"
-            className="inline-block px-8 py-3 rounded-full font-extrabold text-orange-600 bg-white hover:bg-orange-50 transition-all hover:scale-105">
+            className="inline-block px-8 py-3 rounded-full font-extrabold bg-white transition-all hover:scale-105"
+            style={{ color: "#2e6b5a" }}>
             Browse Available Pets
           </Link>
         </section>

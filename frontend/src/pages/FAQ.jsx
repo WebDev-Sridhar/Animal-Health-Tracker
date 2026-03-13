@@ -100,7 +100,7 @@ export default function FAQ() {
 
       {/* ─── Hero ─── */}
       <section className="relative py-16 px-6 text-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="absolute top-4 left-10 text-3xl opacity-20 float-anim">🐾</div>
         <div className="absolute bottom-4 right-10 text-2xl opacity-20 float-anim" style={{ animationDelay: "1s" }}>🐾</div>
         <div className="relative z-10">
@@ -108,7 +108,7 @@ export default function FAQ() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
             Frequently Asked Questions
           </h1>
-          <p className="text-teal-100 text-lg max-w-2xl mx-auto">
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: "#f7ede2" }}>
             Everything you need to know about dog adoption, animal rescue, and reporting injured animals in Tamil Nadu.
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function FAQ() {
           <button
             onClick={() => setActiveCategory(null)}
             className={`px-5 py-2.5 rounded-full text-sm font-extrabold transition-all ${
-              !activeCategory ? "text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-700"
+              !activeCategory ? "text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-[#eaf5f1] hover:text-[#2e6b5a]"
             }`}
             style={!activeCategory ? { background: "var(--primary)" } : {}}>
             All Topics
@@ -128,7 +128,7 @@ export default function FAQ() {
           {categories.map((cat) => (
             <button key={cat} onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
               className={`px-5 py-2.5 rounded-full text-sm font-extrabold transition-all ${
-                activeCategory === cat ? "text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-700"
+                activeCategory === cat ? "text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-[#eaf5f1] hover:text-[#2e6b5a]"
               }`}
               style={activeCategory === cat ? { background: "var(--primary)" } : {}}>
               {categoryEmojis[cat]} {cat}
@@ -152,18 +152,18 @@ export default function FAQ() {
                   <div key={faq.id} className="card overflow-hidden transition-all">
                     <button
                       onClick={() => toggleExpanded(faq.id)}
-                      className="w-full px-6 py-4 text-left flex items-start justify-between gap-4 hover:bg-teal-50/50 transition-colors">
+                      className="w-full px-6 py-4 text-left flex items-start justify-between gap-4 hover:bg-[#eaf5f1]/50 transition-colors">
                       <h3 className="font-extrabold text-gray-800 flex-1 text-base leading-snug">
                         {faq.question}
                       </h3>
                       <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
-                        expandedId === faq.id ? "rotate-180 text-white" : "bg-teal-100 text-teal-600"
-                      }`} style={expandedId === faq.id ? { background: "var(--primary)" } : {}}>
+                        expandedId === faq.id ? "rotate-180 text-white" : "text-[#3d8c78]"
+                      }`} style={expandedId === faq.id ? { background: "var(--primary)" } : { background: "#d0ece5" }}>
                         ▾
                       </span>
                     </button>
                     {expandedId === faq.id && (
-                      <div className="px-6 pb-5 border-t border-teal-50">
+                      <div className="px-6 pb-5 border-t border-[#d0ece5]">
                         <p className="text-gray-600 leading-relaxed pt-4">{faq.answer}</p>
                       </div>
                     )}
@@ -175,17 +175,17 @@ export default function FAQ() {
         })}
 
         {/* CTA */}
-        <section className="card p-8 text-center" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        <section className="card p-8 text-center" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
           <div className="text-4xl mb-3">💬</div>
           <h2 className="text-2xl font-bold mb-2 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
             Still Have Questions?
           </h2>
-          <p className="text-teal-100 mb-6 text-sm max-w-md mx-auto">
+          <p className="mb-6 text-sm max-w-md mx-auto" style={{ color: "#f7ede2" }}>
             Couldn't find the answer? Browse our adoption listings or submit a rescue report to get started.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/adoption"
-              className="px-6 py-3 rounded-full font-extrabold text-teal-700 bg-white hover:bg-teal-50 transition-all hover:scale-105 text-sm">
+              className="px-6 py-3 rounded-full font-extrabold bg-white hover:bg-[#eaf5f1] transition-all hover:scale-105 text-sm" style={{ color: "#2e6b5a" }}>
               🐾 Browse Animals
             </Link>
             <Link to="/report"
@@ -196,9 +196,9 @@ export default function FAQ() {
         </section>
 
         {/* Info box */}
-        <section className="p-6 rounded-2xl border-l-4 text-sm" style={{ background: "#f0fdfa", borderColor: "var(--primary)" }}>
-          <h3 className="font-extrabold text-teal-800 mb-2">About OurPetCare</h3>
-          <p className="text-teal-700">
+        <section className="p-6 rounded-2xl border-l-4 text-sm" style={{ background: "#f7ede2", borderColor: "var(--primary)" }}>
+          <h3 className="font-extrabold mb-2" style={{ color: "#1e3d30" }}>About OurPetCare</h3>
+          <p style={{ color: "#3d5a50" }}>
             OurPetCare is a community platform helping people report injured animals, rescue stray pets, and adopt rescued animals across Tamil Nadu. We connect compassionate volunteers with animals in need and support animal welfare through awareness and coordinated rescue efforts.
           </p>
         </section>

@@ -50,7 +50,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md fade-in-up">
           {/* Header */}
           <div className="mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 text-sm font-bold mb-6 transition-colors">
+            <Link to="/" className="inline-flex items-center gap-2 text-[#3d8c78] hover:text-[#2e6b5a] text-sm font-bold mb-6 transition-colors">
               ← Back to Home
             </Link>
             <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
@@ -58,7 +58,7 @@ export default function RegisterPage() {
             </h1>
             <p className="text-gray-500">
               Already have an account?{" "}
-              <Link to="/login" className="text-teal-600 hover:text-teal-700 font-extrabold transition-colors">
+              <Link to="/login" className="text-[#3d8c78] hover:text-[#2e6b5a] font-extrabold transition-colors">
                 Sign in →
               </Link>
             </p>
@@ -116,7 +116,7 @@ export default function RegisterPage() {
                 ].map((r) => (
                   <label key={r.value}
                     className={`p-3 rounded-2xl border-2 cursor-pointer transition-all ${
-                      form.role === r.value ? "border-teal-500 bg-teal-50" : "border-gray-200 hover:border-teal-200"
+                      form.role === r.value ? "border-[#3d8c78] bg-[#eaf5f1]" : "border-gray-200 hover:border-[#d0ece5]"
                     }`}>
                     <input type="radio" name="role" value={r.value}
                       checked={form.role === r.value} onChange={handleChange} className="sr-only" />
@@ -164,7 +164,7 @@ export default function RegisterPage() {
 
       {/* Right: Visual Panel */}
       <div className="hidden lg:flex lg:w-2/5 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #ea580c 0%, #f97316 60%, #fb923c 100%)" }}>
+        style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 60%, #4da090 100%)" }}>
         <img
           src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80"
           alt="Two dogs"
@@ -175,7 +175,7 @@ export default function RegisterPage() {
           <h2 className="text-3xl font-bold mb-4 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
             Be a Hero for Animals
           </h2>
-          <p className="text-orange-100 leading-relaxed max-w-xs">
+          <p className="leading-relaxed max-w-xs" style={{ color: "#f7ede2" }}>
             Your account gives you the power to report injuries, adopt rescued pets, and join a caring community.
           </p>
           <div className="mt-8 space-y-3 w-full max-w-xs">

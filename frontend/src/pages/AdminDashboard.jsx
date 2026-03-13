@@ -53,7 +53,8 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-gradient)" }}>
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-12 h-12 border-4 rounded-full animate-spin mx-auto mb-3"
+            style={{ borderColor: "#d0ece5", borderTopColor: "#3d8c78" }} />
           <p className="text-gray-600 font-semibold">Loading analytics...</p>
         </div>
       </div>
@@ -72,7 +73,7 @@ export default function AdminDashboard() {
   }
 
   const statCards = [
-    { label: "Total Animals", value: analytics?.totalAnimals ?? 0, emoji: "🐾", color: "from-teal-500 to-teal-600" },
+    { label: "Total Animals", value: analytics?.totalAnimals ?? 0, emoji: "🐾", color: "from-green-500 to-green-600" },
     { label: "Sick Animals", value: analytics?.sickAnimals ?? 0, emoji: "🤒", color: "from-amber-400 to-amber-500" },
     { label: "Vaccinated", value: analytics?.vaccinatedAnimals ?? 0, emoji: "💉", color: "from-green-500 to-green-600" },
     { label: "Reports This Week", value: analytics?.reportsThisWeek ?? 0, emoji: "📋", color: "from-blue-500 to-blue-600" },
@@ -120,7 +121,7 @@ export default function AdminDashboard() {
       </Helmet>
 
       {/* ─── Header ─── */}
-      <div className="py-10 px-6" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+      <div className="py-10 px-6" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
@@ -129,7 +130,7 @@ export default function AdminDashboard() {
               <h1 className="text-3xl font-bold text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
                 Admin Analytics
               </h1>
-              <p className="text-teal-100 text-sm">Tamil Nadu animal health overview</p>
+              <p className="text-sm" style={{ color: "#f7ede2" }}>Tamil Nadu animal health overview</p>
             </div>
           </div>
           <div className="flex gap-2">
@@ -138,7 +139,10 @@ export default function AdminDashboard() {
               🔄 Refresh
             </button>
             <button onClick={recalculateRisk} disabled={recalcLoading}
-              className="px-4 py-2.5 rounded-full text-sm font-extrabold text-teal-700 bg-white hover:bg-teal-50 transition-all disabled:opacity-60">
+              className="px-4 py-2.5 rounded-full text-sm font-extrabold bg-white transition-all disabled:opacity-60"
+              style={{ color: "#2e6b5a" }}
+              onMouseEnter={(e) => e.currentTarget.style.background = "#eaf5f1"}
+              onMouseLeave={(e) => e.currentTarget.style.background = "white"}>
               {recalcLoading ? "Recalculating..." : "⚡ Recalc Zone Risk"}
             </button>
           </div>
@@ -224,7 +228,9 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {analytics.zones.map((z, i) => (
-                    <tr key={z.name} className={`border-b border-gray-50 transition-colors hover:bg-teal-50/30 ${i % 2 === 0 ? "" : "bg-gray-50/30"}`}>
+                    <tr key={z.name} className={`border-b border-gray-50 transition-colors ${i % 2 === 0 ? "" : "bg-gray-50/30"}`}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "rgba(234,245,241,0.4)"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = ""}>
                       <td className="px-6 py-3.5 font-bold text-gray-800">{z.name}</td>
                       <td className="px-6 py-3.5">
                         <div className="flex items-center gap-3">

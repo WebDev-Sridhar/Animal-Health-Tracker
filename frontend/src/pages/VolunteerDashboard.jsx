@@ -72,7 +72,7 @@ export default function VolunteerDashboard() {
       </Helmet>
 
       {/* ─── Header ─── */}
-      <div className="py-10 px-6" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+      <div className="py-10 px-6" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-4 mb-6">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
@@ -81,7 +81,7 @@ export default function VolunteerDashboard() {
               <h1 className="text-3xl font-bold text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
                 Volunteer Dashboard
               </h1>
-              <p className="text-teal-100">Welcome back, {user?.name?.split(" ")[0]} — {user?.zone || "All zones"}</p>
+              <p style={{ color: "#f7ede2" }}>Welcome back, {user?.name?.split(" ")[0]} — {user?.zone || "All zones"}</p>
             </div>
           </div>
           {/* Quick Stats */}
@@ -95,7 +95,7 @@ export default function VolunteerDashboard() {
                 style={{ background: "rgba(255,255,255,0.15)" }}>
                 <div className="text-2xl mb-1">{s.emoji}</div>
                 <div className="text-2xl font-extrabold" style={{ fontFamily: "'Fredoka', cursive" }}>{s.value}</div>
-                <div className="text-xs text-teal-100 font-semibold">{s.label}</div>
+                <div className="text-xs font-semibold" style={{ color: "#f7ede2" }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -109,8 +109,9 @@ export default function VolunteerDashboard() {
           <input type="text" value={zone} onChange={(e) => setZone(e.target.value)}
             placeholder="Type zone name..." className="input-field max-w-xs py-2.5 text-sm" />
           {zone && (
-            <button onClick={() => setZone("")} className="text-sm font-bold text-teal-600 hover:text-teal-700 underline underline-offset-2">
-              ✕ Clear
+            <button onClick={() => setZone("")} className="text-sm font-bold underline underline-offset-2 transition-colors"
+              style={{ color: "#3d8c78" }}>
+              Clear
             </button>
           )}
           <span className="ml-auto text-sm text-gray-500 font-semibold">{reports.length} total reports</span>
@@ -119,7 +120,8 @@ export default function VolunteerDashboard() {
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
-              <div className="w-12 h-12 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-3" />
+              <div className="w-12 h-12 border-4 rounded-full animate-spin mx-auto mb-3"
+                style={{ borderColor: "#d0ece5", borderTopColor: "#3d8c78" }} />
               <p className="text-gray-600 font-semibold">Loading reports...</p>
             </div>
           </div>
@@ -167,7 +169,8 @@ export default function VolunteerDashboard() {
                       <p className="text-gray-500 text-xs">{r.reportedBy.email}</p>
                       {r.reportedBy.phone && (
                         <a href={`tel:${r.reportedBy.phone}`}
-                          className="inline-flex items-center gap-1 mt-1 text-teal-600 hover:text-teal-700 text-xs font-bold">
+                          className="inline-flex items-center gap-1 mt-1 text-xs font-bold transition-colors"
+                          style={{ color: "#3d8c78" }}>
                           📞 {r.reportedBy.phone}
                         </a>
                       )}

@@ -110,32 +110,32 @@ export default function AnimalFirstAidPage() {
             </p>
             <ul className="space-y-3">
               <li className="flex gap-3">
-                <span className="text-orange-600 font-bold">→</span>
+                <span className="font-bold" style={{ color: "#3d8c78" }}>→</span>
                 <span>
                   <strong>Immobilize:</strong> Prevent movement of the injured limb using a makeshift splint
                   (rolled newspaper, cardboard, or cushioning)
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="text-orange-600 font-bold">→</span>
+                <span className="font-bold" style={{ color: "#3d8c78" }}>→</span>
                 <span>
                   <strong>Support:</strong> Use a sling or wrap to restrict movement during transport
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="text-orange-600 font-bold">→</span>
+                <span className="font-bold" style={{ color: "#3d8c78" }}>→</span>
                 <span>
                   <strong>Ice:</strong> Apply ice pack wrapped in cloth for 15 minutes to reduce swelling
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="text-orange-600 font-bold">→</span>
+                <span className="font-bold" style={{ color: "#3d8c78" }}>→</span>
                 <span>
                   <strong>Elevation:</strong> Keep limb elevated to minimize bleeding and swelling
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="text-orange-600 font-bold">→</span>
+                <span className="font-bold" style={{ color: "#3d8c78" }}>→</span>
                 <span>
                   <strong>X-ray:</strong> Veterinary X-ray is essential to confirm fracture location and severity
                 </span>
@@ -263,14 +263,15 @@ export default function AnimalFirstAidPage() {
         </section>
 
         {/* CTA */}
-        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #f97316, #ea580c)" }}>
+        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
           <div className="text-4xl mb-3">🚨</div>
           <h2 className="text-2xl font-bold mb-3 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>Emergency? Report Now</h2>
-          <p className="mb-6 text-orange-100 max-w-md mx-auto">
+          <p className="mb-6 max-w-md mx-auto" style={{ color: "#f7ede2" }}>
             Found an injured animal? Use OurPetCare to report immediately and connect with emergency volunteers in Tamil Nadu.
           </p>
           <Link to="/report"
-            className="inline-block px-8 py-3 rounded-full font-extrabold text-orange-600 bg-white hover:bg-orange-50 transition-all hover:scale-105">
+            className="inline-block px-8 py-3 rounded-full font-extrabold bg-white transition-all hover:scale-105"
+            style={{ color: "#2e6b5a" }}>
             Report Emergency Now
           </Link>
         </section>

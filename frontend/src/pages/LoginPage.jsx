@@ -38,7 +38,7 @@ export default function LoginPage() {
       </Helmet>
 
       {/* Left: Visual Panel */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 60%, #14b8a6 100%)" }}>
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 60%, #4da090 100%)" }}>
         <img
           src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?auto=format&fit=crop&w=900&q=80"
           alt="Person with dog"
@@ -49,7 +49,7 @@ export default function LoginPage() {
           <h2 className="text-4xl font-bold mb-4 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
             Welcome Back to OurPetCare
           </h2>
-          <p className="text-teal-100 text-lg leading-relaxed max-w-sm">
+          <p className="text-lg leading-relaxed max-w-sm" style={{ color: "#f7ede2" }}>
             Every login brings you one step closer to helping animals in need. Your community is waiting.
           </p>
           <div className="mt-10 grid grid-cols-2 gap-4 w-full max-w-xs">
@@ -61,7 +61,7 @@ export default function LoginPage() {
             ].map((s) => (
               <div key={s.label} className="p-3 rounded-2xl text-center" style={{ background: "rgba(255,255,255,0.12)" }}>
                 <div className="text-2xl mb-1">{s.icon}</div>
-                <div className="text-xs font-bold text-teal-100">{s.label}</div>
+                <div className="text-xs font-bold" style={{ color: "#f7ede2" }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -73,7 +73,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md fade-in-up">
           {/* Header */}
           <div className="mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 text-sm font-bold mb-6 transition-colors">
+            <Link to="/" className="inline-flex items-center gap-2 text-[#3d8c78] hover:text-[#2e6b5a] text-sm font-bold mb-6 transition-colors">
               ← Back to Home
             </Link>
             <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
@@ -81,7 +81,7 @@ export default function LoginPage() {
             </h1>
             <p className="text-gray-500">
               Don't have an account?{" "}
-              <Link to="/register" className="text-teal-600 hover:text-teal-700 font-extrabold transition-colors">
+              <Link to="/register" className="text-[#3d8c78] hover:text-[#2e6b5a] font-extrabold transition-colors">
                 Join our community →
               </Link>
             </p>
@@ -158,10 +158,10 @@ export default function LoginPage() {
           </div>
 
           {/* Info */}
-          <div className="mt-6 p-4 rounded-2xl text-sm text-center" style={{ background: "#f0fdfa" }}>
-            <p className="text-teal-700 font-semibold">
+          <div className="mt-6 p-4 rounded-2xl text-sm text-center" style={{ background: "#eaf5f1" }}>
+            <p className="text-[#2e6b5a] font-semibold">
               New to OurPetCare?{" "}
-              <Link to="/register" className="text-teal-600 hover:text-teal-800 font-extrabold underline underline-offset-2">
+              <Link to="/register" className="text-[#3d8c78] hover:text-[#1e3d30] font-extrabold underline underline-offset-2">
                 Create a free account
               </Link>{" "}
               and start helping animals today.

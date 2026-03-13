@@ -123,7 +123,7 @@ export default function AccountPage() {
           <button onClick={() => navigate("/login")} className="w-full btn-primary mb-3">Sign In</button>
           <p className="text-gray-500 text-sm">
             No account?{" "}
-            <button onClick={() => navigate("/register")} className="text-teal-600 hover:text-teal-700 font-extrabold">
+            <button onClick={() => navigate("/register")} className="text-[#3d8c78] hover:text-[#2e6b5a] font-extrabold">
               Register free →
             </button>
           </p>
@@ -136,7 +136,7 @@ export default function AccountPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-10 h-10 border-4 rounded-full animate-spin mx-auto mb-3" style={{ borderColor: "#d0ece5", borderTopColor: "#3d8c78" }} />
           <p className="text-gray-600 font-semibold">Loading your account...</p>
         </div>
       </div>
@@ -153,9 +153,9 @@ export default function AccountPage() {
       </Helmet>
 
       {/* ─── Header ─── */}
-      <div className="relative py-10 px-6 overflow-hidden" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+      <div className="relative py-10 px-6 overflow-hidden" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="max-w-5xl mx-auto flex items-center gap-5">
-          <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-extrabold text-teal-700 shadow-lg"
+          <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-extrabold shadow-lg"
             style={{ background: "rgba(255,255,255,0.2)", color: "white" }}>
             {user.name?.[0]?.toUpperCase() || "U"}
           </div>
@@ -180,7 +180,7 @@ export default function AccountPage() {
             </h2>
             {!editingUser && (
               <button onClick={handleEditUser}
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-extrabold text-teal-700 bg-teal-50 hover:bg-teal-100 transition-colors">
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-extrabold hover:bg-[#d0ece5] transition-colors" style={{ color: "#2e6b5a", background: "#eaf5f1" }}>
                 ✏️ Edit Profile
               </button>
             )}
@@ -240,7 +240,7 @@ export default function AccountPage() {
             {loadingReports ? (
               <div className="col-span-full flex items-center justify-center py-16">
                 <div className="text-center">
-                  <div className="w-10 h-10 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-3" />
+                  <div className="w-10 h-10 border-4 rounded-full animate-spin mx-auto mb-3" style={{ borderColor: "#d0ece5", borderTopColor: "#3d8c78" }} />
                   <p className="text-gray-600 font-semibold">Loading reports...</p>
                 </div>
               </div>
@@ -321,7 +321,7 @@ export default function AccountPage() {
                         <div className="flex gap-2">
                           {r.status === "pending" && (
                             <button onClick={() => handleEditReport(r)}
-                              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-teal-700 bg-teal-50 hover:bg-teal-100 transition-colors">
+                              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold hover:bg-[#d0ece5] transition-colors" style={{ color: "#2e6b5a", background: "#eaf5f1" }}>
                               ✏️ Edit
                             </button>
                           )}

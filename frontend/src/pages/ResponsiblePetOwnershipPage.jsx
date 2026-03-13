@@ -18,12 +18,12 @@ export default function ResponsiblePetOwnershipPage() {
 
       {/* Hero */}
       <section className="relative py-16 px-6 text-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="text-5xl mb-3">🐾</div>
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
           Responsible Pet Ownership
         </h1>
-        <p className="text-teal-100 text-lg max-w-2xl mx-auto">
+        <p className="text-lg max-w-2xl mx-auto" style={{ color: "#f7ede2" }}>
           Learn how to be a responsible pet owner in Tamil Nadu. Proper care, training, and commitment ensure your pet lives a healthy, happy life and contributes to animal welfare.
         </p>
       </section>
@@ -98,7 +98,7 @@ export default function ResponsiblePetOwnershipPage() {
                 ],
               },
             ].map((item) => (
-              <div key={item.num} className="border-l-4 border-teal-500 pl-4">
+              <div key={item.num} className="pl-4" style={{ borderLeft: "4px solid #3d8c78" }}>
                 <h3 className="font-semibold text-slate-800 mb-2">
                   {item.num}. {item.title}
                 </h3>
@@ -127,7 +127,7 @@ export default function ResponsiblePetOwnershipPage() {
                   { title: "Grooming", desc: "Regular brushing, nail trimming, and bathing based on coat type." },
                   { title: "Health", desc: "Vaccinations, heartworm prevention, and dental care are crucial." },
                 ].map((item) => (
-                  <div key={item.title} className="bg-teal-50 p-3 rounded-xl">
+                  <div key={item.title} className="p-3 rounded-xl" style={{ background: "#eaf5f1" }}>
                     <p className="font-semibold text-sm text-slate-800 mb-1">{item.title}</p>
                     <p className="text-sm text-slate-600">{item.desc}</p>
                   </div>
@@ -143,7 +143,7 @@ export default function ResponsiblePetOwnershipPage() {
                   { title: "Socialization", desc: "Cats are independent but need regular interaction and playtime." },
                   { title: "Health", desc: "Monitor for urinary issues, dental disease, and behavioral changes." },
                 ].map((item) => (
-                  <div key={item.title} className="bg-orange-50 p-3 rounded-xl">
+                  <div key={item.title} className="p-3 rounded-xl" style={{ background: "#fdf6d0" }}>
                     <p className="font-semibold text-sm text-slate-800 mb-1">{item.title}</p>
                     <p className="text-sm text-slate-600">{item.desc}</p>
                   </div>
@@ -169,7 +169,7 @@ export default function ResponsiblePetOwnershipPage() {
                 { label: "Legal Compliance", desc: "Follow local regulations for pet licensing and vaccination." },
               ].map((item) => (
                 <li key={item.label} className="flex gap-3">
-                  <span className="text-teal-600 font-bold">✓</span>
+                  <span className="font-bold" style={{ color: "#3d8c78" }}>✓</span>
                   <span><strong>{item.label}:</strong> {item.desc}</span>
                 </li>
               ))}
@@ -185,7 +185,7 @@ export default function ResponsiblePetOwnershipPage() {
           <div className="space-y-4">
             <p className="text-slate-700">Responsible pet ownership requires financial commitment. Budget for:</p>
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-teal-50 p-4 rounded-xl">
+              <div className="p-4 rounded-xl" style={{ background: "#eaf5f1" }}>
                 <h3 className="font-semibold text-slate-800 mb-2">Routine Expenses</h3>
                 <ul className="text-sm text-slate-600 space-y-1">
                   <li>• Quality pet food</li>
@@ -195,7 +195,7 @@ export default function ResponsiblePetOwnershipPage() {
                   <li>• Toys and bedding</li>
                 </ul>
               </div>
-              <div className="bg-orange-50 p-4 rounded-xl">
+              <div className="p-4 rounded-xl" style={{ background: "#fdf6d0" }}>
                 <h3 className="font-semibold text-slate-800 mb-2">Emergency Fund</h3>
                 <ul className="text-sm text-slate-600 space-y-1">
                   <li>• Unexpected illness treatment</li>
@@ -271,7 +271,7 @@ export default function ResponsiblePetOwnershipPage() {
                 "Never buy from unethical breeders; adopt instead",
               ].map((tip) => (
                 <li key={tip} className="flex gap-3">
-                  <span className="text-teal-600 font-bold">→</span>
+                  <span className="font-bold" style={{ color: "#3d8c78" }}>→</span>
                   <span>{tip}</span>
                 </li>
               ))}
@@ -280,16 +280,19 @@ export default function ResponsiblePetOwnershipPage() {
         </section>
 
         {/* CTA */}
-        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
           <div className="text-4xl mb-3">💚</div>
           <h2 className="text-2xl font-bold mb-3 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
             Learn More About Pet Care
           </h2>
-          <p className="mb-6 text-teal-100 max-w-md mx-auto">
+          <p className="mb-6 max-w-md mx-auto" style={{ color: "#f7ede2" }}>
             Join OurPetCare community for more tips, resources, and support for responsible pet ownership across Tamil Nadu.
           </p>
           <Link to="/"
-            className="inline-block px-8 py-3 rounded-full font-extrabold text-teal-700 bg-white hover:bg-teal-50 transition-all hover:scale-105">
+            className="inline-block px-8 py-3 rounded-full font-extrabold bg-white transition-all hover:scale-105"
+            style={{ color: "#2e6b5a" }}
+            onMouseEnter={e => e.currentTarget.style.background = "#eaf5f1"}
+            onMouseLeave={e => e.currentTarget.style.background = "white"}>
             Back to Home
           </Link>
         </section>

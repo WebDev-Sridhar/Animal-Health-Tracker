@@ -116,11 +116,11 @@ export default function MainLayout() {
           <div className="md:hidden bg-white/98 backdrop-blur-md" style={{ borderTop: "1px solid #e8d9cc" }}>
             <div className="px-5 py-4 space-y-1">
               {[
-                { to: "/", label: "🏠 Home" },
-                { to: "/adoption", label: "🐾 Adopt a Pet" },
-                { to: "/report", label: "🚨 Report Animal" },
-                { to: "/petcaretips", label: "💡 Pet Care Tips" },
-                { to: "/faq", label: "❓ FAQ" },
+                { to: "/", label: "Home" },
+                { to: "/adoption", label: "Adopt a Pet" },
+                { to: "/report", label: "Report Animal" },
+                { to: "/petcaretips", label: "Pet Care Tips" },
+                { to: "/faq", label: "FAQ" },
               ].map(({ to, label }) => (
                 <Link key={to} to={to} onClick={closeMobileMenu}
                   className="block px-4 py-2.5 rounded-xl text-sm transition-colors"

@@ -175,19 +175,14 @@ export default function ReportPage() {
       </Helmet>
 
       {/* ─── Hero ─── */}
-      <section className="relative py-16 px-6 text-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
-        <div className="absolute top-4 left-8 text-3xl opacity-20 float-anim">🐾</div>
-        <div className="absolute bottom-4 right-8 text-2xl opacity-20 float-anim" style={{ animationDelay: "1.5s" }}>🐾</div>
-        <div className="relative z-10">
-          <div className="text-5xl mb-3">🚨</div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
-            Report an Injured Animal
-          </h1>
-          <p className="text-teal-100 text-lg max-w-xl mx-auto">
-            Your 2-minute report could save a life. Volunteers are ready to respond across Tamil Nadu.
-          </p>
-        </div>
+      <section className="py-16 px-6 text-center"
+        style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
+          Report an Injured Animal
+        </h1>
+        <p className="text-lg max-w-xl mx-auto" style={{ color: "#f7ede2" }}>
+          Your 2-minute report could save a life. Volunteers are ready to respond across Tamil Nadu.
+        </p>
       </section>
 
       {/* ─── Auth Warning ─── */}
@@ -227,7 +222,8 @@ export default function ReportPage() {
                 }`}>{step}</span>
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`flex-1 h-0.5 rounded-full mx-1 ${i < currentStep ? "bg-teal-500" : "bg-gray-200"}`} />
+                <div className="flex-1 h-0.5 rounded-full mx-1"
+                  style={{ background: i < currentStep ? "#3d8c78" : "#e5e7eb" }} />
               )}
             </div>
           ))}
@@ -258,7 +254,7 @@ export default function ReportPage() {
               {currentStep === 0 && (
                 <div className="space-y-5">
                   <h2 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
-                    🐾 Tell Us About the Animal
+                    Tell Us About the Animal
                   </h2>
 
                   {/* Species Selector */}
@@ -268,7 +264,7 @@ export default function ReportPage() {
                       {SPECIES_OPTIONS.map((opt) => (
                         <label key={opt.value}
                           className={`p-3 rounded-2xl border-2 cursor-pointer text-center transition-all ${
-                            form.species === opt.value ? "border-teal-500 bg-teal-50" : "border-gray-200 hover:border-teal-200"
+                            form.species === opt.value ? "border-green-600 bg-[#eaf5f1]" : "border-gray-200 hover:border-[#84c4b4]"
                           }`}>
                           <input type="radio" name="species" value={opt.value} checked={form.species === opt.value}
                             onChange={handleChange} className="sr-only" />
@@ -286,7 +282,7 @@ export default function ReportPage() {
                       {GENDER_OPTIONS.map((opt) => (
                         <label key={opt.value}
                           className={`p-3 rounded-2xl border-2 cursor-pointer text-center transition-all ${
-                            form.gender === opt.value ? "border-teal-500 bg-teal-50" : "border-gray-200 hover:border-teal-200"
+                            form.gender === opt.value ? "border-green-600 bg-[#eaf5f1]" : "border-gray-200 hover:border-[#84c4b4]"
                           }`}>
                           <input type="radio" name="gender" value={opt.value} checked={form.gender === opt.value}
                             onChange={handleChange} className="sr-only" />
@@ -325,7 +321,7 @@ export default function ReportPage() {
               {currentStep === 1 && (
                 <div className="space-y-5">
                   <h2 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
-                    📸 Condition & Photo
+                    Condition & Photo
                   </h2>
 
                   {/* Condition */}
@@ -335,7 +331,7 @@ export default function ReportPage() {
                       {CONDITION_OPTIONS.map((opt) => (
                         <label key={opt.value}
                           className={`p-3 rounded-2xl border-2 cursor-pointer flex items-center gap-2 transition-all ${
-                            form.condition === opt.value ? "border-teal-500 bg-teal-50" : "border-gray-200 hover:border-teal-200"
+                            form.condition === opt.value ? "border-green-600 bg-[#eaf5f1]" : "border-gray-200 hover:border-[#84c4b4]"
                           }`}>
                           <input type="radio" name="condition" value={opt.value} checked={form.condition === opt.value}
                             onChange={handleChange} className="sr-only" />
@@ -371,14 +367,14 @@ export default function ReportPage() {
                     {form.photo ? (
                       <div className="relative inline-block">
                         <img src={form.photo} alt="Preview"
-                          className="h-44 w-auto rounded-2xl border-2 border-teal-200 object-cover shadow-lg" />
+                          className="h-44 w-auto rounded-2xl object-cover shadow-lg" style={{ border: "2px solid #b0ddd3" }} />
                         <button type="button" onClick={removePhoto}
                           className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg font-bold text-sm">
                           ✕
                         </button>
                       </div>
                     ) : (
-                      <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-teal-400 hover:bg-teal-50 transition-all group">
+                      <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-[#3d8c78] hover:bg-[#eaf5f1] transition-all group">
                         <span className="text-4xl mb-2 group-hover:scale-110 transition-transform">📷</span>
                         <span className="text-gray-600 font-bold text-sm">Click to upload photo</span>
                         <span className="text-gray-400 text-xs mt-1">JPG, PNG or WebP — max 5MB</span>
@@ -403,11 +399,11 @@ export default function ReportPage() {
               {currentStep === 2 && (
                 <div className="space-y-5">
                   <h2 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
-                    📍 Location Details
+                    Location Details
                   </h2>
 
-                  <div className="p-4 bg-teal-50 rounded-2xl text-sm text-teal-800 border border-teal-100">
-                    <p className="font-extrabold mb-1">💡 Tip</p>
+                  <div className="p-4 rounded-2xl text-sm" style={{ background: "#f7ede2", color: "#1e3d30", border: "1px solid #edddd0" }}>
+                    <p className="font-extrabold mb-1">Tip</p>
                     <p>Use "Detect Location" for accuracy, or type the area name manually. Location helps volunteers reach the animal faster.</p>
                   </div>
 
@@ -415,7 +411,8 @@ export default function ReportPage() {
                     className="w-full btn-secondary py-3 flex items-center justify-center gap-2">
                     {locationLoading ? (
                       <>
-                        <span className="w-4 h-4 border-2 border-teal-500/30 border-t-teal-600 rounded-full animate-spin" />
+                        <span className="w-4 h-4 border-2 rounded-full animate-spin"
+                          style={{ borderColor: "rgba(61,140,120,0.25)", borderTopColor: "#3d8c78" }} />
                         Detecting location...
                       </>
                     ) : (
@@ -430,8 +427,9 @@ export default function ReportPage() {
                   )}
 
                   {form.location && (
-                    <div className="flex items-center gap-2 text-teal-700 text-sm font-bold bg-teal-50 p-3 rounded-xl">
-                      ✅ Location detected: {form.zone || "GPS coordinates captured"}
+                    <div className="flex items-center gap-2 text-sm font-bold p-3 rounded-xl"
+                      style={{ color: "#2e6b5a", background: "#eaf5f1" }}>
+                      Location detected: {form.zone || "GPS coordinates captured"}
                     </div>
                   )}
 
@@ -459,14 +457,14 @@ export default function ReportPage() {
                       ← Back
                     </button>
                     <button type="submit" disabled={loading || !isAuthenticated}
-                      className="flex-1 btn-orange py-3 disabled:opacity-50 disabled:cursor-not-allowed">
+                      className="flex-1 btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed">
                       {loading ? (
                         <span className="flex items-center justify-center gap-2">
                           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                           Submitting...
                         </span>
                       ) : (
-                        "🚨 Submit Report"
+                        "Submit Report"
                       )}
                     </button>
                   </div>
@@ -477,11 +475,10 @@ export default function ReportPage() {
         )}
 
         {/* ─── FAQ CTA ─── */}
-        <div className="mt-8 mb-10 p-6 rounded-2xl flex items-center gap-4" style={{ background: "#f0fdfa" }}>
-          <div className="text-4xl flex-shrink-0">❓</div>
+        <div className="mt-8 mb-10 p-6 rounded-2xl flex items-center gap-4" style={{ background: "#f7ede2" }}>
           <div>
-            <p className="font-extrabold text-teal-800 mb-1">Questions about reporting?</p>
-            <p className="text-teal-700 text-sm mb-3">Learn how the rescue process works and what to include in your report.</p>
+            <p className="font-extrabold mb-1" style={{ color: "#1e3d30" }}>Questions about reporting?</p>
+            <p className="text-sm mb-3" style={{ color: "#3d5a50" }}>Learn how the rescue process works and what to include in your report.</p>
             <Link to="/faq" className="btn-secondary text-sm py-2 px-5">Read FAQ →</Link>
           </div>
         </div>

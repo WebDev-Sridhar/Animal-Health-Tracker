@@ -113,7 +113,7 @@ export default function MapComponent({
                             : animal.condition === "injured"
                               ? "text-amber-600"
                               : animal.condition === "aggressive"
-                              ? "text-orange-600"
+                              ? "text-red-600"
                               : animal.condition === "vaccination-needed"
                                 ? "text-blue-600"
                                 : animal.condition === "for-adoption"

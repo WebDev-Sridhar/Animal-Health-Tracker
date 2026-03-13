@@ -27,7 +27,7 @@ function PetDetailsPage() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-gradient)" }}>
         <div className="text-center">
-          <div className="w-14 h-14 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-14 h-14 border-4 border-[#d0ece5] border-t-[#3d8c78] rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600 font-semibold text-lg">Loading pet details...</p>
         </div>
       </div>
@@ -72,10 +72,10 @@ function PetDetailsPage() {
       </Helmet>
 
       {/* ─── Hero Header ─── */}
-      <div className="relative py-10 px-6 overflow-hidden" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+      <div className="relative py-10 px-6 overflow-hidden" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 100%)" }}>
         <div className="max-w-6xl mx-auto">
           <button onClick={() => navigate("/adoption")}
-            className="flex items-center gap-2 text-teal-100 hover:text-white font-bold mb-6 transition-colors text-sm">
+            className="flex items-center gap-2 hover:text-white font-bold mb-6 transition-colors text-sm" style={{ color: "#f7ede2" }}>
             ← Back to Adoption
           </button>
           <div className="flex items-center gap-4">
@@ -87,7 +87,7 @@ function PetDetailsPage() {
               <h1 className="text-4xl md:text-5xl font-bold text-white capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
                 {pet.animal?.species || "Animal"}
               </h1>
-              <p className="text-teal-200 text-lg">📍 Available for Adoption in {pet.zone}</p>
+              <p className="text-lg" style={{ color: "#eaf5f1" }}>📍 Available for Adoption in {pet.zone}</p>
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@ function PetDetailsPage() {
                 <img src={pet.photo} alt="Pet" className="w-full h-[420px] object-cover" />
               ) : (
                 <div className="h-[420px] flex items-center justify-center text-8xl"
-                  style={{ background: "linear-gradient(135deg, #f0fdfa, #ccfbf1)" }}>
+                  style={{ background: "linear-gradient(135deg, #eaf5f1, #d0ece5)" }}>
                   {speciesEmoji(pet.animal?.species)}
                 </div>
               )}
@@ -164,7 +164,10 @@ function PetDetailsPage() {
                 )}
                 {mapsUrl && (
                   <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-teal-700 bg-teal-50 hover:bg-teal-100 transition-colors">
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold transition-colors"
+                    style={{ color: "#2e6b5a", background: "#eaf5f1" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "#d0ece5"}
+                    onMouseLeave={e => e.currentTarget.style.background = "#eaf5f1"}>
                     📍 Get Directions
                   </a>
                 )}
@@ -215,7 +218,7 @@ function PetDetailsPage() {
         </div>
 
         {/* ─── Why Adoption Matters ─── */}
-        <div className="card p-8" style={{ background: "linear-gradient(135deg, #f0fdfa, #ccfbf1)" }}>
+        <div className="card p-8" style={{ background: "#f7ede2" }}>
           <div className="flex items-start gap-5">
             <div className="text-5xl flex-shrink-0">🌍</div>
             <div>

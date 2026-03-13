@@ -143,7 +143,7 @@ export default function HomePage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(101, 127, 120, 0.88) 0%, rgba(70, 135, 119, 0.55) 60%, rgba(0,0,0,0.3) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(56, 68, 65, 0.88) 0%, rgba(60, 88, 81, 0.55) 60%, rgba(22, 23, 22, 0.3) 100%)" }} />
 
         {/* Floating paw prints */}
         <div className="absolute top-16 left-10 text-4xl opacity-15 float-anim" style={{ animationDelay: "0s" }}>🐾</div>
@@ -159,7 +159,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight"
-            style={{ fontFamily: "'Fredoka', cursive", textShadow: "0 2px 20px rgba(255, 255, 255, 0.3)" }}>
+            style={{ fontFamily: "'Fredoka', cursive"}}>
             Helping Animals Get
             <br />
             <span style={{ color: "#f6bd60" }}>Rescued, Treated</span>
@@ -303,7 +303,7 @@ export default function HomePage() {
                 { color: "bg-purple-600", label: "Sick" },
                 { color: "bg-amber-500", label: "Injured" },
                 { color: "bg-red-500", label: "Critical" },
-                { color: "bg-orange-500", label: "Aggressive" },
+                { color: "bg-red-600", label: "Aggressive" },
                 { color: "bg-blue-500", label: "For Adoption" },
               ].map(({ color, label }) => (
                 <div key={label} className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-full">
@@ -350,9 +350,9 @@ export default function HomePage() {
                       <span className="badge badge-teal">{pet.condition || "for-adoption"}</span>
                     </div>
                     <div className="space-y-1.5 text-sm text-gray-500 mb-4">
-                      <p>📍 {pet.zone || "Tamil Nadu"}</p>
-                      <p>💉 {pet.animal?.vaccinationStatus || "Unknown"}</p>
-                      <p>📅 {new Date(pet.createdAt).toLocaleDateString()}</p>
+                      <p>{pet.zone || "Tamil Nadu"}</p>
+                      <p>{pet.animal?.vaccinationStatus || "Unknown"}</p>
+                      <p>{new Date(pet.createdAt).toLocaleDateString()}</p>
                     </div>
                     <Link to={`/pet/${pet._id}`} className="block text-center btn-primary text-sm py-2.5">
                       View Details
@@ -364,12 +364,12 @@ export default function HomePage() {
           ) : (
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               {[
-                { emoji: "🐕", name: "Indie Dog", zone: "Chennai", tag: "Healthy", color: "from-teal-400 to-teal-500" },
-                { emoji: "🐈", name: "Rescue Cat", zone: "Coimbatore", tag: "For Adoption", color: "from-orange-400 to-orange-500" },
-                { emoji: "🐩", name: "Street Puppy", zone: "Madurai", tag: "Vaccinated", color: "from-amber-400 to-amber-500" },
+                { emoji: "🐕", name: "Indie Dog", zone: "Chennai", tag: "Healthy", bg: "linear-gradient(135deg, #3d8c78, #2e6b5a)" },
+                { emoji: "🐈", name: "Rescue Cat", zone: "Coimbatore", tag: "For Adoption", bg: "linear-gradient(135deg, #f0c030, #d4a828)" },
+                { emoji: "🐩", name: "Street Puppy", zone: "Madurai", tag: "Vaccinated", bg: "linear-gradient(135deg, #fbbf24, #f59e0b)" },
               ].map((pet, i) => (
                 <div key={i} className="card card-lift overflow-hidden fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                  <div className={`w-full h-52 bg-gradient-to-br ${pet.color} flex items-center justify-center`}>
+                  <div className="w-full h-52 flex items-center justify-center" style={{ background: pet.bg }}>
                     <span className="text-7xl">{pet.emoji}</span>
                   </div>
                   <div className="p-5">
@@ -396,18 +396,18 @@ export default function HomePage() {
       </section>
 
       {/* ─── Animal Health Awareness ─── */}
-      <section className="py-20 px-6" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #0f766e 100%)" }}>
+      <section className="py-20 px-6" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 50%, #2e6b5a 100%)" }}>
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-white">
               <span className="inline-block px-4 py-2 rounded-full text-sm font-bold mb-5"
-                style={{ background: "rgba(255,255,255,0.15)" }}>
-                🏥 Health Tracking
+                style={{ background: "rgba(255,255,255,0.15)", color: "white" }}>
+                Health Tracking
               </span>
               <h2 className="text-4xl md:text-5xl mb-6 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
                 Animal Health & Disease Monitoring
               </h2>
-              <p className="text-teal-100 text-lg leading-relaxed mb-6">
+              <p className="text-lg leading-relaxed mb-6" style={{ color: "#f7ede2" }}>
                 OurPetCare tracks animal health conditions across Tamil Nadu using real-time reports. Our system monitors disease outbreaks, zoonotic risks, and animal welfare trends to help communities respond faster.
               </p>
               <ul className="space-y-3">
@@ -417,8 +417,8 @@ export default function HomePage() {
                   "Vaccination status awareness",
                   "Admin analytics for health response teams",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-teal-100">
-                    <span className="mt-0.5 text-amber-400 font-extrabold">✓</span>
+                  <li key={item} className="flex items-start gap-3" style={{ color: "#f7ede2" }}>
+                    <span className="mt-0.5 font-extrabold" style={{ color: "#f0c030" }}>✓</span>
                     {item}
                   </li>
                 ))}
@@ -426,16 +426,15 @@ export default function HomePage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { icon: "🦠", label: "Disease Monitoring", desc: "Track health patterns across zones" },
-                { icon: "💉", label: "Vaccination Tracking", desc: "Monitor vaccine coverage rates" },
-                { icon: "📍", label: "Zone Risk Scores", desc: "Identify high-risk locations" },
-                { icon: "📊", label: "Health Analytics", desc: "Data-driven welfare decisions" },
+                { label: "Disease Monitoring", desc: "Track health patterns across zones" },
+                { label: "Vaccination Tracking", desc: "Monitor vaccine coverage rates" },
+                { label: "Zone Risk Scores", desc: "Identify high-risk locations" },
+                { label: "Health Analytics", desc: "Data-driven welfare decisions" },
               ].map((item) => (
                 <div key={item.label} className="p-5 rounded-2xl"
-                  style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)" }}>
-                  <div className="text-3xl mb-3">{item.icon}</div>
+                  style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(8px)" }}>
                   <div className="font-bold text-white text-sm mb-1">{item.label}</div>
-                  <div className="text-teal-200 text-xs">{item.desc}</div>
+                  <div className="text-xs" style={{ color: "#eaf5f1" }}>{item.desc}</div>
                 </div>
               ))}
             </div>
@@ -447,7 +446,7 @@ export default function HomePage() {
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <span className="section-tag section-tag-orange">Pet Care</span>
+            <span className="section-tag section-tag-yellow">Pet Care</span>
             <h2 className="text-4xl md:text-5xl" style={{ fontFamily: "'Fredoka', cursive" }}>
               Quick Pet Care Tips 
             </h2>
@@ -459,9 +458,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-6 mb-10">
             {PET_TIPS.map((tip, i) => (
               <div key={tip.title} className="card card-lift p-7 fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-md ${
-                  tip.color === "teal" ? "bg-teal-50" : tip.color === "orange" ? "bg-orange-50" : "bg-amber-50"
-                }`}>
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-md" style={{ background: tip.bg }}>
                   <span className="text-3xl">{tip.icon}</span>
                 </div>
                 <h3 className="text-xl mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>{tip.title}</h3>
@@ -479,24 +476,25 @@ export default function HomePage() {
       </section>
 
       {/* ─── Volunteer CTA ─── */}
-      <section className="py-16 px-6" style={{ background: "linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)" }}>
+      <section className="py-16 px-6" style={{ background: "#f7ede2" }}>
         <div className="max-w-5xl mx-auto">
           <div className="card p-10 md:p-14 text-center"
-            style={{ background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)" }}>
-            <div className="text-5xl mb-4 float-anim">🤝</div>
-            <h2 className="text-4xl md:text-5xl mb-4 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
+            style={{ background: "linear-gradient(135deg, #f0c030 0%, #d4a828 100%)" }}>
+            <h2 className="text-4xl md:text-5xl mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "#1e3d30" }}>
               Join Our Volunteer Network
             </h2>
-            <p className="text-orange-100 text-lg mb-8 max-w-2xl mx-auto">
+            <p className="text-lg mb-8 max-w-2xl mx-auto" style={{ color: "#2e6b5a" }}>
               Make a real difference in animals' lives. Volunteer rescuers get access to a dedicated dashboard to manage rescue missions in their zone.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register"
-                className="px-8 py-4 rounded-full font-extrabold text-orange-700 bg-white hover:bg-orange-50 transition-all hover:scale-105 shadow-lg text-base">
+                className="px-8 py-4 rounded-full font-extrabold transition-all hover:scale-105 shadow-lg text-base"
+                style={{ background: "white", color: "#2e6b5a" }}>
                 Become a Volunteer
               </Link>
               <Link to="/strayanimalrescue"
-                className="px-8 py-4 rounded-full font-extrabold text-white border-2 border-white/50 hover:bg-white/15 transition-all hover:scale-105 text-base">
+                className="px-8 py-4 rounded-full font-extrabold transition-all hover:scale-105 text-base"
+                style={{ color: "#1e3d30", border: "2px solid rgba(30,61,48,0.3)" }}>
                 Learn About Rescue
               </Link>
             </div>
@@ -521,7 +519,7 @@ export default function HomePage() {
             {TESTIMONIALS.map((t, i) => (
               <div key={t.name} className="card p-7 fade-in-up" style={{ animationDelay: `${i * 0.12}s` }}>
                 <div className="flex items-center gap-3 mb-5">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-lg ${t.color}`}>
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-lg" style={t.avatarStyle}>
                     {t.avatar}
                   </div>
                   <div>
@@ -529,7 +527,7 @@ export default function HomePage() {
                     <p className="text-xs text-gray-500">{t.role}</p>
                   </div>
                 </div>
-                <div className="text-3xl text-teal-200 mb-2">"</div>
+                <div className="text-3xl mb-2" style={{ color: "#b0ddd3" }}>"</div>
                 <p className="text-gray-600 text-sm leading-relaxed italic">{t.text}</p>
                 <div className="mt-4 flex gap-0.5">
                   {Array(5).fill(0).map((_, si) => (
@@ -543,7 +541,7 @@ export default function HomePage() {
       </section>
 
       {/* ─── Bottom CTA Banner ─── */}
-      <section className="py-20 px-6" style={{ background: "linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%)" }}>
+      <section className="py-20 px-6" style={{ background: "linear-gradient(135deg, #f7ede2 0%, #eaf5f1 100%)" }}>
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-5xl mb-4"></div>
           <h2 className="text-4xl md:text-5xl mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
