@@ -41,6 +41,12 @@ export default function AccountPage() {
   const [reportPhotoFile, setReportPhotoFile] = useState(null);
   const [reportPhotoPreview, setReportPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null); // { msg, type: "success"|"error" }
+
+  const showToast = (msg, type = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
+  };
 
   useEffect(() => {
     if (authUser) {
@@ -82,7 +88,7 @@ export default function AccountPage() {
       setEditingUser(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to update profile");
+      showToast("Failed to update profile", "error");
     } finally {
       setLoading(false);
     }
@@ -119,21 +125,24 @@ export default function AccountPage() {
       setEditingReportId(null);
       setReportPhotoFile(null);
       setReportPhotoPreview(null);
+      showToast("Report updated successfully");
     } catch (err) {
       console.error(err);
-      alert("Failed to update report");
+      showToast(err.message || "Failed to update report", "error");
     } finally {
       setLoading(false);
     }
   };
 
   const deleteReport = async (id) => {
-    if (!window.confirm("Delete this report?")) return;
+    if (!window.confirm("Delete this report? This cannot be undone.")) return;
     try {
       await apiClient.delete(`/reports/${id}`);
       setReports(reports.filter((r) => r._id !== id));
+      showToast("Report deleted");
     } catch (err) {
       console.error(err);
+      showToast(err.message || "Failed to delete report", "error");
     }
   };
 
@@ -173,6 +182,13 @@ export default function AccountPage() {
 
   return (
     <div className="overflow-x-hidden" style={{ background: "var(--bg-gradient)" }}>
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-5 py-3 rounded-2xl shadow-lg text-sm font-bold text-white transition-all"
+          style={{ background: toast.type === "error" ? "#ef4444" : "#3d8c78", minWidth: "220px", justifyContent: "center" }}>
+          <span>{toast.type === "error" ? "✕" : "✓"}</span>
+          <span>{toast.msg}</span>
+        </div>
+      )}
       <Helmet>
         <title>My Account | OurPetCare</title>
         <meta name="description" content="Manage your OurPetCare account, view your reports, and track your contribution to animal welfare." />

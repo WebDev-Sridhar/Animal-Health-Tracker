@@ -78,24 +78,31 @@ export default function AdoptionPage() {
 
       {/* ─── Filters ─── */}
       <section className="sticky top-16 z-40 bg-white/95 backdrop-blur-md shadow-sm" style={{ borderBottom: "1px solid #edddd0" }}>
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center gap-4">
-          <span className="text-sm font-extrabold text-gray-600 mr-1">Filter:</span>
-          <select className="input-field max-w-xs py-2.5 text-sm cursor-pointer" value={district} onChange={(e) => setDistrict(e.target.value)}>
-            <option value="">All Districts</option>
-            {districts.map((d) => <option key={d}>{d}</option>)}
-          </select>
-          <select className="input-field max-w-xs py-2.5 text-sm cursor-pointer" value={category} onChange={(e) => setCategory(e.target.value)}>
-            <option value="">All Animals</option>
-            {categories.map((c) => <option key={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
-          </select>
-          {(district || category) && (
-            <button onClick={() => { setDistrict(""); setCategory(""); }}
-              className="text-sm font-bold underline underline-offset-2 transition-colors" style={{ color: "#3d8c78" }}>
-              Clear
-            </button>
-          )}
-          <div className="ml-auto text-sm text-gray-500 font-semibold">
-            {animals.length} pet{animals.length !== 1 ? "s" : ""} available
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile: stacked layout */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <span className="text-sm font-extrabold text-gray-600 shrink-0">Filter:</span>
+            <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-3 flex-1">
+              <select className="input-field py-2.5 text-sm cursor-pointer" value={district} onChange={(e) => setDistrict(e.target.value)}>
+                <option value="">All Districts</option>
+                {districts.map((d) => <option key={d}>{d}</option>)}
+              </select>
+              <select className="input-field py-2.5 text-sm cursor-pointer" value={category} onChange={(e) => setCategory(e.target.value)}>
+                <option value="">All Animals</option>
+                {categories.map((c) => <option key={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+              </select>
+            </div>
+            <div className="flex items-center justify-between sm:justify-end gap-4">
+              {(district || category) && (
+                <button onClick={() => { setDistrict(""); setCategory(""); }}
+                  className="text-sm font-bold underline underline-offset-2 transition-colors shrink-0" style={{ color: "#3d8c78" }}>
+                  Clear
+                </button>
+              )}
+              <div className="text-sm text-gray-500 font-semibold sm:ml-auto">
+                {animals.length} pet{animals.length !== 1 ? "s" : ""} available
+              </div>
+            </div>
           </div>
         </div>
       </section>

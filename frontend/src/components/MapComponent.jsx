@@ -15,13 +15,13 @@ L.Icon.Default.mergeOptions({
 });
 
 const HEALTH_COLORS = {
-  healthy: "#22c55e",
-  sick: "#8b5cf6",
-  critical: "#ef4444",
-  injured: "#f59e0b",
-  aggressive: "#f97316",
-  "vaccination-needed": "#3b82f6",
-  "for-adoption": "#10b981",
+  healthy: "#22c55e",       // green
+  sick: "#8b5cf6",          // purple
+  critical: "#ef4444",      // red
+  injured: "#f59e0b",       // amber
+  aggressive: "#dc2626",    // dark red
+  "vaccination-needed": "#3b82f6", // blue
+  "for-adoption": "#3d8c78",       // site primary green
 };
 
 const createColoredIcon = (condition) => {
@@ -104,26 +104,9 @@ export default function MapComponent({
                 <div className="mt-1 space-y-0.5 text-slate-600">
                   <p>
                     <span className="font-medium">Health Status:</span>{" "}
-                    <span
-                      className={
-                        animal.condition === "critical"
-                          ? "text-red-600"
-                          : animal.condition === "sick"
-                            ? "text-purple-600"
-                            : animal.condition === "injured"
-                              ? "text-amber-600"
-                              : animal.condition === "aggressive"
-                              ? "text-red-600"
-                              : animal.condition === "vaccination-needed"
-                                ? "text-blue-600"
-                                : animal.condition === "for-adoption"
-                                  ? "text-emerald-600"
-                                  : animal.condition === "healthy"
-                                    ? "text-green-600"
-                                  : "text-slate-600"
-                      }
-                    >
-                      {animal.condition}
+                    <span className="font-semibold capitalize"
+                      style={{ color: HEALTH_COLORS[animal.condition] || "#64748b" }}>
+                      {animal.condition?.replace("-", " ")}
                     </span>
                   </p>
                   {animal.gender && <p>Gender: {animal.gender}</p>}
