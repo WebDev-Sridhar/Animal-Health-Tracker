@@ -3,9 +3,74 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import MapComponent from "../components/MapComponent";
 import { animalsApi } from "../api/animals";
+import { apiClient } from "../api/client";
 
 const DEFAULT_CENTER = { lat: 12.9716, lng: 77.5946 };
-const DEFAULT_RADIUS = 10000; // 10km in meters
+const DEFAULT_RADIUS = 10000;
+
+const STATS = [
+  { icon: "🐕", value: "2,400+", label: "Animals Rescued" },
+  { icon: "📋", value: "5,800+", label: "Reports Submitted" },
+  { icon: "🏡", value: "1,200+", label: "Pets Adopted" },
+  { icon: "🤝", value: "800+", label: "Volunteers Active" },
+];
+
+const HOW_IT_WORKS = [
+  {
+    step: "01",
+    icon: "📸",
+    title: "Report",
+    desc: "Spot an injured or stray animal? Submit a quick report with a photo and location from anywhere in Tamil Nadu.",
+    borderColor: "#f0e8d8",
+    iconStyle: { background: "linear-gradient(135deg, #f6bd60, #e6a83c)" },
+  },
+  {
+    step: "02",
+    icon: "🚑",
+    title: "Rescue",
+    desc: "Our network of trained volunteers receives your report and rushes to help the animal get care and treatment.",
+    borderColor: "#d4e4e1",
+    iconStyle: { background: "linear-gradient(135deg, #84a59d, #6b8c85)" },
+  },
+  {
+    step: "03",
+    icon: "🏡",
+    title: "Adopt",
+    desc: "Once healthy, rescued animals are listed for adoption. Find your perfect companion and give them a forever home.",
+    borderColor: "#fde68a",
+    iconStyle: { background: "linear-gradient(135deg, #fbbf24, #f59e0b)" },
+  },
+];
+
+const PET_TIPS = [
+  { icon: "💉", title: "Keep Vaccinations Updated", desc: "Regular vaccinations protect your pet from rabies, parvovirus, and other diseases. Schedule yearly vet visits.", bg: "#f0f5f4" },
+  { icon: "🥗", title: "Balanced Nutrition", desc: "Feed age-appropriate food in measured portions. Avoid table scraps and toxic foods like onions and chocolate.", bg: "#fdf3de" },
+  { icon: "🏃", title: "Daily Exercise", desc: "Dogs need 30–60 min walks daily. Cats benefit from play sessions. Physical activity prevents obesity and stress.", bg: "#fef3c7" },
+];
+
+const TESTIMONIALS = [
+  {
+    name: "Priya Raman",
+    role: "Pet Adopter, Chennai",
+    avatar: "P",
+    avatarStyle: { background: "#d4e4e1", color: "#6b8c85" },
+    text: "Found the most adorable rescued indie dog through OurPetCare. The process was smooth and the volunteer who rescued him was so caring. Bruno is now the joy of our household!",
+  },
+  {
+    name: "Karthik Murugan",
+    role: "Volunteer, Coimbatore",
+    avatar: "K",
+    avatarStyle: { background: "#fdf3de", color: "#c4892a" },
+    text: "Being a volunteer here has been incredibly rewarding. The platform makes it so easy to manage rescues in my zone. I've helped over 30 animals find safety this year alone.",
+  },
+  {
+    name: "Deepa Shankar",
+    role: "Reporter, Madurai",
+    avatar: "D",
+    avatarStyle: { background: "#fef3c7", color: "#b45309" },
+    text: "I reported an injured street dog using the app and within 3 hours a volunteer was there. The dog got treatment and is now healthy and adopted. Amazing community work!",
+  },
+];
 
 export default function HomePage() {
   const [center, setCenter] = useState(DEFAULT_CENTER);
@@ -13,6 +78,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedAnimal, setSelectedAnimal] = useState(null);
+  const [featuredPets, setFeaturedPets] = useState([]);
 
   useEffect(() => {
     const fetchLocationAndAnimals = async () => {
@@ -41,10 +107,7 @@ export default function HomePage() {
         const res = await animalsApi.getNearby(lat, lng, DEFAULT_RADIUS);
         setAnimals(res.data || []);
       } catch (err) {
-        if (
-          err.message?.includes("401") ||
-          err.message?.toLowerCase().includes("authorized")
-        ) {
+        if (err.message?.includes("401") || err.message?.toLowerCase().includes("authorized")) {
           setError("Login to view animals on the map");
         } else {
           setError(err.message || "Failed to load animals");
@@ -58,169 +121,445 @@ export default function HomePage() {
     fetchLocationAndAnimals();
   }, []);
 
+  useEffect(() => {
+    apiClient.get("/reports/adoptions")
+      .then((res) => setFeaturedPets((res.data || []).slice(0, 3)))
+      .catch(() => {});
+  }, []);
+
   return (
-    <div className="space-y-8">
+    <div className="overflow-x-hidden">
       <Helmet>
         <title>OurPetCare - Animal Health Tracker in Tamil Nadu</title>
-        <meta
-          name="description"
-          content="Track animal health, report animal welfare concerns, and adopt rescued pets across Tamil Nadu with OurPetCare."
-        />
+        <meta name="description" content="Track animal health, report animal welfare concerns, and adopt rescued pets across Tamil Nadu with OurPetCare." />
       </Helmet>
-      {/* Hero Section */}
-      <section className="text-center py-12 fade-in-up">
-        <div className="card p-8 max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl mb-4 text-gray-800">
-            Care for Your Furry Friends
+
+      {/* ─── Hero Section ─── */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-10 pb-20">
+        {/* Background image */}
+        <img
+          src="https://images.unsplash.com/photo-1444212477490-ca407925329e?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Happy dog in nature"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(101, 127, 120, 0.88) 0%, rgba(70, 135, 119, 0.55) 60%, rgba(0,0,0,0.3) 100%)" }} />
+
+        {/* Floating paw prints */}
+        <div className="absolute top-16 left-10 text-4xl opacity-15 float-anim" style={{ animationDelay: "0s" }}>🐾</div>
+        <div className="absolute top-32 right-16 text-3xl opacity-15 float-anim" style={{ animationDelay: "1s" }}>🐾</div>
+        <div className="absolute bottom-24 left-20 text-2xl opacity-15 float-anim" style={{ animationDelay: "2s" }}>🐾</div>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center text-white fade-in-up">
+          {/* Tag */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold mb-6"
+            style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(8px)" }}>
+            <span>🐾</span>
+            <span>Animal Rescue Platform</span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight"
+            style={{ fontFamily: "'Fredoka', cursive", textShadow: "0 2px 20px rgba(255, 255, 255, 0.3)" }}>
+            Helping Animals Get
+            <br />
+            <span style={{ color: "#f6bd60" }}>Rescued, Treated</span>
+            <br />
+            & Adopted
           </h1>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join our community in monitoring and caring for domestic animals.
-            Track health conditions, report concerns, and help ensure every pet
-            gets the care they deserve.
+
+          <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed font-medium">
+            Join thousands of compassionate volunteers protecting animals across Tamil Nadu.
+            Report injured animals, track health, and find loving forever homes.
           </p>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/report" className="btn-primary">
-              Report a Pet
+            <Link to="/report" className="btn-orange text-base px-8 py-4">
+              Report Injured Animal
             </Link>
-            <Link to="/adoption" className="btn-secondary">
+            <Link
+              to="/adoption"
+              className="text-base px-8 py-4 rounded-full font-extrabold transition-all hover:scale-105"
+              style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(8px)", color: "white", border: "2.5px solid rgba(255,255,255,0.5)" }}
+            >
               Adopt a Pet
             </Link>
           </div>
+
+          {/* Quick Stats Bar */}
+          <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
+            {STATS.map((s) => (
+              <div key={s.label} className="text-center p-3 rounded-2xl"
+                style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)" }}>
+                <div className="text-2xl mb-1">{s.icon}</div>
+                <div className="text-xl font-extrabold text-white" style={{ fontFamily: "'Fredoka', cursive" }}>{s.value}</div>
+                <div className="text-xs text-white/80 font-semibold">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/60">
+          <span className="text-xs font-semibold">Scroll to explore</span>
+          <div className="w-5 h-8 rounded-full border-2 border-white/30 flex items-start justify-center pt-1.5">
+            <div className="w-1 h-2 rounded-full bg-white/60 animate-bounce" />
+          </div>
         </div>
       </section>
 
-      {/* Map Section */}
-      <section className="fade-in-up">
-        <div className="card p-6">
-          <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-                Pet Health Map
-              </h2>
-              <p className="text-gray-600">
-                Track and monitor pets by location in real-time
-              </p>
-            </div>
-            <Link to="/report" className="btn-primary">
-              Report Sighting
-            </Link>
+      {/* ─── How It Works ─── */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="section-tag">How It Works</span>
+            <h2 className="text-4xl md:text-5xl" style={{ fontFamily: "'Fredoka', cursive" }}>
+              Three Steps to Save a Life
+            </h2>
+            <p className="text-gray-500 mt-3 text-lg max-w-xl mx-auto">
+              Our streamlined process makes it easy for anyone to help animals in need.
+            </p>
           </div>
 
-          {error && (
-            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm fade-in-up">
-              <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+          <div className="grid md:grid-cols-3 gap-6 relative">
+            {/* Connector line */}
+            <div className="hidden md:block absolute top-14 left-1/6 right-1/6 h-0.5"
+              style={{ background: "linear-gradient(90deg, transparent, #84a59d, transparent)" }} />
+
+            {HOW_IT_WORKS.map((step, i) => (
+              <div key={step.step} className="card card-lift p-8 border-2 text-center fade-in-up" style={{ animationDelay: `${i * 0.15}s`, borderColor: step.borderColor }}>
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg" style={step.iconStyle}>
+                  <span className="text-3xl">{step.icon}</span>
+                </div>
+                <div className="text-xs font-extrabold text-gray-400 tracking-widest uppercase mb-2">
+                  Step {step.step}
+                </div>
+                <h3 className="text-2xl mb-3" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+                  {step.title}
+                </h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Pet Health Map ─── */}
+      <section className="py-20 px-6" style={{ background: "linear-gradient(135deg, #f0f5f4 0%, #e8f0ee 100%)" }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="section-tag">Live Map</span>
+            <h2 className="text-4xl md:text-5xl" style={{ fontFamily: "'Fredoka', cursive" }}>
+              Animal Health Map
+            </h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto">
+              Real-time tracking of reported animals near your location across Tamil Nadu.
+            </p>
+          </div>
+
+          <div className="card overflow-hidden">
+            <div className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ borderBottom: "1px solid #d4e4e1" }}>
+              <div>
+                <p className="font-bold text-gray-700">{animals.length} animals reported near you</p>
+                <p className="text-sm text-gray-500">Showing results within 10km radius</p>
+              </div>
+              <div className="flex gap-3">
+                <Link to="/report" className="btn-orange text-sm py-2 px-5">
+                  + Report Sighting
+                </Link>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mx-6 mt-4 p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm flex items-center gap-2">
+                <span className="text-lg">⚠️</span>
                 {error}
               </div>
+            )}
+
+            <div className="relative p-4">
+              {loading && (
+                <div className="absolute inset-4 z-10 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-xl">
+                  <div className="text-center">
+                    <div className="w-12 h-12 border-4 rounded-full animate-spin mx-auto mb-3" style={{ borderColor: "#d4e4e1", borderTopColor: "#84a59d" }} />
+                    <p className="text-gray-600 font-semibold">Loading animal health map...</p>
+                    <p className="text-gray-400 text-sm">Detecting your location</p>
+                  </div>
+                </div>
+              )}
+              <div className="rounded-2xl overflow-hidden shadow-inner">
+                <MapComponent
+                  center={center}
+                  animals={animals}
+                  height="480px"
+                  onMarkerClick={setSelectedAnimal}
+                />
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="px-6 pb-5 flex flex-wrap gap-3 justify-center">
+              {[
+                { color: "bg-green-500", label: "Healthy" },
+                { color: "bg-purple-600", label: "Sick" },
+                { color: "bg-amber-500", label: "Injured" },
+                { color: "bg-red-500", label: "Critical" },
+                { color: "bg-orange-500", label: "Aggressive" },
+                { color: "bg-blue-500", label: "For Adoption" },
+              ].map(({ color, label }) => (
+                <div key={label} className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-full">
+                  <div className={`w-3 h-3 rounded-full ${color}`} />
+                  <span className="text-xs font-semibold text-gray-600">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Featured Adoption Pets ─── */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="section-tag">Featured Pets</span>
+            <h2 className="text-4xl md:text-5xl" style={{ fontFamily: "'Fredoka', cursive" }}>
+              Animals Looking for a Home 
+            </h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto">
+              These rescued animals are healthy and ready to find their forever families.
+            </p>
+          </div>
+
+          {featuredPets.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-6 mb-10">
+              {featuredPets.map((pet, i) => (
+                <div key={pet._id} className="card card-lift overflow-hidden fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                  {pet.photo ? (
+                    <img src={pet.photo} alt={pet.animal?.species} className="w-full h-52 object-cover" />
+                  ) : (
+                    <div className="w-full h-52 flex items-center justify-center text-5xl"
+                      style={{ background: "linear-gradient(135deg, #f0f5f4, #d4e4e1)" }}>
+                      {pet.animal?.species === "cat" ? "🐱" : pet.animal?.species === "dog" ? "🐶" : "🐾"}
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-extrabold text-gray-800 capitalize text-lg"
+                        style={{ fontFamily: "'Fredoka', cursive" }}>
+                        {pet.animal?.species || "Animal"}
+                      </span>
+                      <span className="badge badge-teal">{pet.condition || "for-adoption"}</span>
+                    </div>
+                    <div className="space-y-1.5 text-sm text-gray-500 mb-4">
+                      <p>📍 {pet.zone || "Tamil Nadu"}</p>
+                      <p>💉 {pet.animal?.vaccinationStatus || "Unknown"}</p>
+                      <p>📅 {new Date(pet.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <Link to={`/pet/${pet._id}`} className="block text-center btn-primary text-sm py-2.5">
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-3 gap-6 mb-10">
+              {[
+                { emoji: "🐕", name: "Indie Dog", zone: "Chennai", tag: "Healthy", color: "from-teal-400 to-teal-500" },
+                { emoji: "🐈", name: "Rescue Cat", zone: "Coimbatore", tag: "For Adoption", color: "from-orange-400 to-orange-500" },
+                { emoji: "🐩", name: "Street Puppy", zone: "Madurai", tag: "Vaccinated", color: "from-amber-400 to-amber-500" },
+              ].map((pet, i) => (
+                <div key={i} className="card card-lift overflow-hidden fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <div className={`w-full h-52 bg-gradient-to-br ${pet.color} flex items-center justify-center`}>
+                    <span className="text-7xl">{pet.emoji}</span>
+                  </div>
+                  <div className="p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-extrabold text-gray-800 text-lg" style={{ fontFamily: "'Fredoka', cursive" }}>{pet.name}</span>
+                      <span className="badge badge-teal">{pet.tag}</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-4"> {pet.zone}</p>
+                    <Link to="/adoption" className="block text-center btn-primary text-sm py-2.5">
+                      Browse Pets
+                    </Link>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
-          <div className="relative">
-            {loading && (
-              <div className="absolute inset-0 z-1000 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-xl">
-                <div className="text-center">
-                  <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-2"></div>
-                  <span className="text-gray-600">
-                    Loading pet health map...
-                  </span>
-                </div>
-              </div>
-            )}
-            <MapComponent
-              center={center}
-              animals={animals}
-              height="500px"
-              onMarkerClick={setSelectedAnimal}
-              className="rounded-xl overflow-hidden"
-            />
+          <div className="text-center">
+            <Link to="/adoption" className="btn-secondary text-base px-8 py-3.5">
+              View All Adoption Listings →
+            </Link>
           </div>
+        </div>
+      </section>
 
-          {/* Legend */}
-          <div className="mt-6 flex flex-wrap gap-4 justify-center text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-green-500"></div>
-              <span className="text-gray-700">Healthy</span>
+      {/* ─── Animal Health Awareness ─── */}
+      <section className="py-20 px-6" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #0f766e 100%)" }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="text-white">
+              <span className="inline-block px-4 py-2 rounded-full text-sm font-bold mb-5"
+                style={{ background: "rgba(255,255,255,0.15)" }}>
+                🏥 Health Tracking
+              </span>
+              <h2 className="text-4xl md:text-5xl mb-6 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
+                Animal Health & Disease Monitoring
+              </h2>
+              <p className="text-teal-100 text-lg leading-relaxed mb-6">
+                OurPetCare tracks animal health conditions across Tamil Nadu using real-time reports. Our system monitors disease outbreaks, zoonotic risks, and animal welfare trends to help communities respond faster.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Real-time health status tracking by zone",
+                  "Zoonotic disease risk score monitoring",
+                  "Vaccination status awareness",
+                  "Admin analytics for health response teams",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-teal-100">
+                    <span className="mt-0.5 text-amber-400 font-extrabold">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-purple-600"></div>
-              <span className="text-gray-700">Sick</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-amber-500"></div>
-              <span className="text-gray-700">Injured</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-red-500"></div>
-              <span className="text-gray-700">Critical</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-orange-500"></div>
-              <span className="text-gray-700">Aggressive</span>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { icon: "🦠", label: "Disease Monitoring", desc: "Track health patterns across zones" },
+                { icon: "💉", label: "Vaccination Tracking", desc: "Monitor vaccine coverage rates" },
+                { icon: "📍", label: "Zone Risk Scores", desc: "Identify high-risk locations" },
+                { icon: "📊", label: "Health Analytics", desc: "Data-driven welfare decisions" },
+              ].map((item) => (
+                <div key={item.label} className="p-5 rounded-2xl"
+                  style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)" }}>
+                  <div className="text-3xl mb-3">{item.icon}</div>
+                  <div className="font-bold text-white text-sm mb-1">{item.label}</div>
+                  <div className="text-teal-200 text-xs">{item.desc}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="grid md:grid-cols-3 gap-6 fade-in-up">
-        <div className="card p-6 text-center">
-          <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg
-              className="w-6 h-6 text-pink-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
+      {/* ─── Pet Care Tips Preview ─── */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="section-tag section-tag-orange">Pet Care</span>
+            <h2 className="text-4xl md:text-5xl" style={{ fontFamily: "'Fredoka', cursive" }}>
+              Quick Pet Care Tips 
+            </h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto">
+              Keep your furry friends healthy and happy with these expert-backed tips.
+            </p>
           </div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">
-            {animals.length}
-          </h3>
-          <p className="text-gray-600">Pets Tracked</p>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-10">
+            {PET_TIPS.map((tip, i) => (
+              <div key={tip.title} className="card card-lift p-7 fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-md ${
+                  tip.color === "teal" ? "bg-teal-50" : tip.color === "orange" ? "bg-orange-50" : "bg-amber-50"
+                }`}>
+                  <span className="text-3xl">{tip.icon}</span>
+                </div>
+                <h3 className="text-xl mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>{tip.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{tip.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link to="/petcaretips" className="btn-secondary text-base px-8 py-3.5">
+              Read All Pet Care Tips →
+            </Link>
+          </div>
         </div>
-        <div className="card p-6 text-center">
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-6 h-6 text-blue-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
+      </section>
+
+      {/* ─── Volunteer CTA ─── */}
+      <section className="py-16 px-6" style={{ background: "linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="card p-10 md:p-14 text-center"
+            style={{ background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)" }}>
+            <div className="text-5xl mb-4 float-anim">🤝</div>
+            <h2 className="text-4xl md:text-5xl mb-4 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
+              Join Our Volunteer Network
+            </h2>
+            <p className="text-orange-100 text-lg mb-8 max-w-2xl mx-auto">
+              Make a real difference in animals' lives. Volunteer rescuers get access to a dedicated dashboard to manage rescue missions in their zone.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/register"
+                className="px-8 py-4 rounded-full font-extrabold text-orange-700 bg-white hover:bg-orange-50 transition-all hover:scale-105 shadow-lg text-base">
+                Become a Volunteer
+              </Link>
+              <Link to="/strayanimalrescue"
+                className="px-8 py-4 rounded-full font-extrabold text-white border-2 border-white/50 hover:bg-white/15 transition-all hover:scale-105 text-base">
+                Learn About Rescue
+              </Link>
+            </div>
           </div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">24/7</h3>
-          <p className="text-gray-600">Care Monitoring</p>
         </div>
-        <div className="card p-6 text-center">
-          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-6 h-6 text-purple-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
-            </svg>
+      </section>
+
+      {/* ─── Testimonials ─── */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="section-tag">Community Stories</span>
+            <h2 className="text-4xl md:text-5xl" style={{ fontFamily: "'Fredoka', cursive" }}>
+              Stories That Warm the Heart 
+            </h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto">
+              Real experiences from our community of adopters, volunteers, and reporters.
+            </p>
           </div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">100+</h3>
-          <p className="text-gray-600">Pet Owners</p>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={t.name} className="card p-7 fade-in-up" style={{ animationDelay: `${i * 0.12}s` }}>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-lg ${t.color}`}>
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <p className="font-extrabold text-gray-800">{t.name}</p>
+                    <p className="text-xs text-gray-500">{t.role}</p>
+                  </div>
+                </div>
+                <div className="text-3xl text-teal-200 mb-2">"</div>
+                <p className="text-gray-600 text-sm leading-relaxed italic">{t.text}</p>
+                <div className="mt-4 flex gap-0.5">
+                  {Array(5).fill(0).map((_, si) => (
+                    <span key={si} className="text-amber-400 text-sm">★</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Bottom CTA Banner ─── */}
+      <section className="py-20 px-6" style={{ background: "linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%)" }}>
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="text-5xl mb-4"></div>
+          <h2 className="text-4xl md:text-5xl mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+            Spotted an Injured Animal?
+          </h2>
+          <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+            Don't scroll past. A quick 2-minute report could save an animal's life. Our volunteers are ready to respond.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/report" className="btn-orange text-base px-10 py-4 pulse-glow">
+              Report Now — It's Free
+            </Link>
+            <Link to="/animalfirstaid" className="btn-secondary text-base px-8 py-4">
+              First Aid Guide
+            </Link>
+          </div>
         </div>
       </section>
     </div>

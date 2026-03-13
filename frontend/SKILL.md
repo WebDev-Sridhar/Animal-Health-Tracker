@@ -1,42 +1,391 @@
+# Frontend Skills & Design Standards
+Project: OurPetCare
+Type: React + Tailwind Animal Rescue Platform
+
+This document defines the frontend design capabilities and standards required to redesign the UI of the OurPetCare website while preserving existing application logic and SEO.
+
 ---
-name: frontend-design
-description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics.
-license: Complete terms in LICENSE.txt
+
+# Core Frontend Stack
+
+The frontend developer must be skilled in:
+
+- React (component architecture)
+- React Router
+- TailwindCSS
+- Responsive design
+- Accessible UI
+- SEO-friendly frontend development
+- Component design systems
+- Micro animations
+
+The developer must NOT modify backend logic, API endpoints, database structure, or routing logic.
+
+Only visual layout and UI improvements are allowed.
+
 ---
 
-This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
+# UI Design Philosophy
 
-The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
+The website must feel:
 
-## Design Thinking
+• friendly  
+• playful  
+• modern  
+• trustworthy  
+• easy to use  
 
-Before coding, understand the context and commit to a BOLD aesthetic direction:
-- **Purpose**: What problem does this interface solve? Who uses it?
-- **Tone**: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.
-- **Constraints**: Technical requirements (framework, performance, accessibility).
-- **Differentiation**: What makes this UNFORGETTABLE? What's the one thing someone will remember?
+The design should be inspired by pet care apps and community platforms.
 
-**CRITICAL**: Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work - the key is intentionality, not intensity.
+Avoid generic SaaS dashboards.
 
-Then implement working code (HTML/CSS/JS, React, Vue, etc.) that is:
-- Production-grade and functional
-- Visually striking and memorable
-- Cohesive with a clear aesthetic point-of-view
-- Meticulously refined in every detail
+The interface must feel welcoming for people reporting injured animals or adopting pets.
 
-## Frontend Aesthetics Guidelines
+---
 
-Focus on:
-- **Typography**: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics; unexpected, characterful font choices. Pair a distinctive display font with a refined body font.
-- **Color & Theme**: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes.
-- **Motion**: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. Use scroll-triggering and hover states that surprise.
-- **Spatial Composition**: Unexpected layouts. Asymmetry. Overlap. Diagonal flow. Grid-breaking elements. Generous negative space OR controlled density.
-- **Backgrounds & Visual Details**: Create atmosphere and depth rather than defaulting to solid colors. Add contextual effects and textures that match the overall aesthetic. Apply creative forms like gradient meshes, noise textures, geometric patterns, layered transparencies, dramatic shadows, decorative borders, custom cursors, and grain overlays.
+# Design Style
 
-NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.
+The theme should be:
 
-Interpret creatively and make unexpected choices that feel genuinely designed for the context. No design should be the same. Vary between light and dark themes, different fonts, different aesthetics. NEVER converge on common choices (Space Grotesk, for example) across generations.
+Minimal + Cartoon Inspired
 
-**IMPORTANT**: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
+Elements should include:
 
-Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.
+• rounded corners
+• soft shadows
+• playful icons
+• smooth animations
+• illustrated animal elements
+
+Avoid harsh colors and rigid layouts.
+
+The experience should feel warm and humane.
+
+---
+
+# Color System
+
+Use a consistent palette across the website.
+
+Primary Color  
+soft teal / pet clinic green
+
+Secondary Color  
+warm orange or coral
+
+Accent Colors  
+light yellow  
+sky blue
+
+Background  
+soft off-white or light pastel
+
+All buttons must use the same primary color.
+
+---
+
+# Typography
+
+Use friendly modern fonts.
+
+Recommended fonts:
+
+Poppins  
+Nunito  
+Baloo 2  
+Fredoka
+
+Rules:
+
+Headings  
+bold and playful
+
+Body text  
+clean and readable
+
+Avoid system fonts like Arial or Times.
+
+---
+
+# Component Design System
+
+All UI must follow reusable components.
+
+Components required:
+
+Button  
+Card  
+Input  
+Badge  
+Alert  
+Section Header  
+Navbar  
+Footer
+
+All components must follow consistent:
+
+• border radius
+• spacing
+• shadows
+• hover effects
+
+Buttons must have:
+
+Primary
+Secondary
+Outline
+
+variants.
+
+---
+
+# Layout System
+
+Use a clean spacing system.
+
+Spacing scale example:
+
+8px
+16px
+24px
+32px
+48px
+64px
+
+Sections should have clear vertical rhythm.
+
+Avoid cramped layouts.
+
+---
+
+# Image Strategy
+
+The site must include strong visual storytelling.
+
+Images should come from Unsplash.
+
+Image categories:
+
+dogs  
+cats  
+pet adoption  
+animal rescue  
+veterinary care  
+pet families  
+
+Images must include overlay text where appropriate.
+
+Hero sections should include full width images.
+
+Use gradient overlays to maintain text readability.
+
+---
+
+# Homepage Structure
+
+The homepage must be content rich.
+
+Sections required:
+
+Hero Section
+
+Large banner image  
+Overlay text explaining the mission  
+CTA buttons:
+Report Injured Animal
+Adopt a Pet
+
+How It Works
+
+3 step process:
+
+Report  
+Rescue  
+Adoption
+
+Featured Adoption Pets
+
+Show animal cards.
+
+Animal Health Awareness
+
+Explain disease monitoring and risk tracking.
+
+Community Impact
+
+Show statistics:
+
+Animals rescued  
+Reports submitted  
+Pets adopted  
+
+Pet Care Tips
+
+Preview blog or tips.
+
+Volunteer Section
+
+Encourage community participation.
+
+Call to Action Banner
+
+Encourage reporting injured animals.
+
+Testimonials
+
+Stories from adopters or volunteers.
+
+Footer
+
+Include navigation links and contact information.
+
+---
+
+# Adoption Page Design
+
+Animal cards must include:
+
+pet image  
+species  
+health condition  
+vaccination status  
+location  
+posted date  
+
+Actions:
+
+Get Directions
+WhatsApp
+Call Rescuer
+View Pet Details
+
+Cards must feel friendly and easy to scan.
+
+---
+
+# Pet Details Page
+
+Must include detailed sections:
+
+Hero image  
+Pet profile  
+Health information  
+Rescue description  
+Adoption instructions  
+Location map  
+Contact rescuer  
+
+Also include:
+
+Pet care advice  
+Why adoption matters  
+
+The page must feel informative and trustworthy.
+
+---
+
+# Report Animal Page
+
+The report form should be simplified and welcoming.
+
+Include:
+
+icons
+step guidance
+helpful instructions
+
+Users should feel confident reporting animals.
+
+---
+
+# Dashboard UI
+
+Volunteer and admin dashboards should be clean and minimal.
+
+Focus on readability and usability.
+
+Avoid overly decorative design here.
+
+---
+
+# Animation Guidelines
+
+Use subtle animations:
+
+hover effects  
+card lift  
+smooth transitions  
+
+Avoid heavy motion effects.
+
+Animations should enhance usability.
+
+---
+
+# Responsiveness
+
+The UI must work well on:
+
+Desktop
+Tablet
+Mobile
+
+Mobile layout should feel like a modern pet application.
+
+Cards should stack vertically.
+
+Navigation should collapse into a mobile menu.
+
+---
+
+# Accessibility
+
+Follow accessibility best practices:
+
+clear contrast
+large clickable buttons
+readable text
+keyboard accessible UI
+
+---
+
+# SEO Preservation
+
+All existing SEO tags must remain unchanged.
+
+Do not remove:
+
+meta tags
+structured data
+page titles
+helmet configurations
+
+SEO logic must remain intact.
+
+---
+
+# Development Rule
+
+Never change:
+
+API calls
+database logic
+authentication logic
+routing structure
+
+Only redesign the visual layer.
+
+---
+
+# Final Goal
+
+The final UI should feel like a modern animal rescue platform.
+
+The experience should be:
+
+clean
+friendly
+consistent
+visually engaging
+
+Users should feel encouraged to help animals, report injuries, and adopt pets.

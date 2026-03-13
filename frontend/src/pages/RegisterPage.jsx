@@ -15,6 +15,7 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -38,157 +39,158 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-8">
+    <div className="min-h-[92vh] flex">
       <Helmet>
         <title>Create Account | OurPetCare</title>
-        <meta
-          name="description"
-          content="Register for OurPetCare to report animal welfare concerns and help protect animals in Tamil Nadu."
-        />
+        <meta name="description" content="Register for OurPetCare to report animal welfare concerns and help protect animals in Tamil Nadu." />
       </Helmet>
-      <div className="card p-8 w-full max-w-md fade-in-up">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-linear-to-br from-pink-300 to-purple-300 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Join Our Community
-          </h1>
-          <p className="text-gray-600">Become part of the pet care movement</p>
-        </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              {error}
-            </div>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              placeholder="Enter your full name"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              minLength={6}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              placeholder="Create a password (min 6 characters)"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Role
-            </label>
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-            >
-              <option value="public">Public User</option>
-              <option value="volunteer">Volunteer</option>
-              {/* <option value="admin">Administrator</option> */}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Zone/Area
-            </label>
-            <input
-              type="text"
-              name="zone"
-              value={form.zone}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              placeholder="Your location or zone"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Phone Number (Optional)
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              placeholder="Your phone number"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                Creating Account...
-              </div>
-            ) : (
-              "Create Account"
-            )}
-          </button>
-        </form>
-
-        <div className="mt-8 text-center">
-          <p className="text-gray-600">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-purple-600 hover:text-purple-700 font-semibold transition-colors"
-            >
-              Sign in here
+      {/* Left: Form */}
+      <div className="flex-1 flex items-center justify-center px-6 py-10">
+        <div className="w-full max-w-md fade-in-up">
+          {/* Header */}
+          <div className="mb-8">
+            <Link to="/" className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 text-sm font-bold mb-6 transition-colors">
+              ← Back to Home
             </Link>
+            <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+              Join OurPetCare 🐾
+            </h1>
+            <p className="text-gray-500">
+              Already have an account?{" "}
+              <Link to="/login" className="text-teal-600 hover:text-teal-700 font-extrabold transition-colors">
+                Sign in →
+              </Link>
+            </p>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm flex items-center gap-3">
+              <span className="text-xl">⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">Full Name</label>
+              <input
+                type="text" name="name" value={form.name} onChange={handleChange} required
+                className="input-field" placeholder="Enter your full name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">Email Address</label>
+              <input
+                type="email" name="email" value={form.email} onChange={handleChange} required
+                className="input-field" placeholder="Enter your email"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password" value={form.password} onChange={handleChange}
+                  required minLength={6}
+                  className="input-field pr-12"
+                  placeholder="Create a password (min 6 characters)"
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">I want to join as</label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: "public", label: "🌍 Public User", desc: "Report & adopt" },
+                  { value: "volunteer", label: "🤝 Volunteer", desc: "Rescue animals" },
+                ].map((r) => (
+                  <label key={r.value}
+                    className={`p-3 rounded-2xl border-2 cursor-pointer transition-all ${
+                      form.role === r.value ? "border-teal-500 bg-teal-50" : "border-gray-200 hover:border-teal-200"
+                    }`}>
+                    <input type="radio" name="role" value={r.value}
+                      checked={form.role === r.value} onChange={handleChange} className="sr-only" />
+                    <div className="font-bold text-sm text-gray-800">{r.label}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">{r.desc}</div>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">Zone / Area</label>
+              <input
+                type="text" name="zone" value={form.zone} onChange={handleChange}
+                className="input-field" placeholder="Your city or area (e.g. Chennai, Coimbatore)"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">Phone Number</label>
+              <input
+                type="tel" name="phone" value={form.phone} onChange={handleChange}
+                className="input-field" placeholder="Your phone number"
+              />
+            </div>
+
+            <button type="submit" disabled={loading}
+              className="w-full btn-primary py-3.5 text-base disabled:opacity-50 disabled:cursor-not-allowed mt-2">
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Creating Account...
+                </span>
+              ) : (
+                "Create My Account 🐾"
+              )}
+            </button>
+          </form>
+
+          <p className="text-xs text-gray-400 text-center mt-5">
+            By joining, you agree to help protect animals and follow responsible reporting guidelines.
           </p>
+        </div>
+      </div>
+
+      {/* Right: Visual Panel */}
+      <div className="hidden lg:flex lg:w-2/5 relative overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #ea580c 0%, #f97316 60%, #fb923c 100%)" }}>
+        <img
+          src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80"
+          alt="Two dogs"
+          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-25"
+        />
+        <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white text-center">
+          <div className="text-6xl mb-6 float-anim">🐶</div>
+          <h2 className="text-3xl font-bold mb-4 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
+            Be a Hero for Animals
+          </h2>
+          <p className="text-orange-100 leading-relaxed max-w-xs">
+            Your account gives you the power to report injuries, adopt rescued pets, and join a caring community.
+          </p>
+          <div className="mt-8 space-y-3 w-full max-w-xs">
+            {[
+              "🐾 Report injured animals instantly",
+              "🏡 Browse pets available for adoption",
+              "📊 Track your rescue impact",
+              "🤝 Connect with local volunteers",
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-3 p-3 rounded-xl text-sm text-left"
+                style={{ background: "rgba(255,255,255,0.15)" }}>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

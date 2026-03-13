@@ -9,6 +9,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,106 +31,142 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center px-4">
+    <div className="min-h-[92vh] flex">
       <Helmet>
         <title>Sign In | OurPetCare</title>
-        <meta
-          name="description"
-          content="Sign in to your OurPetCare account to track animal health and contribute to animal welfare."
-        />
+        <meta name="description" content="Sign in to your OurPetCare account to track animal health and contribute to animal welfare." />
       </Helmet>
-      <div className="card p-8 w-full max-w-md fade-in-up">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-linear-to-br from-pink-300 to-purple-300 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-              <path
-                fillRule="evenodd"
-                d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 019.816 3H9a1 1 0 00-.812.47l-1.018 1.623A10.005 10.005 0 001.664 10.59zM13.196 12.227a10.003 10.003 0 01-4.25-4.25l1.623-1.018A1 1 0 0012.53 5.812h1.623a10.004 10.004 0 01-7.592 7.592l-1.018-1.623a10.003 10.003 0 014.25-4.25l-.815-1.302a1 1 0 00-1.725.05l-1.3.206a10.002 10.002 0 01-3.32-3.32l.206-1.3a1 1 0 00-.05-1.725L3.47.812A1 1 0 002.66.47H1.037a10.004 10.004 0 017.592-7.592L9.247 3.88a1 1 0 001.725-.05l1.302.815a10.003 10.003 0 014.25 4.25l1.623-1.018A1 1 0 0019.53 7.47h1.623a10.004 10.004 0 01-7.592 7.592l-1.018-1.623a10.003 10.003 0 01-4.25-4.25l1.302-.815a1 1 0 00.05-1.725l-1.3-.206a10.002 10.002 0 01-3.32 3.32l-.206 1.3a1 1 0 00.05 1.725l1.302.815z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Welcome Back
-          </h1>
-          <p className="text-gray-600">
-            Sign in to continue caring for your pets
+
+      {/* Left: Visual Panel */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 60%, #14b8a6 100%)" }}>
+        <img
+          src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?auto=format&fit=crop&w=900&q=80"
+          alt="Person with dog"
+          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30"
+        />
+        <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white text-center">
+          <div className="text-7xl mb-6 float-anim">🐾</div>
+          <h2 className="text-4xl font-bold mb-4 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
+            Welcome Back to OurPetCare
+          </h2>
+          <p className="text-teal-100 text-lg leading-relaxed max-w-sm">
+            Every login brings you one step closer to helping animals in need. Your community is waiting.
           </p>
-        </div>
-
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              {error}
-            </div>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-              placeholder="Enter your password"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                Signing In...
+          <div className="mt-10 grid grid-cols-2 gap-4 w-full max-w-xs">
+            {[
+              { icon: "🐕", label: "2,400+ Rescued" },
+              { icon: "🏡", label: "1,200+ Adopted" },
+              { icon: "🤝", label: "800+ Volunteers" },
+              { icon: "📋", label: "5,800+ Reports" },
+            ].map((s) => (
+              <div key={s.label} className="p-3 rounded-2xl text-center" style={{ background: "rgba(255,255,255,0.12)" }}>
+                <div className="text-2xl mb-1">{s.icon}</div>
+                <div className="text-xs font-bold text-teal-100">{s.label}</div>
               </div>
-            ) : (
-              "Sign In"
-            )}
-          </button>
-        </form>
+            ))}
+          </div>
+        </div>
+      </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-gray-600">
-            New to PetCare Companion?{" "}
-            <Link
-              to="/register"
-              className="text-purple-600 hover:text-purple-700 font-semibold transition-colors"
-            >
-              Join our community
+      {/* Right: Form */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md fade-in-up">
+          {/* Header */}
+          <div className="mb-8">
+            <Link to="/" className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 text-sm font-bold mb-6 transition-colors">
+              ← Back to Home
             </Link>
-          </p>
+            <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+              Sign In
+            </h1>
+            <p className="text-gray-500">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-teal-600 hover:text-teal-700 font-extrabold transition-colors">
+                Join our community →
+              </Link>
+            </p>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm flex items-center gap-3">
+              <span className="text-xl">⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">
+                Email Address
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="input-field"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="input-field pr-12"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary py-3.5 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Signing In...
+                </span>
+              ) : (
+                "Sign In to OurPetCare"
+              )}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="paw-divider mt-8">
+            <span className="text-gray-400 text-sm font-semibold px-3 text-center">
+              🐾 Every account helps animals
+            </span>
+          </div>
+
+          {/* Info */}
+          <div className="mt-6 p-4 rounded-2xl text-sm text-center" style={{ background: "#f0fdfa" }}>
+            <p className="text-teal-700 font-semibold">
+              New to OurPetCare?{" "}
+              <Link to="/register" className="text-teal-600 hover:text-teal-800 font-extrabold underline underline-offset-2">
+                Create a free account
+              </Link>{" "}
+              and start helping animals today.
+            </p>
+          </div>
         </div>
       </div>
     </div>

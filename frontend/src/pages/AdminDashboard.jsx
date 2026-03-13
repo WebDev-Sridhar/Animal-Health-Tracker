@@ -1,37 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
+  Chart as ChartJS, CategoryScale, LinearScale, BarElement,
+  ArcElement, Title, Tooltip, Legend,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { apiClient } from "../api/client";
 import { analyticsApi } from "../api/analytics";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
 const CHART_COLORS = {
-  healthy: "#22c55e",
-  sick: "#8b5cf6",
-  critical: "#ef4444",
-  injured: "#f59e0b",
-  "vaccination-needed": "#3b82f6",
-  aggressive: "#f97316",
-  "for-adoption": "#10b981",
+  healthy: "#22c55e", sick: "#8b5cf6", critical: "#ef4444",
+  injured: "#f59e0b", "vaccination-needed": "#3b82f6",
+  aggressive: "#f97316", "for-adoption": "#10b981",
 };
 
 export default function AdminDashboard() {
@@ -53,9 +35,7 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [fetchAnalytics]);
+  useEffect(() => { fetchAnalytics(); }, [fetchAnalytics]);
 
   const recalculateRisk = async () => {
     setRecalcLoading(true);
@@ -71,223 +51,206 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto flex items-center justify-center min-h-75">
-        <span className="text-slate-500">Loading analytics...</span>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-gradient)" }}>
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-600 font-semibold">Loading analytics...</p>
+        </div>
       </div>
     );
   }
 
   if (error && !analytics) {
     return (
-      <div className="max-w-6xl mx-auto">
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
-          {error}
+      <div className="max-w-4xl mx-auto px-6 py-10">
+        <div className="p-5 bg-red-50 border border-red-200 rounded-2xl text-red-800 flex items-center gap-3">
+          <span className="text-2xl">⚠️</span>
+          <span>{error}</span>
         </div>
       </div>
     );
   }
 
-  const stats = [
-    {
-      label: "Total Animals",
-      value: analytics?.totalAnimals ?? 0,
-      color: "bg-slate-600",
-    },
-    {
-      label: "Sick Animals",
-      value: analytics?.sickAnimals ?? 0,
-      color: "bg-amber-500",
-    },
-    {
-      label: "Vaccinated",
-      value: analytics?.vaccinatedAnimals ?? 0,
-      color: "bg-emerald-500",
-    },
-    {
-      label: "Reports This Week",
-      value: analytics?.reportsThisWeek ?? 0,
-      color: "bg-blue-500",
-    },
+  const statCards = [
+    { label: "Total Animals", value: analytics?.totalAnimals ?? 0, emoji: "🐾", color: "from-teal-500 to-teal-600" },
+    { label: "Sick Animals", value: analytics?.sickAnimals ?? 0, emoji: "🤒", color: "from-amber-400 to-amber-500" },
+    { label: "Vaccinated", value: analytics?.vaccinatedAnimals ?? 0, emoji: "💉", color: "from-green-500 to-green-600" },
+    { label: "Reports This Week", value: analytics?.reportsThisWeek ?? 0, emoji: "📋", color: "from-blue-500 to-blue-600" },
   ];
 
   const healthData = {
-    labels: Object.keys(analytics?.healthBreakdown ?? {}).map(
-      (k) => k.charAt(0).toUpperCase() + k.slice(1),
-    ),
-    datasets: [
-      {
-        data: Object.values(analytics?.healthBreakdown ?? {}),
-        backgroundColor: Object.keys(analytics?.healthBreakdown ?? {}).map(
-          (k) => CHART_COLORS[k] || CHART_COLORS.unknown,
-        ),
-        borderWidth: 0,
-      },
-    ],
+    labels: Object.keys(analytics?.healthBreakdown ?? {}).map((k) => k.charAt(0).toUpperCase() + k.slice(1)),
+    datasets: [{
+      data: Object.values(analytics?.healthBreakdown ?? {}),
+      backgroundColor: Object.keys(analytics?.healthBreakdown ?? {}).map((k) => CHART_COLORS[k] || "#6b7280"),
+      borderWidth: 0,
+    }],
   };
 
   const zoneData = {
     labels: (analytics?.zones ?? []).map((z) => z.name),
-    datasets: [
-      {
-        label: "Risk Score",
-        data: (analytics?.zones ?? []).map((z) => z.riskScore),
-        backgroundColor: (analytics?.zones ?? []).map((z) =>
-          z.riskScore >= 80
-            ? "#ef4444"
-            : z.riskScore >= 50
-              ? "#f59e0b"
-              : "#22c55e",
-        ),
-        borderRadius: 4,
-      },
-    ],
+    datasets: [{
+      label: "Risk Score",
+      data: (analytics?.zones ?? []).map((z) => z.riskScore),
+      backgroundColor: (analytics?.zones ?? []).map((z) =>
+        z.riskScore >= 80 ? "#ef4444" : z.riskScore >= 50 ? "#f59e0b" : "#22c55e"
+      ),
+      borderRadius: 8,
+    }],
   };
 
   const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: "bottom" },
-    },
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: "bottom", labels: { font: { family: "Nunito", size: 12 } } } },
   };
 
   const barOptions = {
     ...chartOptions,
     scales: {
-      y: {
-        beginAtZero: true,
-        max: 100,
-      },
+      y: { beginAtZero: true, max: 100, grid: { color: "rgba(0,0,0,0.05)" } },
+      x: { grid: { display: false } },
     },
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="overflow-x-hidden" style={{ background: "var(--bg-gradient)" }}>
       <Helmet>
         <title>Admin Dashboard | OurPetCare</title>
-        <meta
-          name="description"
-          content="Monitor animal health statistics and reports across all of Tamil Nadu."
-        />
+        <meta name="description" content="Monitor animal health statistics and reports across all of Tamil Nadu." />
       </Helmet>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <h1 className="text-2xl font-semibold text-slate-800">
-          Admin Analytics Dashboard
-        </h1>
-        <div className="flex gap-2">
-          <button
-            onClick={fetchAnalytics}
-            className="px-4 py-2 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 text-sm"
-          >
-            Refresh
-          </button>
-          <button
-            onClick={recalculateRisk}
-            disabled={recalcLoading}
-            className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 disabled:opacity-50 text-sm"
-          >
-            {recalcLoading ? "Recalculating..." : "Recalc Zone Risk"}
-          </button>
-        </div>
-      </div>
 
-      {error && (
-        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
-          {error}
-        </div>
-      )}
-
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm"
-          >
-            <p className="text-sm text-slate-500 mb-1">{stat.label}</p>
-            <p className="text-2xl font-semibold text-slate-800">
-              {stat.value}
-            </p>
-            <div className={`mt-2 h-1 w-12 rounded ${stat.color}`} />
+      {/* ─── Header ─── */}
+      <div className="py-10 px-6" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
+              style={{ background: "rgba(255,255,255,0.2)" }}>⚙️</div>
+            <div>
+              <h1 className="text-3xl font-bold text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
+                Admin Analytics
+              </h1>
+              <p className="text-teal-100 text-sm">Tamil Nadu animal health overview</p>
+            </div>
           </div>
-        ))}
+          <div className="flex gap-2">
+            <button onClick={fetchAnalytics}
+              className="px-4 py-2.5 rounded-full text-sm font-extrabold bg-white/20 text-white hover:bg-white/30 transition-all">
+              🔄 Refresh
+            </button>
+            <button onClick={recalculateRisk} disabled={recalcLoading}
+              className="px-4 py-2.5 rounded-full text-sm font-extrabold text-teal-700 bg-white hover:bg-teal-50 transition-all disabled:opacity-60">
+              {recalcLoading ? "Recalculating..." : "⚡ Recalc Zone Risk"}
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Charts */}
-      <div className="grid lg:grid-cols-2 gap-8">
-        <div className="bg-white border border-slate-200 rounded-lg p-6 shadow-sm">
-          <h2 className="text-lg font-medium text-slate-800 mb-4">
-            Health Status Breakdown
-          </h2>
-          <div className="h-64">
-            {Object.keys(analytics?.healthBreakdown ?? {}).length > 0 ? (
-              <Doughnut data={healthData} options={chartOptions} />
-            ) : (
-              <p className="text-slate-500 flex items-center justify-center h-full">
-                No animal data
+      <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
+        {error && (
+          <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm flex items-center gap-2">
+            <span className="text-xl">⚠️</span> {error}
+          </div>
+        )}
+
+        {/* Stat Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {statCards.map((stat) => (
+            <div key={stat.label} className="card p-5 text-center">
+              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center mx-auto mb-3 text-2xl shadow-md`}>
+                {stat.emoji}
+              </div>
+              <p className="text-3xl font-extrabold text-gray-800 mb-1" style={{ fontFamily: "'Fredoka', cursive" }}>
+                {stat.value}
               </p>
-            )}
+              <p className="text-xs text-gray-500 font-bold uppercase tracking-wide">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Charts */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="card p-6">
+            <h2 className="text-xl font-bold mb-5" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+              🏥 Health Status Breakdown
+            </h2>
+            <div className="h-64">
+              {Object.keys(analytics?.healthBreakdown ?? {}).length > 0 ? (
+                <Doughnut data={healthData} options={chartOptions} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400 font-semibold">
+                  No animal data yet
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="card p-6">
+            <h2 className="text-xl font-bold mb-5" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+              📍 Zone Risk Scores
+            </h2>
+            <div className="h-64">
+              {(analytics?.zones ?? []).length > 0 ? (
+                <Bar data={zoneData} options={barOptions} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-center">
+                  <div>
+                    <p className="text-gray-400 font-semibold">No zone data available.</p>
+                    <button onClick={recalculateRisk} className="mt-3 btn-primary text-sm py-2 px-5">
+                      Run Recalculation
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-lg p-6 shadow-sm">
-          <h2 className="text-lg font-medium text-slate-800 mb-4">
-            Zone Risk Scores
-          </h2>
-          <div className="h-64">
-            {(analytics?.zones ?? []).length > 0 ? (
-              <Bar data={zoneData} options={barOptions} />
-            ) : (
-              <p className="text-slate-500 flex items-center justify-center h-full">
-                No zone data. Run recalculation.
-              </p>
-            )}
+        {/* Zone Table */}
+        {(analytics?.zones ?? []).length > 0 && (
+          <div className="card overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-100">
+              <h2 className="text-xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+                📊 Zone Risk Details
+              </h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="text-left px-6 py-3 font-extrabold text-gray-600 uppercase tracking-wider text-xs">Zone</th>
+                    <th className="text-left px-6 py-3 font-extrabold text-gray-600 uppercase tracking-wider text-xs">Risk Score</th>
+                    <th className="text-left px-6 py-3 font-extrabold text-gray-600 uppercase tracking-wider text-xs">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {analytics.zones.map((z, i) => (
+                    <tr key={z.name} className={`border-b border-gray-50 transition-colors hover:bg-teal-50/30 ${i % 2 === 0 ? "" : "bg-gray-50/30"}`}>
+                      <td className="px-6 py-3.5 font-bold text-gray-800">{z.name}</td>
+                      <td className="px-6 py-3.5">
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1 max-w-24 bg-gray-100 rounded-full h-2">
+                            <div className="h-2 rounded-full transition-all"
+                              style={{
+                                width: `${z.riskScore}%`,
+                                background: z.riskScore >= 80 ? "#ef4444" : z.riskScore >= 50 ? "#f59e0b" : "#22c55e"
+                              }} />
+                          </div>
+                          <span className="font-extrabold text-gray-700">{z.riskScore}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-3.5">
+                        <span className={`badge text-xs ${z.riskScore >= 80 ? "badge-red" : z.riskScore >= 50 ? "badge-amber" : "badge-green"}`}>
+                          {z.riskScore >= 80 ? "🔴 High Risk" : z.riskScore >= 50 ? "🟡 Medium" : "🟢 Low"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
       </div>
-
-      {/* Zone table */}
-      {(analytics?.zones ?? []).length > 0 && (
-        <div className="mt-8 bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-          <h2 className="text-lg font-medium text-slate-800 px-6 pt-6 pb-2">
-            Zone Risk Details
-          </h2>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="text-left px-6 py-3">Zone</th>
-                <th className="text-left px-6 py-3">Risk Score</th>
-                <th className="text-left px-6 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {analytics.zones.map((z) => (
-                <tr key={z.name} className="border-b border-slate-100">
-                  <td className="px-6 py-3">{z.name}</td>
-                  <td className="px-6 py-3">{z.riskScore}</td>
-                  <td className="px-6 py-3">
-                    <span
-                      className={
-                        z.riskScore >= 80
-                          ? "text-red-600 font-medium"
-                          : z.riskScore >= 50
-                            ? "text-amber-600"
-                            : "text-slate-500"
-                      }
-                    >
-                      {z.riskScore >= 80
-                        ? "High Risk"
-                        : z.riskScore >= 50
-                          ? "Medium"
-                          : "Low"}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import Footer from "../components/Footer";
@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 export default function MainLayout() {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -13,237 +14,162 @@ export default function MainLayout() {
     navigate("/login");
   };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{ background: "var(--bg-gradient)" }}
-    >
-      <nav className="bg-white/80 backdrop-blur-md border-b border-white/20 px-6 py-4 shadow-lg">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link
-            to="/"
-            className="flex items-center gap-3 group"
-            onClick={closeMobileMenu}
-          >
-            <div className="w-10 h-10 bg-linear-to-br from-pink-300 to-purple-300 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-              <svg
-                className="w-6 h-6 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-                <path
-                  fillRule="evenodd"
-                  d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 019.816 3H9a1 1 0 00-.812.47l-1.018 1.623A10.005 10.005 0 001.664 10.59zM13.196 12.227a10.003 10.003 0 01-4.25-4.25l1.623-1.018A1 1 0 0012.53 5.812h1.623a10.004 10.004 0 01-7.592 7.592l-1.018-1.623a10.003 10.003 0 014.25-4.25l-.815-1.302a1 1 0 00-1.725.05l-1.3.206a10.002 10.002 0 01-3.32-3.32l.206-1.3a1 1 0 00-.05-1.725L3.47.812A1 1 0 002.66.47H1.037a10.004 10.004 0 017.592-7.592L9.247 3.88a1 1 0 001.725-.05l1.302.815a10.003 10.003 0 014.25 4.25l1.623-1.018A1 1 0 0019.53 7.47h1.623a10.004 10.004 0 01-7.592 7.592l-1.018-1.623a10.003 10.003 0 01-4.25-4.25l1.302-.815a1 1 0 00.05-1.725l-1.3-.206a10.002 10.002 0 01-3.32 3.32l-.206 1.3a1 1 0 00.05 1.725l1.302.815z"
-                  clipRule="evenodd"
-                />
-              </svg>
+    <div className="min-h-screen flex flex-col" style={{ background: "var(--bg-gradient)" }}>
+      {/* ─── Navbar ─── */}
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm" style={{ borderBottom: "1px solid #e8d9cc" }}>
+        <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
+
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2.5 group" onClick={closeMobileMenu}>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200"
+              style={{ background: "linear-gradient(135deg, #84a59d 0%, #6b8c85 100%)" }}>
+              <span className="text-xl">🐾</span>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-800 leading-tight">
-                PetCare
-              </h1>
-              <p className="text-xs text-gray-600 -mt-1">Companion</p>
+            <div className="leading-tight">
+              <span className="block text-lg font-extrabold tracking-tight"
+                style={{ fontFamily: "'Fredoka', cursive", color: "var(--primary-dark)" }}>
+                OurPetCare
+              </span>
+              <span className="block text-xs font-semibold -mt-0.5" style={{ color: "#84a59d" }}>
+                Animal Rescue Platform
+              </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link
-              to="/"
-              className="text-gray-700 hover:text-purple-700 font-medium transition-colors relative group"
-            >
-              Home
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-                 <Link
-              to="/adoption"
-              className="text-gray-700 hover:text-purple-700 font-medium transition-colors relative group"
-            >
-              Adoption
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-            <Link
-              to="/report"
-              className="text-gray-700 hover:text-purple-700 font-medium transition-colors relative group"
-            >
-              Report
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-
-              <Link
-                to="/account"
-                className="text-gray-700 hover:text-purple-700 font-medium transition-colors relative group"
-              >
-                Account
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-1">
+            {[
+              { to: "/", label: "Home" },
+              { to: "/adoption", label: "Adopt" },
+              { to: "/petcaretips", label: "Tips" },
+              { to: "/faq", label: "FAQ" },
+            ].map(({ to, label }) => (
+              <Link key={to} to={to}
+                className="relative text-sm font-bold px-3 py-2 rounded-xl transition-all duration-200"
+                style={{
+                  color: isActive(to) ? "var(--primary-dark)" : "#5c6b6a",
+                  background: isActive(to) ? "#f0f5f4" : "transparent",
+                  fontWeight: isActive(to) ? 800 : 700,
+                }}>
+                {label}
+                {/* {isActive(to) && (
+                  <span className="absolute bottom-0.5 left-3 right-3 h-0.5 rounded-full" style={{ background: "var(--primary)" }} />
+                )} */}
               </Link>
-            
+            ))}
             {user?.role === "volunteer" && (
-              <Link
-                to="/volunteer"
-                className="text-gray-700 hover:text-purple-700 font-medium transition-colors relative group"
-              >
+              <Link to="/volunteer" className="relative text-sm font-bold px-3 py-2 rounded-xl transition-all"
+                style={{ color: isActive("/volunteer") ? "var(--primary-dark)" : "#5c6b6a", background: isActive("/volunteer") ? "#f0f5f4" : "transparent" }}>
                 Dashboard
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
             )}
             {user?.role === "admin" && (
-              <Link
-                to="/admin"
-                className="text-gray-700 hover:text-purple-700 font-medium transition-colors relative group"
-              >
+              <Link to="/admin" className="relative text-sm font-bold px-3 py-2 rounded-xl transition-all"
+                style={{ color: isActive("/admin") ? "var(--primary-dark)" : "#5c6b6a", background: isActive("/admin") ? "#f0f5f4" : "transparent" }}>
                 Admin
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
             )}
+          </div>
+
+          {/* Desktop Auth */}
+          <div className="hidden md:flex items-center gap-2">
+            <Link to="/report" className="btn-orange text-sm py-2 px-4">Report</Link>
             {isAuthenticated ? (
-              <button onClick={handleLogout} className="btn-secondary text-sm">
-                Logout
-              </button>
+              <div className="flex items-center gap-2">
+                <Link to="/account"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-colors"
+                  style={{ color: "#5c6b6a" }}>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
+                    style={{ background: "#d4e4e1", color: "#6b8c85" }}>
+                    {user?.name?.[0] || "U"}
+                  </div>
+                  {user?.name?.split(" ")[0]}
+                </Link>
+                <button onClick={handleLogout} className="btn-secondary text-sm py-2 px-4">Logout</button>
+              </div>
             ) : (
-              <div className="flex gap-3 items-center">
-                <Link
-                  to="/login"
-                  className="btn-secondary text-sm"
-                >
-                  Login
-                </Link>
-                <Link to="/register" className="btn-primary text-sm">
-                  Join Us
-                </Link>
+              <div className="flex gap-2 items-center">
+                <Link to="/login" className="btn-secondary text-sm py-2 px-4">Login</Link>
+                <Link to="/register" className="btn-primary text-sm py-2 px-4">Join Us</Link>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMobileMenu}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            aria-label="Toggle mobile menu"
-          >
-            <svg
-              className="w-6 h-6 text-gray-700"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {isMobileMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+          {/* Mobile Menu Toggle */}
+          <button onClick={toggleMobileMenu} className="md:hidden p-2 rounded-xl transition-colors" aria-label="Toggle mobile menu">
+            <div className="w-5 h-4 flex flex-col justify-between">
+              <span className={`block h-0.5 rounded-full bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""}`} />
+              <span className={`block h-0.5 rounded-full bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""}`} />
+              <span className={`block h-0.5 rounded-full bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-2.5" : ""}`} />
+            </div>
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
-            <div className="px-6 py-4 space-y-4">
-              <Link
-                to="/"
-                className="block text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"
-                onClick={closeMobileMenu}
-              >
-                Home
-              </Link>
-              <Link
-                to="/adoption"
-                className="block text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"  
-              >
-                Adoption
-              </Link>
-              <Link
-                to="/report"
-                className="block text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"
-                onClick={closeMobileMenu}
-              >
-                Report
-              </Link>
-              <Link
-                to="/account"
-                className="block text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"
-                onClick={closeMobileMenu}
-              >
-                Account
-              </Link>
+          <div className="md:hidden bg-white/98 backdrop-blur-md" style={{ borderTop: "1px solid #e8d9cc" }}>
+            <div className="px-5 py-4 space-y-1">
+              {[
+                { to: "/", label: "🏠 Home" },
+                { to: "/adoption", label: "🐾 Adopt a Pet" },
+                { to: "/report", label: "🚨 Report Animal" },
+                { to: "/petcaretips", label: "💡 Pet Care Tips" },
+                { to: "/faq", label: "❓ FAQ" },
+              ].map(({ to, label }) => (
+                <Link key={to} to={to} onClick={closeMobileMenu}
+                  className="block px-4 py-2.5 rounded-xl text-sm transition-colors"
+                  style={isActive(to) ? { background: "#f0f5f4", color: "var(--primary-dark)", fontWeight: 800 } : { color: "#5c6b6a", fontWeight: 700 }}>
+                  {label}
+                </Link>
+              ))}
               {user?.role === "volunteer" && (
-                <Link
-                  to="/volunteer"
-                  className="block text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"
-                  onClick={closeMobileMenu}
-                >
+                <Link to="/volunteer" onClick={closeMobileMenu} className="block px-4 py-2.5 rounded-xl text-sm font-bold" style={{ color: "#5c6b6a" }}>
                   Dashboard
                 </Link>
               )}
               {user?.role === "admin" && (
-                <Link
-                  to="/admin"
-                  className="block text-gray-700 hover:text-purple-700 font-medium transition-colors py-2"
-                  onClick={closeMobileMenu}
-                >
+                <Link to="/admin" onClick={closeMobileMenu} className="block px-4 py-2.5 rounded-xl text-sm font-bold" style={{ color: "#5c6b6a" }}>
                   Admin
                 </Link>
               )}
-              <div className="pt-4 border-t border-gray-200">
+              <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #e8d9cc" }}>
                 {isAuthenticated ? (
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      closeMobileMenu();
-                    }}
-                    className="w-full btn-secondary text-sm"
-                  >
-                    Logout
-                  </button>
+                  <>
+                    <Link to="/account" onClick={closeMobileMenu}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold" style={{ color: "#5c6b6a" }}>
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
+                        style={{ background: "#d4e4e1", color: "#6b8c85" }}>
+                        {user?.name?.[0] || "U"}
+                      </div>
+                      My Account
+                    </Link>
+                    <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="w-full btn-secondary text-sm py-2.5">
+                      Logout
+                    </button>
+                  </>
                 ) : (
-                  <div className="space-y-2">
-                    <Link
-                      to="/login"
-                      className="block w-full text-center btn-secondary text-sm"
-                      onClick={closeMobileMenu}
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      to="/register"
-                      className="block w-full btn-primary text-sm text-center"
-                      onClick={closeMobileMenu}
-                    >
-                      Join Us
-                    </Link>
-                  </div>
+                  <>
+                    <Link to="/login" onClick={closeMobileMenu} className="block w-full text-center btn-secondary text-sm py-2.5">Login</Link>
+                    <Link to="/register" onClick={closeMobileMenu} className="block w-full text-center btn-primary text-sm py-2.5">Join Us</Link>
+                  </>
                 )}
               </div>
             </div>
           </div>
         )}
       </nav>
-      <main className="flex-1 px-6 py-8">
-        <div className="max-w-7xl mx-auto">
-          <Outlet />
-        </div>
+
+      <main className="flex-1">
+        <Outlet />
       </main>
-<Footer/>
+
+      <Footer />
     </div>
   );
 }

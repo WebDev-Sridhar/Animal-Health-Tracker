@@ -14,6 +14,20 @@ const CONDITION_OPTIONS = [
   { value: "for-adoption", label: "For Adoption" },
 ];
 
+const conditionBadge = (condition) => {
+  const map = {
+    healthy: "badge-green", injured: "badge-orange", sick: "badge-red",
+    aggressive: "badge-red", "vaccination-needed": "badge-amber",
+    critical: "badge-red", "for-adoption": "badge-teal",
+  };
+  return map[condition] || "badge-teal";
+};
+
+const statusBadge = (status) => {
+  const map = { pending: "badge-amber", accepted: "badge-blue", resolved: "badge-green" };
+  return map[status] || "badge-teal";
+};
+
 export default function AccountPage() {
   const navigate = useNavigate();
   const { user: authUser, login, isAuthenticated } = useAuth();
@@ -27,14 +41,9 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Use user from auth context
     if (authUser) {
       setUser(authUser);
-      setFormData({
-        name: authUser.name,
-        phone: authUser.phone || "",
-        zone: authUser.zone || "",
-      });
+      setFormData({ name: authUser.name, phone: authUser.phone || "", zone: authUser.zone || "" });
       fetchReports();
     }
   }, [authUser]);
@@ -53,11 +62,7 @@ export default function AccountPage() {
 
   const handleEditUser = () => {
     setEditingUser(true);
-    setFormData({
-      name: user.name,
-      phone: user.phone || "",
-      zone: user.zone || "",
-    });
+    setFormData({ name: user.name, phone: user.phone || "", zone: user.zone || "" });
   };
 
   const handleSaveUser = async () => {
@@ -78,22 +83,14 @@ export default function AccountPage() {
 
   const handleEditReport = (report) => {
     setEditingReportId(report._id);
-    setReportFormData({
-      condition: report.condition,
-      zone: report.zone,
-      description: report.description || "",
-    });
+    setReportFormData({ condition: report.condition, zone: report.zone, description: report.description || "" });
   };
 
   const handleSaveReport = async (reportId) => {
     setLoading(true);
     try {
       await apiClient.patch(`/reports/${reportId}`, reportFormData);
-      setReports(
-        reports.map((r) =>
-          r._id === reportId ? { ...r, ...reportFormData } : r,
-        ),
-      );
+      setReports(reports.map((r) => r._id === reportId ? { ...r, ...reportFormData } : r));
       setEditingReportId(null);
       alert("Report updated successfully!");
     } catch (err) {
@@ -106,7 +103,6 @@ export default function AccountPage() {
 
   const deleteReport = async (id) => {
     if (!window.confirm("Delete this report?")) return;
-
     try {
       await apiClient.delete(`/reports/${id}`);
       setReports(reports.filter((r) => r._id !== id));
@@ -117,29 +113,18 @@ export default function AccountPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="max-w-md w-full text-center space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">
-              My Account
-            </h1>
-            <p className="text-slate-600">
-              Please sign in to view your account details and reports
-            </p>
-          </div>
-          <button
-            onClick={() => navigate("/login")}
-            className="w-full btn-primary"
-          >
-            Sign In
-          </button>
-          <p className="text-slate-600 text-sm">
-            Don't have an account?{" "}
-            <button
-              onClick={() => navigate("/register")}
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Register here
+      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "var(--bg-gradient)" }}>
+        <div className="card p-10 max-w-sm w-full text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+            My Account
+          </h1>
+          <p className="text-gray-500 mb-6">Please sign in to view your account and reports.</p>
+          <button onClick={() => navigate("/login")} className="w-full btn-primary mb-3">Sign In</button>
+          <p className="text-gray-500 text-sm">
+            No account?{" "}
+            <button onClick={() => navigate("/register")} className="text-teal-600 hover:text-teal-700 font-extrabold">
+              Register free →
             </button>
           </p>
         </div>
@@ -147,295 +132,211 @@ export default function AccountPage() {
     );
   }
 
-  if (!user) return <div className="p-10">Loading...</div>;
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-10 h-10 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-600 font-semibold">Loading your account...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const roleColors = { admin: "badge-red", volunteer: "badge-teal", public: "badge-blue" };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+    <div className="overflow-x-hidden" style={{ background: "var(--bg-gradient)" }}>
       <Helmet>
         <title>My Account | OurPetCare</title>
-        <meta
-          name="description"
-          content="Manage your OurPetCare account, view your reports, and track your contribution to animal welfare."
-        />
+        <meta name="description" content="Manage your OurPetCare account, view your reports, and track your contribution to animal welfare." />
       </Helmet>
-      {/* Account Header */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-semibold text-slate-800">My Account</h1>
-          {!editingUser && (
-            <button
-              onClick={handleEditUser}
-              className="text-blue-600 hover:text-blue-700 p-2"
-              title="Edit profile"
-            >
-              ✏️
-            </button>
-          )}
+
+      {/* ─── Header ─── */}
+      <div className="relative py-10 px-6 overflow-hidden" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        <div className="max-w-5xl mx-auto flex items-center gap-5">
+          <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-extrabold text-teal-700 shadow-lg"
+            style={{ background: "rgba(255,255,255,0.2)", color: "white" }}>
+            {user.name?.[0]?.toUpperCase() || "U"}
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white" style={{ fontFamily: "'Fredoka', cursive" }}>{user.name}</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="badge" style={{ background: "rgba(255,255,255,0.2)", color: "white", fontSize: "0.75rem" }}>
+                {user.email}
+              </span>
+              <span className={`badge ${roleColors[user.role] || "badge-teal"} capitalize`}>{user.role}</span>
+            </div>
+          </div>
         </div>
-
-        {editingUser ? (
-          <div className="space-y-4">
-            <div>
-              <label className="text-slate-600 font-medium">Name</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
-              />
-            </div>
-            <div>
-              <label className="text-slate-600 font-medium">Phone</label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
-              />
-            </div>
-            <div>
-              <label className="text-slate-600 font-medium">Zone</label>
-              <input
-                type="text"
-                value={formData.zone}
-                onChange={(e) =>
-                  setFormData({ ...formData, zone: e.target.value })
-                }
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
-              />
-            </div>
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={handleSaveUser}
-                disabled={loading}
-                className="flex-1 bg-green-600 text-white rounded-lg py-2 hover:bg-green-700 disabled:opacity-50"
-              >
-                {loading ? "Saving..." : "Save"}
-              </button>
-              <button
-                onClick={() => setEditingUser(false)}
-                className="flex-1 bg-slate-400 text-white rounded-lg py-2 hover:bg-slate-500"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-slate-400">Name</p>
-              <p className="font-medium">{user.name}</p>
-            </div>
-
-            <div>
-              <p className="text-slate-400">Email</p>
-              <p className="font-medium">{user.email}</p>
-            </div>
-
-            <div>
-              <p className="text-slate-400">Phone</p>
-              <p className="font-medium">{user.phone || "Not added"}</p>
-            </div>
-
-            <div>
-              <p className="text-slate-400">Role</p>
-              <p className="font-medium capitalize">{user.role}</p>
-            </div>
-
-            <div>
-              <p className="text-slate-400">Zone</p>
-              <p className="font-medium">{user.zone || "Not added"}</p>
-            </div>
-
-            <div>
-              <p className="text-slate-400">Joined</p>
-              <p className="font-medium">
-                {new Date(user.createdAt).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* User Reports */}
-      <div>
-        <h2 className="text-xl font-semibold text-slate-800 mb-4">
-          My Reports
-        </h2>
+      <div className="max-w-5xl mx-auto px-6 py-10 space-y-8">
+        {/* ─── Profile Card ─── */}
+        <div className="card p-7">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+              Profile Details
+            </h2>
+            {!editingUser && (
+              <button onClick={handleEditUser}
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-extrabold text-teal-700 bg-teal-50 hover:bg-teal-100 transition-colors">
+                ✏️ Edit Profile
+              </button>
+            )}
+          </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {loadingReports ? (
-            <div className="col-span-full flex items-center justify-center py-20">
-              <div className="text-center">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-                <p className="text-slate-600 text-lg">Loading...</p>
-              </div>
-            </div>
-          ) : reports.length === 0 ? (
-            <div className="col-span-full flex items-center justify-center py-20">
-              <div className="text-center">
-                <svg
-                  className="w-16 h-16 text-slate-300 mx-auto mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <p className="text-slate-600 text-lg font-medium">
-                  No reports yet
-                </p>
-                <p className="text-slate-500 mt-2">
-                  Start by creating a report to help animals in need
-                </p>
+          {editingUser ? (
+            <div className="space-y-4">
+              {[
+                { label: "Name", key: "name", type: "text" },
+                { label: "Phone", key: "phone", type: "tel" },
+                { label: "Zone", key: "zone", type: "text" },
+              ].map(({ label, key, type }) => (
+                <div key={key}>
+                  <label className="block text-sm font-extrabold text-gray-700 mb-2">{label}</label>
+                  <input type={type} value={formData[key]} onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                    className="input-field" />
+                </div>
+              ))}
+              <div className="flex gap-3 pt-2">
+                <button onClick={handleSaveUser} disabled={loading}
+                  className="flex-1 btn-primary py-3 disabled:opacity-50">
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+                <button onClick={() => setEditingUser(false)} className="flex-1 btn-secondary py-3">
+                  Cancel
+                </button>
               </div>
             </div>
           ) : (
-            reports.map((r) => (
-              <div
-                key={r._id}
-                className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden"
-              >
-                {r.photo && (
-                  <img
-                    src={r.photo}
-                    alt="animal"
-                    className="w-full h-40 object-cover"
-                  />
-                )}
+            <div className="grid md:grid-cols-3 gap-5">
+              {[
+                { label: "Full Name", value: user.name, emoji: "👤" },
+                { label: "Email", value: user.email, emoji: "📧" },
+                { label: "Phone", value: user.phone || "Not added", emoji: "📞" },
+                { label: "Role", value: user.role, emoji: "🎭", capitalize: true },
+                { label: "Zone", value: user.zone || "Not added", emoji: "📍" },
+                { label: "Member Since", value: new Date(user.createdAt).toLocaleDateString(), emoji: "📅" },
+              ].map(({ label, value, emoji, capitalize }) => (
+                <div key={label} className="p-4 rounded-2xl bg-gray-50">
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{emoji} {label}</p>
+                  <p className={`font-bold text-gray-800 ${capitalize ? "capitalize" : ""}`}>{value}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-                <div className="p-4 space-y-2">
-                  {editingReportId === r._id ? (
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-slate-600 text-sm font-medium">
-                          Condition
-                        </label>
-                        <select
-                          value={reportFormData.condition}
-                          onChange={(e) =>
-                            setReportFormData({
-                              ...reportFormData,
-                              condition: e.target.value,
-                            })
-                          }
-                          className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
-                        >
-                          <option value="">Select Condition</option>
-                          {CONDITION_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-slate-600 text-sm font-medium">
-                          Zone
-                        </label>
-                        <input
-                          type="text"
-                          value={reportFormData.zone}
-                          onChange={(e) =>
-                            setReportFormData({
-                              ...reportFormData,
-                              zone: e.target.value,
-                            })
-                          }
-                          className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-slate-600 text-sm font-medium">
-                          Description
-                        </label>
-                        <textarea
-                          value={reportFormData.description}
-                          onChange={(e) =>
-                            setReportFormData({
-                              ...reportFormData,
-                              description: e.target.value,
-                            })
-                          }
-                          className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 text-sm"
-                          rows="2"
-                        />
-                      </div>
-                      <div className="flex gap-2 pt-2">
-                        <button
-                          onClick={() => handleSaveReport(r._id)}
-                          disabled={loading}
-                          className="flex-1 bg-green-600 text-white text-sm rounded-lg py-2 hover:bg-green-700 disabled:opacity-50"
-                        >
-                          {loading ? "Saving..." : "Save"}
-                        </button>
-                        <button
-                          onClick={() => setEditingReportId(null)}
-                          className="flex-1 bg-slate-400 text-white text-sm rounded-lg py-2 hover:bg-slate-500"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <h3 className="font-medium text-slate-800">
-                        {r.animal?.species?.toUpperCase()}
-                      </h3>
+        {/* ─── My Reports ─── */}
+        <div>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+              My Reports ({reports.length})
+            </h2>
+          </div>
 
-                      <p className="text-sm text-slate-600">
-                        Condition: {r.condition}
-                      </p>
-
-                      <p className="text-sm text-slate-500">Zone: {r.zone}</p>
-
-                      {r.description && (
-                        <p className="text-sm text-slate-600">
-                          {r.description}
-                        </p>
-                      )}
-
-                      <p className="text-xs text-slate-400">
-                        Posted: {new Date(r.createdAt).toLocaleDateString()}
-                      </p>
-
-                      <span className="inline-block text-xs px-2 py-1 rounded bg-slate-100">
-                        {r.status}
-                      </span>
-
-                      {/* Buttons */}
-                      <div className="flex gap-2 pt-3">
-                        {r.status === "pending" && (
-                          <button
-                            onClick={() => handleEditReport(r)}
-                            className="flex-1 bg-blue-600 text-white text-sm rounded-lg py-2 hover:bg-blue-700"
-                          >
-                            ✏️ Edit
-                          </button>
-                        )}
-
-                        <button
-                          onClick={() => deleteReport(r._id)}
-                          className="flex-1 bg-red-600 text-white text-sm rounded-lg py-2 hover:bg-red-700"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </>
-                  )}
+          <div className="grid md:grid-cols-2 gap-5">
+            {loadingReports ? (
+              <div className="col-span-full flex items-center justify-center py-16">
+                <div className="text-center">
+                  <div className="w-10 h-10 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-3" />
+                  <p className="text-gray-600 font-semibold">Loading reports...</p>
                 </div>
               </div>
-            ))
-          )}
+            ) : reports.length === 0 ? (
+              <div className="col-span-full card p-10 text-center">
+                <div className="text-5xl mb-4">📋</div>
+                <h3 className="text-xl font-bold text-gray-700 mb-2" style={{ fontFamily: "'Fredoka', cursive" }}>No reports yet</h3>
+                <p className="text-gray-500 mb-5 text-sm">Start by reporting an animal to help them get the care they need.</p>
+                <button onClick={() => navigate("/report")} className="btn-primary text-sm py-2.5 px-6">
+                  Create Your First Report
+                </button>
+              </div>
+            ) : (
+              reports.map((r) => (
+                <div key={r._id} className="card overflow-hidden">
+                  {r.photo && (
+                    <img src={r.photo} alt="animal" className="w-full h-40 object-cover" />
+                  )}
+                  <div className="p-5">
+                    {editingReportId === r._id ? (
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs font-extrabold text-gray-600 uppercase tracking-wide">Condition</label>
+                          <select value={reportFormData.condition}
+                            onChange={(e) => setReportFormData({ ...reportFormData, condition: e.target.value })}
+                            className="input-field mt-1.5 text-sm">
+                            <option value="">Select Condition</option>
+                            {CONDITION_OPTIONS.map((option) => (
+                              <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-xs font-extrabold text-gray-600 uppercase tracking-wide">Zone</label>
+                          <input type="text" value={reportFormData.zone}
+                            onChange={(e) => setReportFormData({ ...reportFormData, zone: e.target.value })}
+                            className="input-field mt-1.5 text-sm" />
+                        </div>
+                        <div>
+                          <label className="text-xs font-extrabold text-gray-600 uppercase tracking-wide">Description</label>
+                          <textarea value={reportFormData.description}
+                            onChange={(e) => setReportFormData({ ...reportFormData, description: e.target.value })}
+                            className="input-field mt-1.5 text-sm resize-none" rows="2" />
+                        </div>
+                        <div className="flex gap-2 pt-1">
+                          <button onClick={() => handleSaveReport(r._id)} disabled={loading}
+                            className="flex-1 btn-primary text-sm py-2.5 disabled:opacity-50">
+                            {loading ? "Saving..." : "Save"}
+                          </button>
+                          <button onClick={() => setEditingReportId(null)} className="flex-1 btn-secondary text-sm py-2.5">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h3 className="font-extrabold text-gray-800 capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
+                              {r.animal?.species?.toUpperCase() || "Animal"}
+                            </h3>
+                            <p className="text-xs text-gray-500 mt-0.5">📍 {r.zone}</p>
+                          </div>
+                          <div className="flex flex-col gap-1 items-end">
+                            <span className={`badge ${conditionBadge(r.condition)} text-xs`}>{r.condition}</span>
+                            <span className={`badge ${statusBadge(r.status)} text-xs`}>{r.status}</span>
+                          </div>
+                        </div>
+
+                        {r.description && (
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{r.description}</p>
+                        )}
+
+                        <p className="text-xs text-gray-400 mb-4">
+                          Posted: {new Date(r.createdAt).toLocaleDateString()}
+                        </p>
+
+                        <div className="flex gap-2">
+                          {r.status === "pending" && (
+                            <button onClick={() => handleEditReport(r)}
+                              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-teal-700 bg-teal-50 hover:bg-teal-100 transition-colors">
+                              ✏️ Edit
+                            </button>
+                          )}
+                          <button onClick={() => deleteReport(r._id)}
+                            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
+                            🗑️ Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

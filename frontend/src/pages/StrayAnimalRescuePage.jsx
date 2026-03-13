@@ -1,36 +1,32 @@
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
 export default function StrayAnimalRescuePage() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Helmet>
         <title>Stray Animal Rescue Guide | OurPetCare - Tamil Nadu</title>
-        <meta
-          name="description"
-          content="Complete guide to rescuing injured stray animals in Tamil Nadu. Learn how to safely help homeless dogs, cats, and other animals with OurPetCare."
-        />
-        <meta
-          name="keywords"
-          content="stray animal rescue, injured dog rescue, homeless animals, pet rescue guide, animal welfare Tamil Nadu"
-        />
+        <meta name="description" content="Complete guide to rescuing injured stray animals in Tamil Nadu. Learn how to safely help homeless dogs, cats, and other animals with OurPetCare." />
+        <meta name="keywords" content="stray animal rescue, injured dog rescue, homeless animals, pet rescue guide, animal welfare Tamil Nadu" />
       </Helmet>
 
-      <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
-        {/* Hero Section */}
-        <section className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">
-            Stray Animal Rescue Guide
-          </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Learn how to safely identify, approach, and rescue injured or
-            distressed stray animals across Tamil Nadu. Your compassion can save
-            a life.
-          </p>
-        </section>
+      {/* Hero */}
+      <section className="relative py-16 px-6 text-center overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        <div className="text-5xl mb-3">🐕</div>
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
+          Stray Animal Rescue Guide
+        </h1>
+        <p className="text-teal-100 text-lg max-w-2xl mx-auto">
+          Learn how to safely identify, approach, and rescue injured or distressed stray animals across Tamil Nadu.
+        </p>
+      </section>
+
+      <div className="max-w-4xl mx-auto px-4 py-12 space-y-6">
 
         {/* Before You Rescue */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Before You Rescue: Safety First
           </h2>
           <div className="space-y-4 text-slate-700">
@@ -53,8 +49,8 @@ export default function StrayAnimalRescuePage() {
         </section>
 
         {/* Signs of Distress */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Identifying Injured or Distressed Animals
           </h2>
           <div className="space-y-4">
@@ -92,8 +88,8 @@ export default function StrayAnimalRescuePage() {
         </section>
 
         {/* Step-by-Step Rescue */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Step-by-Step Rescue Process
           </h2>
           <div className="space-y-4">
@@ -143,8 +139,8 @@ export default function StrayAnimalRescuePage() {
         </section>
 
         {/* Common Scenarios */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Handling Common Rescue Scenarios
           </h2>
           <div className="space-y-6">
@@ -194,8 +190,8 @@ export default function StrayAnimalRescuePage() {
         </section>
 
         {/* Resources */}
-        <section className="bg-linear-to-r from-green-50 to-emerald-50 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Emergency Resources in Tamil Nadu
           </h2>
           <div className="grid md:grid-cols-2 gap-4 text-slate-700">
@@ -235,20 +231,21 @@ export default function StrayAnimalRescuePage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-blue-600 text-white rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold mb-3">Help Save Animals Today</h2>
-          <p className="mb-6 text-blue-100">
+        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+          <div className="text-4xl mb-3">🐾</div>
+          <h2 className="text-2xl font-bold mb-3 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>
+            Help Save Animals Today
+          </h2>
+          <p className="mb-6 text-teal-100 max-w-md mx-auto">
             Have you spotted an injured animal? Report it immediately through
             OurPetCare and connect with rescue networks across Tamil Nadu.
           </p>
-          <a
-            href="/report"
-            className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50"
-          >
+          <Link to="/report"
+            className="inline-block px-8 py-3 rounded-full font-extrabold text-teal-700 bg-white hover:bg-teal-50 transition-all hover:scale-105">
             Report an Animal Now
-          </a>
+          </Link>
         </section>
       </div>
-    </>
+    </div>
   );
 }

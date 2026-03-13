@@ -1,35 +1,35 @@
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
 export default function AnimalFirstAidPage() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Helmet>
         <title>Animal First Aid Tips | OurPetCare - Tamil Nadu</title>
-        <meta
-          name="description"
-          content="Emergency first aid guide for injured animals. Learn CPR, wound care, and how to handle common pet injuries and emergencies in Tamil Nadu."
-        />
-        <meta
-          name="keywords"
-          content="animal first aid, pet emergency care, dog CPR, cat injuries, first aid for pets, animal emergency treatment"
-        />
+        <meta name="description" content="Emergency first aid guide for injured animals. Learn CPR, wound care, and how to handle common pet injuries and emergencies in Tamil Nadu." />
+        <meta name="keywords" content="animal first aid, pet emergency care, dog CPR, cat injuries, first aid for pets, animal emergency treatment" />
       </Helmet>
 
-      <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
-        {/* Hero Section */}
-        <section className="bg-linear-to-r from-red-50 to-orange-50 rounded-xl p-8 text-center">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">
+      {/* Hero */}
+      <section className="relative py-16 px-6 text-center overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)" }}>
+        <div className="relative z-10">
+          <div className="text-5xl mb-3">🩹</div>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
             Animal First Aid Tips
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-red-100 text-lg max-w-2xl mx-auto">
             Learn essential first aid techniques to save an injured animal's life. Quick action during
-            emergencies can make all the difference in outcome. Know what to do before the veterinarian arrives.
+            emergencies can make all the difference.
           </p>
-        </section>
+        </div>
+      </section>
+
+      <div className="max-w-4xl mx-auto px-4 py-12 space-y-6">
 
         {/* Emergency Action Plan */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Emergency Action Plan (ABCD)
           </h2>
           <div className="space-y-4">
@@ -69,8 +69,8 @@ export default function AnimalFirstAidPage() {
         </section>
 
         {/* Wound Care */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Treating Wounds and Bleeding
           </h2>
           <div className="space-y-4">
@@ -100,8 +100,8 @@ export default function AnimalFirstAidPage() {
         </section>
 
         {/* Fractures and Injuries */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Handling Fractures and Joint Injuries
           </h2>
           <div className="space-y-4 text-slate-700">
@@ -145,8 +145,8 @@ export default function AnimalFirstAidPage() {
         </section>
 
         {/* Poisoning and Toxins */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Poisoning and Toxic Exposure
           </h2>
           <div className="space-y-4">
@@ -185,8 +185,8 @@ export default function AnimalFirstAidPage() {
         </section>
 
         {/* Heat and Cold Stress */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Heat Stress and Heatstroke
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
@@ -214,8 +214,8 @@ export default function AnimalFirstAidPage() {
         </section>
 
         {/* Medical Kit */}
-        <section className="bg-white rounded-lg border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="card p-7">
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             Build a Pet First Aid Kit
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
@@ -243,8 +243,8 @@ export default function AnimalFirstAidPage() {
         </section>
 
         {/* When to Seek Help */}
-        <section className="bg-red-50 rounded-lg p-8 border-l-4 border-red-600">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        <section className="p-7 rounded-2xl border-l-4" style={{ background: "#fff1f2", borderColor: "#ef4444" }}>
+          <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
             When to Seek Veterinary Care (CRITICAL)
           </h2>
           <p className="text-slate-700 mb-4">
@@ -263,17 +263,18 @@ export default function AnimalFirstAidPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-orange-600 text-white rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold mb-3">Emergency? Report Now</h2>
-          <p className="mb-6 text-orange-100">
-            Have you found an injured animal? Use OurPetCare to report immediately and
-            get connected with emergency veterinary services in Tamil Nadu.
+        <section className="card p-10 text-center" style={{ background: "linear-gradient(135deg, #f97316, #ea580c)" }}>
+          <div className="text-4xl mb-3">🚨</div>
+          <h2 className="text-2xl font-bold mb-3 text-white" style={{ fontFamily: "'Fredoka', cursive" }}>Emergency? Report Now</h2>
+          <p className="mb-6 text-orange-100 max-w-md mx-auto">
+            Found an injured animal? Use OurPetCare to report immediately and connect with emergency volunteers in Tamil Nadu.
           </p>
-          <a href="/report" className="inline-block bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-orange-50">
+          <Link to="/report"
+            className="inline-block px-8 py-3 rounded-full font-extrabold text-orange-600 bg-white hover:bg-orange-50 transition-all hover:scale-105">
             Report Emergency Now
-          </a>
+          </Link>
         </section>
       </div>
-    </>
+    </div>
   );
 }

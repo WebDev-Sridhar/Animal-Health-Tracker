@@ -20,16 +20,15 @@ function PetDetailsPage() {
         setLoading(false);
       }
     };
-
     fetchPet();
   }, [id]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-gradient)" }}>
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <p className="text-slate-600 text-lg">Loading pet details...</p>
+          <div className="w-14 h-14 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600 font-semibold text-lg">Loading pet details...</p>
         </div>
       </div>
     );
@@ -37,13 +36,11 @@ function PetDetailsPage() {
 
   if (!pet) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-gradient)" }}>
         <div className="text-center">
-          <p className="text-slate-600 text-lg mb-4">Pet not found</p>
-          <button
-            onClick={() => navigate("/adoption")}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-          >
+          <div className="text-6xl mb-4">🐾</div>
+          <p className="text-gray-600 text-lg mb-6 font-semibold">Pet not found</p>
+          <button onClick={() => navigate("/adoption")} className="btn-primary">
             Back to Adoption
           </button>
         </div>
@@ -53,286 +50,184 @@ function PetDetailsPage() {
 
   const lat = pet.location?.coordinates?.[1];
   const lng = pet.location?.coordinates?.[0];
+  const mapsUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : null;
+  const whatsappUrl = pet.reportedBy?.phone ? `https://wa.me/${pet.reportedBy.phone}` : null;
 
-  const mapsUrl =
-    lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : null;
+  const speciesEmoji = (s) => ({ dog: "🐕", cat: "🐈", bird: "🦜", goat: "🐐", cow: "🐄" }[s?.toLowerCase()] || "🐾");
 
-  const whatsappUrl = pet.reportedBy?.phone
-    ? `https://wa.me/${pet.reportedBy.phone}`
-    : null;
-
-  const getConditionColor = (condition) => {
-    const colors = {
-      healthy: "bg-green-100 text-green-800",
-      injured: "bg-orange-100 text-orange-800",
-      sick: "bg-red-100 text-red-800",
-      aggressive: "bg-red-100 text-red-800",
-      "vaccination-needed": "bg-yellow-100 text-yellow-800",
-      critical: "bg-red-100 text-red-800",
-      "for-adoption": "bg-blue-100 text-blue-800",
+  const conditionStyle = (condition) => {
+    const map = {
+      healthy: "badge-green", injured: "badge-orange", sick: "badge-red",
+      aggressive: "badge-red", "vaccination-needed": "badge-amber",
+      critical: "badge-red", "for-adoption": "badge-teal",
     };
-    return colors[condition] || "bg-slate-100 text-slate-800";
+    return map[condition] || "badge-teal";
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
-      {/* SEO */}
+    <div className="overflow-x-hidden" style={{ background: "var(--bg-gradient)" }}>
       <Helmet>
-        <title>
-          Adopt {pet.animal?.species || "Pet"} in {pet.zone} | OurPetCare
-        </title>
-        <meta
-          name="description"
-          content={`Adopt a rescued ${pet.animal?.species} in ${pet.zone}. Learn about the pet's health, vaccination status, and contact the rescuer on OurPetCare.`}
-        />
+        <title>Adopt {pet.animal?.species || "Pet"} in {pet.zone} | OurPetCare</title>
+        <meta name="description" content={`Adopt a rescued ${pet.animal?.species} in ${pet.zone}. Learn about the pet's health, vaccination status, and contact the rescuer on OurPetCare.`} />
       </Helmet>
 
-      {/* Header */}
-      <div className="bg-linear-to-r from-blue-600 via-blue-500 to-indigo-600 text-white py-8 shadow-lg">
-        <div className="max-w-6xl mx-auto px-4">
-          <button
-            onClick={() => navigate("/adoption")}
-            className="flex items-center gap-2 text-white hover:text-blue-100 transition mb-4 font-medium"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back to Adoption
+      {/* ─── Hero Header ─── */}
+      <div className="relative py-10 px-6 overflow-hidden" style={{ background: "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)" }}>
+        <div className="max-w-6xl mx-auto">
+          <button onClick={() => navigate("/adoption")}
+            className="flex items-center gap-2 text-teal-100 hover:text-white font-bold mb-6 transition-colors text-sm">
+            ← Back to Adoption
           </button>
-          <h1 className="text-4xl font-bold mb-2">
-            {pet.animal?.species?.toUpperCase()}
-          </h1>
-          <p className="text-blue-100 text-lg">
-            Available for Adoption in {pet.zone}
-          </p>
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl"
+              style={{ background: "rgba(255,255,255,0.15)" }}>
+              {speciesEmoji(pet.animal?.species)}
+            </div>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
+                {pet.animal?.species || "Animal"}
+              </h1>
+              <p className="text-teal-200 text-lg">📍 Available for Adoption in {pet.zone}</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Main Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12 items-stretch">
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        {/* ─── Main Grid ─── */}
+        <div className="grid md:grid-cols-3 gap-8 mb-8">
           {/* Left: Image */}
           <div className="md:col-span-2">
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
+            <div className="card overflow-hidden shadow-xl">
               {pet.photo ? (
-                <img
-                  src={pet.photo}
-                  alt="Pet"
-                  className="w-full h-120 object-cover"
-                />
+                <img src={pet.photo} alt="Pet" className="w-full h-[420px] object-cover" />
               ) : (
-                <div className="h-120 flex items-center justify-center bg-linear-to-br from-slate-100 to-slate-200">
-                  <div className="text-center">
-                    <svg
-                      className="w-16 h-16 text-slate-400 mx-auto mb-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <p className="text-slate-500">No Image Available</p>
-                  </div>
+                <div className="h-[420px] flex items-center justify-center text-8xl"
+                  style={{ background: "linear-gradient(135deg, #f0fdfa, #ccfbf1)" }}>
+                  {speciesEmoji(pet.animal?.species)}
                 </div>
               )}
             </div>
+
+            {/* Description */}
+            <div className="card p-7 mt-6">
+              <h2 className="text-2xl mb-4" style={{ fontFamily: "'Fredoka', cursive" }}>About this Pet 🐾</h2>
+              <p className="text-gray-600 leading-relaxed">
+                {pet.description || "This rescued animal is currently looking for a safe and loving home. The pet has been reported by a community member who wants to help find responsible adopters. OurPetCare connects rescuers and adopters across Tamil Nadu to improve animal welfare."}
+              </p>
+            </div>
           </div>
 
-          {/* Right: Quick Info Card */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 h-fit sticky top-8">
-            {/* Status Badge */}
-            <div className="mb-6">
-              <span
-                className={`inline-block px-4 py-2 rounded-full font-semibold text-sm ${getConditionColor(pet.condition)}`}
-              >
-                {pet.condition?.replace("-", " ").toUpperCase()}
-              </span>
-            </div>
-
-            {/* Info Grid */}
-            <div className="space-y-6 mb-8">
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="text-slate-500 text-sm uppercase tracking-wide">
-                  Species
-                </p>
-                <p className="text-xl font-bold text-slate-800 capitalize">
-                  {pet.animal?.species}
-                </p>
+          {/* Right: Info Card */}
+          <div className="space-y-5">
+            {/* Status + Quick Info */}
+            <div className="card p-7 sticky top-24">
+              <div className="mb-5">
+                <span className={`badge ${conditionStyle(pet.condition)} text-sm`}>
+                  {pet.condition?.replace(/-/g, " ").toUpperCase()}
+                </span>
               </div>
 
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="text-slate-500 text-sm uppercase tracking-wide">
-                  Age
-                </p>
-                <p className="text-xl font-bold text-slate-800">
-                  {pet.animal?.approxAge || "Unknown"}
-                </p>
+              <div className="space-y-4 mb-7">
+                {[
+                  { label: "Species", value: pet.animal?.species, emoji: "🐾" },
+                  { label: "Age", value: pet.animal?.approxAge || "Unknown", emoji: "📅" },
+                  { label: "Vaccination", value: pet.animal?.vaccinationStatus || "Unknown", emoji: "💉" },
+                  { label: "Location", value: pet.zone, emoji: "📍" },
+                  { label: "Posted", value: new Date(pet.createdAt).toLocaleDateString(), emoji: "🗓️" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-start gap-3 pb-4 border-b border-gray-100 last:border-0">
+                    <span className="text-xl mt-0.5">{item.emoji}</span>
+                    <div>
+                      <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">{item.label}</p>
+                      <p className="font-bold text-gray-800 capitalize">{item.value}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="text-slate-500 text-sm uppercase tracking-wide">
-                  Vaccination
-                </p>
-                <p className="text-xl font-bold text-slate-800">
-                  {pet.animal?.vaccinationStatus || "Unknown"}
-                </p>
+              {/* Contact Buttons */}
+              <div className="space-y-3">
+                {whatsappUrl && (
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-white transition-all hover:scale-105 shadow-md"
+                    style={{ background: "#25D366" }}>
+                    💬 WhatsApp Rescuer
+                  </a>
+                )}
+                {pet.reportedBy?.phone && (
+                  <a href={`tel:${pet.reportedBy.phone}`}
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-white transition-all hover:scale-105 shadow-md"
+                    style={{ background: "var(--primary)" }}>
+                    📞 Call Rescuer
+                  </a>
+                )}
+                {mapsUrl && (
+                  <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-teal-700 bg-teal-50 hover:bg-teal-100 transition-colors">
+                    📍 Get Directions
+                  </a>
+                )}
               </div>
-
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="text-slate-500 text-sm uppercase tracking-wide">
-                  Location
-                </p>
-                <p className="text-xl font-bold text-slate-800">{pet.zone}</p>
-              </div>
-
-              <div className="border-l-4 border-blue-600 pl-4">
-                <p className="text-slate-500 text-sm uppercase tracking-wide">
-                  Posted
-                </p>
-                <p className="text-xl font-bold text-slate-800">
-                  {new Date(pet.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-
-            {/* Contact Buttons */}
-            <div className="space-y-3">
-              {whatsappUrl && (
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition transform hover:scale-105"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
-                  </svg>
-                  WhatsApp
-                </a>
-              )}
-
-              {pet.reportedBy?.phone && (
-                <a
-                  href={`tel:${pet.reportedBy.phone}`}
-                  className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition transform hover:scale-105"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                  </svg>
-                  Call Reporter
-                </a>
-              )}
-
-              {mapsUrl && (
-                <a
-                  href={mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-3 rounded-lg transition"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-13c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z" />
-                  </svg>
-                  Get Directions
-                </a>
-              )}
             </div>
           </div>
         </div>
 
-        {/* Description */}
-        <section className="bg-white border rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-3">About this Pet</h2>
+        {/* ─── Adoption Guide ─── */}
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+          <div className="card p-7">
+            <h2 className="text-2xl mb-5" style={{ fontFamily: "'Fredoka', cursive" }}>How to Adopt 🏡</h2>
+            <ol className="space-y-3">
+              {[
+                "Contact the rescuer using WhatsApp or phone.",
+                "Ask about the pet's health, behavior, and special needs.",
+                "Arrange a safe meeting or visit the pet's location.",
+                "Ensure you have space, time, and resources for the pet.",
+                "Commit to responsible, lifelong pet ownership.",
+              ].map((step, i) => (
+                <li key={i} className="flex items-start gap-3 text-gray-600 text-sm">
+                  <span className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-extrabold text-white"
+                    style={{ background: "var(--primary)" }}>
+                    {i + 1}
+                  </span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </div>
 
-          <p className="text-slate-600 leading-relaxed">
-            {pet.description ||
-              "This rescued animal is currently looking for a safe and loving home. The pet has been reported by a community member who wants to help find responsible adopters. OurPetCare connects rescuers and adopters across Tamil Nadu to improve animal welfare and reduce the number of stray animals."}
-          </p>
-        </section>
+          <div className="card p-7">
+            <h2 className="text-2xl mb-5" style={{ fontFamily: "'Fredoka', cursive" }}>First-Week Pet Care 💡</h2>
+            <ul className="space-y-3">
+              {[
+                "🥗 Provide proper food and fresh water daily",
+                "🏥 Schedule a vet check in the first week",
+                "💉 Keep vaccinations and deworming up to date",
+                "🏃 Provide daily exercise and mental stimulation",
+                "❤️ Be patient — rescued animals need time to adjust",
+              ].map((tip) => (
+                <li key={tip} className="flex items-start gap-2 text-gray-600 text-sm">
+                  {tip}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
-        {/* Adoption Guide */}
-        <section className="bg-white border rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4">How to Adopt This Pet</h2>
-
-          <ul className="list-disc pl-6 text-slate-600 space-y-2">
-            <li>Contact the rescuer using WhatsApp or phone.</li>
-
-            <li>Ask about the pet’s health and behavior.</li>
-
-            <li>Visit the pet location if possible.</li>
-
-            <li>
-              Ensure you have proper space and resources to care for the pet.
-            </li>
-
-            <li>Commit to responsible pet ownership.</li>
-          </ul>
-        </section>
-
-        {/* Pet Care Tips */}
-        <section className="bg-white border rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4">
-            Pet Care Tips for New Owners
-          </h2>
-
-          <p className="text-slate-600 mb-3">
-            Adopting a rescued pet is a rewarding experience. Ensure that your
-            home environment is safe and welcoming for the animal.
-          </p>
-
-          <ul className="list-disc pl-6 text-slate-600 space-y-2">
-            <li>Provide proper food and fresh water.</li>
-
-            <li>Schedule regular veterinary checkups.</li>
-
-            <li>Keep vaccinations up to date.</li>
-
-            <li>Provide daily exercise and mental stimulation.</li>
-
-            <li>Show patience and care as the pet adjusts to its new home.</li>
-          </ul>
-        </section>
-
-        {/* Animal Welfare Section */}
-        <section className="bg-white border rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4">
-            Why Adopt Rescued Animals?
-          </h2>
-
-          <p className="text-slate-600 leading-relaxed">
-            Animal adoption helps reduce stray animal populations and provides
-            abandoned animals with loving homes. By adopting instead of buying
-            pets, you support ethical animal care and help communities manage
-            stray animals responsibly.
-          </p>
-        </section>
+        {/* ─── Why Adoption Matters ─── */}
+        <div className="card p-8" style={{ background: "linear-gradient(135deg, #f0fdfa, #ccfbf1)" }}>
+          <div className="flex items-start gap-5">
+            <div className="text-5xl flex-shrink-0">🌍</div>
+            <div>
+              <h2 className="text-2xl mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>Why Adopt a Rescued Animal?</h2>
+              <p className="text-gray-600 leading-relaxed">
+                Animal adoption helps reduce stray animal populations and provides abandoned animals with loving homes.
+                By adopting instead of buying pets, you support ethical animal care and help communities manage stray animals
+                responsibly — making Tamil Nadu a safer, kinder place for all animals.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

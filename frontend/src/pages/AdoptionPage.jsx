@@ -11,26 +11,14 @@ export default function AdoptionPage() {
   const [category, setCategory] = useState("");
 
   const districts = [
-    "Chennai",
-    "Coimbatore",
-    "Madurai",
-    "Trichy",
-    "Salem",
-    "Tirunelveli",
-    "Erode",
-    "Vellore",
-    "Thoothukudi",
-    "Thanjavur",
-    "Dindigul",
-    "Karur",
-    "Kanchipuram",
+    "Chennai", "Coimbatore", "Madurai", "Trichy", "Salem",
+    "Tirunelveli", "Erode", "Vellore", "Thoothukudi", "Thanjavur",
+    "Dindigul", "Karur", "Kanchipuram",
   ];
 
   const categories = ["dog", "cat", "bird", "goat", "cow"];
 
-  useEffect(() => {
-    fetchAnimals();
-  }, []);
+  useEffect(() => { fetchAnimals(); }, []);
 
   const fetchAnimals = async () => {
     setLoading(true);
@@ -47,262 +35,220 @@ export default function AdoptionPage() {
 
   useEffect(() => {
     let result = allAnimals;
-
-    if (district) {
-      result = result.filter((a) =>
-        a.zone?.toLowerCase().includes(district.toLowerCase()),
-      );
-    }
-
-    if (category) {
-      result = result.filter(
-        (a) => a.animal?.species?.toLowerCase() === category,
-      );
-    }
-
+    if (district) result = result.filter((a) => a.zone?.toLowerCase().includes(district.toLowerCase()));
+    if (category) result = result.filter((a) => a.animal?.species?.toLowerCase() === category);
     setAnimals(result);
   }, [district, category, allAnimals]);
 
+  const conditionBadge = (condition) => {
+    const map = {
+      healthy: "badge-green", injured: "badge-orange", sick: "badge-red",
+      aggressive: "badge-red", "vaccination-needed": "badge-amber",
+      critical: "badge-red", "for-adoption": "badge-teal",
+    };
+    return map[condition] || "badge-teal";
+  };
+
+  const speciesEmoji = (species) => {
+    const map = { dog: "🐕", cat: "🐈", bird: "🦜", goat: "🐐", cow: "🐄" };
+    return map[species?.toLowerCase()] || "🐾";
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
+    <div className="overflow-x-hidden">
       <Helmet>
         <title>Adopt Pets in Tamil Nadu | OurPetCare</title>
-        <meta
-          name="description"
-          content="Find rescued animals available for adoption across Tamil Nadu on OurPetCare."
-        />
+        <meta name="description" content="Find rescued animals available for adoption across Tamil Nadu on OurPetCare." />
       </Helmet>
 
-      {/* Banner */}
-      <div className="rounded-xl overflow-hidden mb-10">
+      {/* ─── Hero Banner ─── */}
+      <section className="relative h-72 md:h-96 overflow-hidden">
         <img
-          src="/img/adoptionBanner.jpeg"
-          alt="Adopt pets"
-          className="w-full h-auto md:h-100 md:object-cover"
+          src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?auto=format&fit=crop&w=1600&q=80"
+          alt="Pet adoption"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-      </div>
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(13,59,52,0.85) 0%, rgba(13,148,136,0.5) 100%)" }} />
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6">
+          <span className="badge mb-4" style={{ background: "rgba(255,255,255,0.2)", color: "white", padding: "0.4rem 1.1rem" }}>
+            🏡 Pet Adoption
+          </span>
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-3" style={{ fontFamily: "'Fredoka', cursive" }}>
+            Find Your Forever Friend
+          </h1>
+          <p className="text-teal-100 text-lg max-w-xl">
+            Every rescued animal deserves a loving home. Browse, connect, and adopt.
+          </p>
+        </div>
+      </section>
 
-      {/* Header */}
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-slate-800">
-          Animals Available For Adoption
-        </h1>
-        <p className="text-slate-500 mt-2">
-          Give a loving home to animals rescued and reported by the community.
-        </p>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-4 mb-10 justify-center">
-        <select
-          className="border rounded-lg px-4 py-2"
-          value={district}
-          onChange={(e) => setDistrict(e.target.value)}
-        >
-          <option value="">All Districts</option>
-          {districts.map((d) => (
-            <option key={d}>{d}</option>
-          ))}
-        </select>
-
-        <select
-          className="border rounded-lg px-4 py-2"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          <option value="">All Animals</option>
-          {categories.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
-      </div>
-
-      {/* Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {loading ? (
-          <div className="col-span-full flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-              <p className="text-slate-600 text-lg">Loading...</p>
-            </div>
+      {/* ─── Filters ─── */}
+      <section className="sticky top-16 z-40 bg-white/95 backdrop-blur-md border-b border-teal-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center gap-4">
+          <span className="text-sm font-extrabold text-gray-600 mr-1">Filter:</span>
+          <select className="input-field max-w-xs py-2.5 text-sm cursor-pointer" value={district} onChange={(e) => setDistrict(e.target.value)}>
+            <option value="">📍 All Districts</option>
+            {districts.map((d) => <option key={d}>{d}</option>)}
+          </select>
+          <select className="input-field max-w-xs py-2.5 text-sm cursor-pointer" value={category} onChange={(e) => setCategory(e.target.value)}>
+            <option value="">🐾 All Animals</option>
+            {categories.map((c) => <option key={c}>{speciesEmoji(c)} {c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+          </select>
+          {(district || category) && (
+            <button onClick={() => { setDistrict(""); setCategory(""); }}
+              className="text-sm font-bold text-teal-600 hover:text-teal-700 underline underline-offset-2 transition-colors">
+              ✕ Clear
+            </button>
+          )}
+          <div className="ml-auto text-sm text-gray-500 font-semibold">
+            {animals.length} pet{animals.length !== 1 ? "s" : ""} available
           </div>
-        ) : animals.length === 0 ? (
-          <div className="col-span-full flex items-center justify-center py-20">
-            <div className="text-center">
-              <svg
-                className="w-16 h-16 text-slate-300 mx-auto mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <p className="text-slate-600 text-lg font-medium">
-                No pets available for adoption
-              </p>
-              <p className="text-slate-500 mt-2">
-                {allAnimals.length === 0
-                  ? "Check back later"
-                  : "Adjust your filters"}
-              </p>
+        </div>
+      </section>
+
+      {/* ─── Cards Grid ─── */}
+      <section className="max-w-7xl mx-auto px-6 py-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading ? (
+            <div className="col-span-full flex items-center justify-center py-24">
+              <div className="text-center">
+                <div className="w-14 h-14 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-gray-600 font-semibold text-lg">Finding animals near you...</p>
+              </div>
             </div>
-          </div>
-        ) : (
-          animals.map((r) => {
-            const lat = r.location?.coordinates?.[1];
-            const lng = r.location?.coordinates?.[0];
-
-            const mapsUrl =
-              lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : null;
-
-            const whatsappUrl = r.reportedBy?.phone
-              ? `https://wa.me/${r.reportedBy.phone}`
-              : null;
-
-            return (
-              <div
-                key={r._id}
-                className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
-              >
-                {r.photo ? (
-                  <img
-                    src={r.photo}
-                    alt="animal"
-                    className="w-full h-60 object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-60 bg-slate-100 flex items-center justify-center text-slate-400">
-                    No Image Available
-                  </div>
+          ) : animals.length === 0 ? (
+            <div className="col-span-full flex items-center justify-center py-24">
+              <div className="text-center">
+                <div className="text-7xl mb-4">🐾</div>
+                <h3 className="text-2xl font-bold text-gray-700 mb-2" style={{ fontFamily: "'Fredoka', cursive" }}>No pets found</h3>
+                <p className="text-gray-500">{allAnimals.length === 0 ? "Check back soon — new animals are added daily." : "Try adjusting your filters."}</p>
+                {(district || category) && (
+                  <button onClick={() => { setDistrict(""); setCategory(""); }} className="mt-4 btn-secondary text-sm py-2 px-5">
+                    Clear Filters
+                  </button>
                 )}
+              </div>
+            </div>
+          ) : (
+            animals.map((r, i) => {
+              const lat = r.location?.coordinates?.[1];
+              const lng = r.location?.coordinates?.[0];
+              const mapsUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : null;
+              const whatsappUrl = r.reportedBy?.phone ? `https://wa.me/${r.reportedBy.phone}` : null;
 
-                <div className="p-4 space-y-2">
-                  <h3 className="font-semibold text-md text-slate-800">
-                    Details
-                  </h3>
-
-                  <p className="text-sm text-slate-500">
-                    <span className="text-slate-800">Species:</span>{" "}
-                    {r.animal?.species}
-                  </p>
-
-                  <p className="text-sm text-slate-500">
-                    <span className="text-slate-800">Age:</span>{" "}
-                    {r.animal?.approxAge || "Unknown"}
-                  </p>
-
-                  <p className="text-sm text-slate-500">
-                    <span className="text-slate-800">Vaccination:</span>{" "}
-                    {r.animal?.vaccinationStatus || "Unknown"}
-                  </p>
-
-                  <p className="text-sm text-slate-500">
-                    <span className="text-slate-800">Description:</span>{" "}
-                    {r.description || "No description provided."}
-                  </p>
-
-                  <p className="text-sm text-slate-400">
-                    <span className="text-slate-800">Location:</span>{" "}
-                    {r.zone || "Unknown"}
-                  </p>
-
-                  <p className="text-xs text-slate-400">
-                    Posted: {new Date(r.createdAt).toLocaleDateString()}
-                  </p>
-
-                  {/* Get Directions */}
-                  {mapsUrl && (
-                    <a
-                      href={mapsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-blue-600 text-sm mt-2 hover:underline"
-                    >
-                      <svg
-                        className="w-4 h-4 "
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Get Directions
-                    </a>
-                  )}
-
-                  {/* Pet Details Page */}
-                  <Link
-                    to={`/pet/${r._id}`}
-                    className="block text-center border border-slate-300 text-slate-700 rounded-lg py-2 mt-3 hover:bg-slate-100"
-                  >
-                    Know more about the pet
-                  </Link>
-
-                  {/* Contact Section */}
-                  {r.reportedBy?.phone && (
-                    <div className="flex gap-3 mt-2">
-                      {/* WhatsApp */}
-                      <a
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 text-center bg-green-500 hover:bg-green-600 text-white rounded-lg py-2"
-                      >
-                        WhatsApp
-                      </a>
-
-                      {/* Call */}
-                      <a
-                        href={`tel:${r.reportedBy.phone}`}
-                        className="flex-1 text-center bg-green-700 hover:bg-green-800 text-white rounded-lg py-2"
-                      >
-                        Call Reporter
-                      </a>
+              return (
+                <div key={r._id} className="card card-lift overflow-hidden fade-in-up" style={{ animationDelay: `${(i % 6) * 0.07}s` }}>
+                  {/* Image */}
+                  <div className="relative overflow-hidden h-56">
+                    {r.photo ? (
+                      <img src={r.photo} alt={r.animal?.species}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-6xl"
+                        style={{ background: "linear-gradient(135deg, #f0fdfa, #ccfbf1)" }}>
+                        {speciesEmoji(r.animal?.species)}
+                      </div>
+                    )}
+                    <div className="absolute top-3 left-3">
+                      <span className={`badge ${conditionBadge(r.condition)} shadow-sm`}>
+                        {r.condition?.replace("-", " ")}
+                      </span>
                     </div>
-                  )}
+                    <div className="absolute top-3 right-3">
+                      <span className="badge" style={{ background: "rgba(0,0,0,0.5)", color: "white", fontSize: "0.7rem" }}>
+                        {new Date(r.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="p-5">
+                    <div className="mb-4">
+                      <h3 className="text-xl font-bold text-gray-800 capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
+                        {speciesEmoji(r.animal?.species)} {r.animal?.species || "Animal"}
+                      </h3>
+                      <p className="text-sm text-gray-500">📍 {r.zone || "Tamil Nadu"}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 mb-4 text-xs">
+                      <div className="bg-gray-50 rounded-xl p-2.5">
+                        <p className="text-gray-400 font-semibold uppercase tracking-wide">Age</p>
+                        <p className="font-bold text-gray-700 mt-0.5">{r.animal?.approxAge || "Unknown"}</p>
+                      </div>
+                      <div className="bg-gray-50 rounded-xl p-2.5">
+                        <p className="text-gray-400 font-semibold uppercase tracking-wide">Vaccine</p>
+                        <p className="font-bold text-gray-700 mt-0.5 truncate">{r.animal?.vaccinationStatus || "Unknown"}</p>
+                      </div>
+                    </div>
+
+                    {r.description && (
+                      <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">{r.description}</p>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="space-y-2.5">
+                      <Link to={`/pet/${r._id}`} className="block w-full text-center btn-primary text-sm py-2.5">
+                        View Full Details
+                      </Link>
+                      {r.reportedBy?.phone && (
+                        <div className="grid grid-cols-2 gap-2">
+                          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105"
+                            style={{ background: "#25D366" }}>
+                            💬 WhatsApp
+                          </a>
+                          <a href={`tel:${r.reportedBy.phone}`}
+                            className="flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105"
+                            style={{ background: "#0d9488" }}>
+                            📞 Call
+                          </a>
+                        </div>
+                      )}
+                      {mapsUrl && (
+                        <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-teal-700 bg-teal-50 hover:bg-teal-100 transition-colors">
+                          📍 Get Directions
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </section>
+
+      {/* ─── Why Adopt Section ─── */}
+      <section className="py-16 px-6" style={{ background: "linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%)" }}>
+        <div className="max-w-5xl mx-auto card p-10 md:p-14">
+          <div className="text-center mb-10">
+            <span className="section-tag">Why Adopt?</span>
+            <h2 className="text-4xl" style={{ fontFamily: "'Fredoka', cursive" }}>
+              Give a Rescue Animal a Second Chance 🐾
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-5">
+            {[
+              { icon: "❤️", title: "Save a Life", desc: "Adoption gives a homeless animal the chance to live in a safe, loving environment." },
+              { icon: "🤝", title: "Stronger Bonds", desc: "Adopted animals often form deep, lasting bonds out of gratitude and trust." },
+              { icon: "💉", title: "Health Checked", desc: "All listed animals are health monitored. Many come vaccinated and treated by volunteers." },
+              { icon: "🌍", title: "Community Impact", desc: "Every adoption reduces Tamil Nadu's stray population and supports ethical animal care." },
+            ].map((item) => (
+              <div key={item.title} className="flex items-start gap-4 p-5 rounded-2xl bg-teal-50">
+                <div className="text-3xl flex-shrink-0">{item.icon}</div>
+                <div>
+                  <h4 className="font-bold text-gray-800 mb-1" style={{ fontFamily: "'Fredoka', cursive" }}>{item.title}</h4>
+                  <p className="text-gray-600 text-sm">{item.desc}</p>
                 </div>
               </div>
-            );
-          })
-        )}
-      </div>
-
-      {/* Adoption Info Section */}
-      <div className="mt-16 bg-slate-50 rounded-xl p-8">
-        <h2 className="text-2xl font-semibold text-slate-800 mb-4">
-          Why Adopt a Pet?
-        </h2>
-
-        <p className="text-slate-600 mb-4">
-          Adoption saves lives. Thousands of animals are rescued and reported
-          every year. By adopting instead of buying, you provide a loving home
-          to an animal that truly needs it.
-        </p>
-
-        <ul className="list-disc ml-6 text-slate-600 space-y-2">
-          <li>Adoption reduces stray population.</li>
-          <li>Adopted animals often form stronger bonds with owners.</li>
-          <li>Rescue animals are vaccinated and health checked.</li>
-          <li>You support ethical animal care.</li>
-        </ul>
-
-        <p className="text-slate-600 mt-4">
-          <Link
-            to="/faq"
-            className="text-blue-600 font-semibold hover:text-blue-700 underline"
-          >
-            Learn more in our FAQ page
-          </Link>
-        </p>
-      </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/faq" className="btn-secondary text-sm px-6 py-3">Read Adoption FAQ →</Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
