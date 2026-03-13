@@ -15,13 +15,13 @@ L.Icon.Default.mergeOptions({
 });
 
 const HEALTH_COLORS = {
-  healthy: "#22c55e",       // green
-  sick: "#8b5cf6",          // purple
-  critical: "#ef4444",      // red
-  injured: "#f59e0b",       // amber
-  aggressive: "#dc2626",    // dark red
-  "vaccination-needed": "#3b82f6", // blue
-  "for-adoption": "#3d8c78",       // site primary green
+  healthy: "#22c55e",              // green
+  sick: "#8b5cf6",                 // purple
+  critical: "#ef4444",             // red
+  injured: "#f59e0b",              // amber
+  aggressive: "#dc2626",           // dark red
+  "vaccination-needed": "#06b6d4", // cyan
+  "for-adoption": "#3b82f6",       // blue
 };
 
 const createColoredIcon = (condition) => {
