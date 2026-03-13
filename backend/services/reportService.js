@@ -163,7 +163,7 @@ const updateReport = async (reportId, userId, data) => {
   }
 
   // Update allowed fields
-  const allowedFields = ["condition", "zone", "description"];
+  const allowedFields = ["condition", "zone", "description", "photo"];
   allowedFields.forEach((field) => {
     if (data[field] !== undefined) {
       report[field] = data[field];

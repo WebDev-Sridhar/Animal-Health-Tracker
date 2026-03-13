@@ -38,6 +38,8 @@ export default function AccountPage() {
   const [editingReportId, setEditingReportId] = useState(null);
   const [formData, setFormData] = useState({});
   const [reportFormData, setReportFormData] = useState({});
+  const [reportPhotoFile, setReportPhotoFile] = useState(null);
+  const [reportPhotoPreview, setReportPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -51,8 +53,13 @@ export default function AccountPage() {
   const fetchReports = async () => {
     setLoadingReports(true);
     try {
-      const reportRes = await apiClient.get("/reports?mine=true");
-      setReports(reportRes.data);
+      const reportRes = await apiClient.get("/reports");
+      const userId = authUser?._id || authUser?.id;
+      const myReports = (reportRes.data || []).filter((r) => {
+        const reporterId = r.reportedBy?._id || r.reportedBy;
+        return reporterId?.toString() === userId?.toString();
+      });
+      setReports(myReports);
     } catch (err) {
       console.error(err);
     } finally {
@@ -84,15 +91,34 @@ export default function AccountPage() {
   const handleEditReport = (report) => {
     setEditingReportId(report._id);
     setReportFormData({ condition: report.condition, zone: report.zone, description: report.description || "" });
+    setReportPhotoFile(null);
+    setReportPhotoPreview(null);
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setReportPhotoFile(file);
+    setReportPhotoPreview(URL.createObjectURL(file));
   };
 
   const handleSaveReport = async (reportId) => {
     setLoading(true);
     try {
-      await apiClient.patch(`/reports/${reportId}`, reportFormData);
-      setReports(reports.map((r) => r._id === reportId ? { ...r, ...reportFormData } : r));
+      let body;
+      if (reportPhotoFile) {
+        body = new FormData();
+        Object.entries(reportFormData).forEach(([k, v]) => body.append(k, v));
+        body.append("photo", reportPhotoFile);
+      } else {
+        body = reportFormData;
+      }
+      const res = await apiClient.patch(`/reports/${reportId}`, body);
+      const updated = res.data || {};
+      setReports(reports.map((r) => r._id === reportId ? { ...r, ...reportFormData, photo: updated.photo || reportPhotoPreview || r.photo } : r));
       setEditingReportId(null);
-      alert("Report updated successfully!");
+      setReportPhotoFile(null);
+      setReportPhotoPreview(null);
     } catch (err) {
       console.error(err);
       alert("Failed to update report");
@@ -181,7 +207,7 @@ export default function AccountPage() {
             {!editingUser && (
               <button onClick={handleEditUser}
                 className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-extrabold hover:bg-[#d0ece5] transition-colors" style={{ color: "#2e6b5a", background: "#eaf5f1" }}>
-                ✏️ Edit Profile
+                Edit Profile
               </button>
             )}
           </div>
@@ -212,15 +238,15 @@ export default function AccountPage() {
           ) : (
             <div className="grid md:grid-cols-3 gap-5">
               {[
-                { label: "Full Name", value: user.name, emoji: "👤" },
-                { label: "Email", value: user.email, emoji: "📧" },
-                { label: "Phone", value: user.phone || "Not added", emoji: "📞" },
-                { label: "Role", value: user.role, emoji: "🎭", capitalize: true },
-                { label: "Zone", value: user.zone || "Not added", emoji: "📍" },
-                { label: "Member Since", value: new Date(user.createdAt).toLocaleDateString(), emoji: "📅" },
-              ].map(({ label, value, emoji, capitalize }) => (
+                { label: "Full Name", value: user.name, },
+                { label: "Email", value: user.email, },
+                { label: "Phone", value: user.phone || "Not added", },
+                { label: "Role", value: user.role, capitalize: true },
+                { label: "Zone", value: user.zone || "Not added", },
+                { label: "Member Since", value: new Date(user.createdAt).toLocaleDateString(), },
+              ].map(({ label, value, capitalize }) => (
                 <div key={label} className="p-4 rounded-2xl bg-gray-50">
-                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{emoji} {label}</p>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{label}</p>
                   <p className={`font-bold text-gray-800 ${capitalize ? "capitalize" : ""}`}>{value}</p>
                 </div>
               ))}
@@ -285,6 +311,23 @@ export default function AccountPage() {
                             onChange={(e) => setReportFormData({ ...reportFormData, description: e.target.value })}
                             className="input-field mt-1.5 text-sm resize-none" rows="2" />
                         </div>
+                        <div>
+                          <label className="text-xs font-extrabold text-gray-600 uppercase tracking-wide">Photo</label>
+                          <div className="mt-1.5">
+                            {(reportPhotoPreview || r.photo) && (
+                              <img
+                                src={reportPhotoPreview || r.photo}
+                                alt="preview"
+                                className="w-full h-32 object-cover rounded-xl mb-2"
+                              />
+                            )}
+                            <label className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer border-2 border-dashed transition-colors hover:border-[#3d8c78] hover:bg-[#eaf5f1]"
+                              style={{ borderColor: "#d0ece5", color: "#3d8c78" }}>
+                              📷 {reportPhotoPreview ? "Change Photo" : "Replace Photo"}
+                              <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                            </label>
+                          </div>
+                        </div>
                         <div className="flex gap-2 pt-1">
                           <button onClick={() => handleSaveReport(r._id)} disabled={loading}
                             className="flex-1 btn-primary text-sm py-2.5 disabled:opacity-50">
@@ -302,7 +345,7 @@ export default function AccountPage() {
                             <h3 className="font-extrabold text-gray-800 capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
                               {r.animal?.species?.toUpperCase() || "Animal"}
                             </h3>
-                            <p className="text-xs text-gray-500 mt-0.5">📍 {r.zone}</p>
+                            <p className="text-xs text-gray-500 mt-0.5"> {r.zone}</p>
                           </div>
                           <div className="flex flex-col gap-1 items-end">
                             <span className={`badge ${conditionBadge(r.condition)} text-xs`}>{r.condition}</span>
@@ -322,12 +365,12 @@ export default function AccountPage() {
                           {r.status === "pending" && (
                             <button onClick={() => handleEditReport(r)}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold hover:bg-[#d0ece5] transition-colors" style={{ color: "#2e6b5a", background: "#eaf5f1" }}>
-                              ✏️ Edit
+                              Edit
                             </button>
                           )}
                           <button onClick={() => deleteReport(r._id)}
                             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
-                            🗑️ Delete
+                             Delete
                           </button>
                         </div>
                       </>

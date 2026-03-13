@@ -86,7 +86,7 @@ export default function AdoptionPage() {
           </select>
           <select className="input-field max-w-xs py-2.5 text-sm cursor-pointer" value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="">All Animals</option>
-            {categories.map((c) => <option key={c}>{speciesEmoji(c)} {c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+            {categories.map((c) => <option key={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
           </select>
           {(district || category) && (
             <button onClick={() => { setDistrict(""); setCategory(""); }}
@@ -162,7 +162,7 @@ export default function AdoptionPage() {
                       <h3 className="text-xl font-bold text-gray-800 capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
                         {speciesEmoji(r.animal?.species)} {r.animal?.species || "Animal"}
                       </h3>
-                      <p className="text-sm text-gray-500">📍 {r.zone || "Tamil Nadu"}</p>
+                      <p className="text-sm text-gray-500"> {r.zone || "Tamil Nadu"}</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 mb-4 text-xs">

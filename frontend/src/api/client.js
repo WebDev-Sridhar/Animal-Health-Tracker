@@ -25,6 +25,6 @@ export const apiClient = {
       body: body instanceof FormData ? body : JSON.stringify(body),
     }),
   put: (endpoint, body) => apiClient.request(endpoint, { method: 'PUT', body: JSON.stringify(body) }),
-  patch: (endpoint, body) => apiClient.request(endpoint, { method: 'PATCH', body: JSON.stringify(body) }),
+  patch: (endpoint, body) => apiClient.request(endpoint, { method: 'PATCH', body: body instanceof FormData ? body : JSON.stringify(body) }),
   delete: (endpoint) => apiClient.request(endpoint, { method: 'DELETE' }),
 };
