@@ -45,21 +45,21 @@ export default function VolunteerDashboard() {
   const acceptReport = async (id) => {
     try {
       const res = await apiClient.patch(`/reports/${id}/accept`);
-      setReports((prev) => prev.map((r) => (r._id === id ? res.data : r)));
+      setAllReports((prev) => prev.map((r) => (r._id === id ? res.data : r)));
     } catch (err) { alert(err.message); }
   };
 
   const resolveReport = async (id) => {
     try {
       await apiClient.patch(`/reports/${id}/resolve`);
-      setReports((p) => p.map((r) => (r._id === id ? { ...r, status: "resolved" } : r)));
+      setAllReports((p) => p.map((r) => (r._id === id ? { ...r, status: "resolved" } : r)));
     } catch (err) { alert(err.message); }
   };
 
   const unassignReport = async (id) => {
     try {
       const res = await apiClient.patch(`/reports/${id}/unassign`);
-      setReports((prev) => prev.map((r) => (r._id === id ? res.data : r)));
+      setAllReports((prev) => prev.map((r) => (r._id === id ? res.data : r)));
     } catch (err) { alert(err.message); }
   };
 
@@ -137,83 +137,91 @@ export default function VolunteerDashboard() {
         ) : (
           <div className="space-y-4">
             {reports.map((r) => (
-              <div key={r._id} className="card p-5">
-                <div className="flex flex-wrap gap-4">
-                  {/* Photo */}
+              <div key={r._id} className="card overflow-hidden">
+                <div className="flex flex-col sm:flex-row">
+                  {/* Photo — full-width banner on mobile, fixed sidebar on desktop */}
                   {r.photo && (
                     <a href={r.photo} download={`report-${r._id}.jpg`} className="flex-shrink-0">
                       <img src={r.photo} alt="Animal"
-                        className="w-36 h-36 object-cover rounded-2xl cursor-pointer hover:opacity-90 transition hover:scale-105 shadow-md" />
+                        className="w-full h-44 sm:w-36 sm:h-full object-cover hover:opacity-90 transition" />
                     </a>
                   )}
 
-                  {/* Main Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <h3 className="font-extrabold text-gray-800 capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
-                        {r.animal?.species || "Unknown"} — {r.zone || "No zone"}
-                      </h3>
-                      <span className={`badge ${conditionBadge(r.condition)} text-xs`}>{r.condition}</span>
-                      <span className={`badge ${statusBadge(r.status)} text-xs`}>{r.status}</span>
-                    </div>
-                    {r.description && (
-                      <p className="text-gray-600 text-sm mb-2 line-clamp-2">{r.description}</p>
-                    )}
-                    <p className="text-xs text-gray-400">
-                      📅 {new Date(r.createdAt).toLocaleDateString('en-GB')}
-                    </p>
-                  </div>
-
-                  {/* Reporter */}
-                  {r.reportedBy && (
-                    <div className="text-sm border-l border-gray-100 pl-4 min-w-[160px]">
-                      <p className="font-extrabold text-gray-600 text-xs uppercase tracking-wide mb-2">Reporter</p>
-                      <p className="font-bold text-gray-800">{r.reportedBy.name}</p>
-                      <p className="text-gray-500 text-xs">{r.reportedBy.email}</p>
-                      {r.reportedBy.phone && (
-                        <a href={`tel:${r.reportedBy.phone}`}
-                          className="inline-flex items-center gap-1 mt-1 text-xs font-bold transition-colors"
-                          style={{ color: "#3d8c78" }}>
-                          📞 {r.reportedBy.phone}
-                        </a>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0 p-4 sm:p-5 flex flex-col gap-3">
+                    {/* Title + badges + date */}
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <h3 className="font-extrabold text-gray-800 capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
+                          {r.animal?.species || "Unknown"} — {r.zone || "No zone"}
+                        </h3>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        <span className={`badge ${conditionBadge(r.condition)} text-xs`}>{r.condition}</span>
+                        <span className={`badge ${statusBadge(r.status)} text-xs`}>{r.status}</span>
+                      </div>
+                      {r.description && (
+                        <p className="text-gray-600 text-sm mb-1 line-clamp-2">{r.description}</p>
                       )}
+                      <p className="text-xs text-gray-400">
+                        📅 {new Date(r.createdAt).toLocaleDateString('en-GB')}
+                      </p>
                     </div>
-                  )}
 
-                  {/* Actions */}
-                  <div className="flex flex-col gap-2 justify-center min-w-[120px]">
-                    {r.status === "pending" && (
-                      <button onClick={() => acceptReport(r._id)}
-                        className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
-                        style={{ background: "var(--primary)" }}>
-                        ✅ Accept
-                      </button>
-                    )}
-                    {r.status === "accepted" && (
-                      r.acceptedBy?._id === user.id ? (
-                        <>
-                          <button onClick={() => resolveReport(r._id)}
+                    {/* Reporter + Actions row */}
+                    <div className="flex flex-wrap items-start justify-between gap-3 pt-2 border-t border-gray-50">
+                      {/* Reporter */}
+                      {r.reportedBy && (
+                        <div className="text-sm">
+                          <p className="font-extrabold text-gray-500 text-xs uppercase tracking-wide mb-1">Reporter</p>
+                          <p className="font-bold text-gray-800">{r.reportedBy.name}</p>
+                          <p className="text-gray-500 text-xs">{r.reportedBy.email}</p>
+                          {r.reportedBy.phone && (
+                            <a href={`tel:${r.reportedBy.phone}`}
+                              className="inline-flex items-center gap-1 mt-1 text-xs font-bold"
+                              style={{ color: "#3d8c78" }}>
+                              📞 {r.reportedBy.phone}
+                            </a>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Actions */}
+                      <div className="flex flex-row sm:flex-col gap-2 ml-auto">
+                        {r.status === "pending" && (
+                          <button onClick={() => acceptReport(r._id)}
                             className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
-                            style={{ background: "#1e3a5f" }}>
-                            🏁 Resolve
+                            style={{ background: "var(--primary)" }}>
+                            ✅ Accept
                           </button>
-                          <button onClick={() => unassignReport(r._id)}
-                            className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
-                            style={{ background: "#d97706" }}>
-                            ↩️ Give Back
-                          </button>
-                        </>
-                      ) : (
-                        <span className="px-4 py-2 rounded-full text-sm font-bold text-center bg-gray-100 text-gray-500">
-                          In Progress
-                        </span>
-                      )
-                    )}
-                    {r.status === "resolved" && (
-                      <span className="px-4 py-2 rounded-full text-sm font-bold text-center badge-green">
-                        ✅ Completed
-                      </span>
-                    )}
+                        )}
+                        {r.status === "accepted" && (
+                          r.acceptedBy?._id === user.id ? (
+                            <>
+                              <button onClick={() => resolveReport(r._id)}
+                                className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
+                                style={{ background: "#1e3a5f" }}>
+                                🏁 Resolve
+                              </button>
+                              <button onClick={() => unassignReport(r._id)}
+                                className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
+                                style={{ background: "#d97706" }}>
+                                ↩️ Give Back
+                              </button>
+                            </>
+                          ) : (
+                            <span className="px-4 py-2 rounded-full text-sm font-bold text-center bg-gray-100 text-gray-500">
+                              In Progress
+                            </span>
+                          )
+                        )}
+                        {r.status === "resolved" && (
+                          <span className="px-4 py-2 rounded-full text-sm font-bold text-center badge-green">
+                            ✅ Completed
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
