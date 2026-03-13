@@ -118,6 +118,15 @@ const resolveReport = async (reportId, user) => {
   report.status = "resolved";
   await report.save();
 
+  // Update linked Animal based on what was resolved
+  if (report.animal) {
+    const animalUpdate = { condition: "healthy" };
+    if (report.condition === "vaccination-needed") {
+      animalUpdate.vaccinationStatus = "up-to-date";
+    }
+    await Animal.findByIdAndUpdate(report.animal, animalUpdate);
+  }
+
   return report;
 };
 const unassignReport = async (reportId, user) => {

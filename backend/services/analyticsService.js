@@ -23,7 +23,7 @@ const getAnalytics = async () => {
     Animal.countDocuments(),
     Animal.countDocuments({ condition: { $in: ["sick", "critical"] } }),
     Animal.countDocuments({
-      vaccinationStatus: { $in: ["partial", "complete"] },
+      vaccinationStatus: "up-to-date",
     }),
     Report.countDocuments({ createdAt: { $gte: weekStart } }),
     Animal.aggregate([
