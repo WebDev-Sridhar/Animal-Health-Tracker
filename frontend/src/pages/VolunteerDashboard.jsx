@@ -18,7 +18,7 @@ const conditionBadge = (condition) => {
 };
 
 export default function VolunteerDashboard() {
-  const [reports, setReports] = useState([]);
+  const [allReports, setAllReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [zone, setZone] = useState("");
   const { user } = useAuth();
@@ -27,17 +27,20 @@ export default function VolunteerDashboard() {
     const fetchReports = async () => {
       setLoading(true);
       try {
-        const url = zone ? `/reports?zone=${encodeURIComponent(zone)}` : "/reports";
-        const res = await apiClient.get(url);
-        setReports(res.data || []);
+        const res = await apiClient.get("/reports");
+        setAllReports(res.data || []);
       } catch {
-        setReports([]);
+        setAllReports([]);
       } finally {
         setLoading(false);
       }
     };
     fetchReports();
-  }, [zone]);
+  }, []);
+
+  const reports = zone
+    ? allReports.filter((r) => r.zone?.toLowerCase().includes(zone.toLowerCase()))
+    : allReports;
 
   const acceptReport = async (id) => {
     try {
