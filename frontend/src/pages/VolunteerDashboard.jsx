@@ -139,21 +139,6 @@ export default function VolunteerDashboard() {
             </div>
 
             <div className="flex flex-wrap items-start justify-between gap-3 pt-2 border-t border-gray-50">
-              {r.reportedBy && (
-                <div className="text-sm">
-                  <p className="font-extrabold text-gray-500 text-xs uppercase tracking-wide mb-1">Reporter</p>
-                  <p className="font-bold text-gray-800">{r.reportedBy.name}</p>
-                  <p className="text-gray-500 text-xs">{r.reportedBy.email}</p>
-                  {r.reportedBy.phone && (
-                    <a href={`tel:${r.reportedBy.phone}`}
-                      className="inline-flex items-center gap-1 mt-1 text-xs font-bold"
-                      style={{ color: "#3d8c78" }}>
-                      📞 {r.reportedBy.phone}
-                    </a>
-                  )}
-                </div>
-              )}
-
               <div className="flex flex-row sm:flex-col gap-2 ml-auto">
                 {r.status === "pending" && (
                   <button onClick={() => acceptReport(r._id)}

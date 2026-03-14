@@ -435,7 +435,7 @@ export default function AccountPage() {
                           <p className="text-sm text-gray-600 mb-3 line-clamp-2">{r.description}</p>
                         )}
 
-                        {(r.status === "accepted" || r.status === "resolved") && r.acceptedBy?.name && (
+                        {r.status === "accepted" && r.acceptedBy?.name && (
                           <div className="p-3 rounded-xl mb-3" style={{ background: "#eaf5f1" }}>
                             <p className="text-xs font-extrabold uppercase tracking-wide mb-1" style={{ color: "#2e6b5a" }}>
                               Volunteer Assigned
@@ -448,7 +448,7 @@ export default function AccountPage() {
                               <a href={`tel:${r.acceptedBy.phone}`}
                                 className="inline-flex items-center gap-1 text-xs font-bold mt-1"
                                 style={{ color: "#3d8c78" }}>
-                                 {r.acceptedBy.phone}
+                                📞 {r.acceptedBy.phone}
                               </a>
                             )}
                           </div>
@@ -581,12 +581,12 @@ export default function AccountPage() {
                             <button onClick={() => handleGiveBack(r._id)}
                               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-white hover:scale-105 transition-all shadow-sm"
                               style={{ background: "#d97706" }}>
-                              ↩️ Give Back
+                              Give Back
                             </button>
                           )}
                           {r.status === "resolved" && (
                             <div className="w-full py-2.5 rounded-full text-sm font-bold text-center badge-green">
-                              ✅ Resolved
+                              Resolved
                             </div>
                           )}
                         </div>
