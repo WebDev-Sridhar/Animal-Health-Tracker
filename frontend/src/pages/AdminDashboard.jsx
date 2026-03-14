@@ -76,13 +76,14 @@ export default function AdminDashboard() {
   const atRisk = (hb.sick ?? 0) + (hb.critical ?? 0) + (hb.injured ?? 0);
 
   const statCards = [
+    { label: "Reports This Week", value: analytics?.reportsThisWeek ?? 0, emoji: "📋", color: "from-orange-400 to-orange-500" },
     { label: "Total Animals", value: analytics?.totalAnimals ?? 0, emoji: "🐾", color: "from-green-500 to-green-600" },
+    { label: "Rescued", value: analytics?.rescuedAnimals ?? 0, emoji: "🚑", color: "from-violet-400 to-violet-500" },
     { label: "At Risk", value: atRisk, emoji: "🤒", color: "from-red-400 to-red-500" },
     { label: "Vaccinated", value: analytics?.vaccinatedAnimals ?? 0, emoji: "💉", color: "from-green-400 to-green-500" },
     { label: "Vaccination Needed", value: analytics?.vaccinationNeeded ?? 0, emoji: "⚠️", color: "from-cyan-400 to-cyan-500" },
     { label: "For Adoption", value: analytics?.forAdoption ?? 0, emoji: "🏡", color: "from-blue-400 to-blue-500" },
-    { label: "Rescued", value: analytics?.rescuedAnimals ?? 0, emoji: "🚑", color: "from-violet-400 to-violet-500" },
-    { label: "Reports This Week", value: analytics?.reportsThisWeek ?? 0, emoji: "📋", color: "from-orange-400 to-orange-500" },
+    { label: "Adopted", value: analytics?.adopted ?? 0, emoji: "❤️", color: "from-blue-400 to-blue-500" },
   ];
 
   const healthData = {
@@ -181,7 +182,7 @@ export default function AdminDashboard() {
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="card p-6">
             <h2 className="text-xl font-bold mb-5" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
-              🏥 Health Status Breakdown
+              Health Status Breakdown
             </h2>
             <div className="h-64">
               {Object.keys(analytics?.healthBreakdown ?? {}).length > 0 ? (
@@ -196,7 +197,7 @@ export default function AdminDashboard() {
 
           <div className="card p-6">
             <h2 className="text-xl font-bold mb-5" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
-              📍 Zone Risk Scores
+               Zone Risk Scores
             </h2>
             <div className="h-64">
               {(analytics?.zones ?? []).length > 0 ? (
