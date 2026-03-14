@@ -88,7 +88,7 @@ export default function MainLayout() {
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <Link to="/account"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-colors"
+                  className=" relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-colors"
                   style={{ color: "#5c6b6a" }}>
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
                     style={{ background: "#d4e4e1", color: "#6b8c85" }}>
