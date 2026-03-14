@@ -78,33 +78,7 @@ export default function MainLayout() {
                 Admin
               </Link>
             )}
-              {isAuthenticated && (
-              <Link to="/account" style={{ position: 'relative', display: 'inline-flex' }}>
-                <button
-                className="relative text-sm font-bold px-3 py-2 rounded-xl transition-all duration-200"
-                style={{
-                  color: isActive("/account") ? "var(--primary-dark)" : "#5c6b6a",
-                  background: isActive("/account") ? "#f0f5f4" : "transparent",
-                  fontWeight: isActive("/account") ? 800 : 700,
-                }}
-                  aria-label="Chat"
-                >
-                  Messages
-                </button>
-                {totalUnread > 0 && (
-                  <span style={{
-                    position: 'absolute', top: 2, right: 2,
-                    background: '#ef4444', color: '#fff',
-                    borderRadius: '50%', width: 16, height: 16,
-                    fontSize: 10, fontWeight: 800,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    lineHeight: 1,
-                  }}>
-                    {totalUnread > 9 ? '9+' : totalUnread}
-                  </span>
-                )}
-              </Link>
-            )}
+   
           </div>
 
           {/* Desktop Auth */}
@@ -121,6 +95,18 @@ export default function MainLayout() {
                     {user?.name?.[0] || "U"}
                   </div>
                   {user?.name?.split(" ")[0]}
+                  {totalUnread > 0 && (
+                  <span style={{
+                    position: 'absolute', top: 2, right: 2,
+                    background: '#ef4444', color: '#fff',
+                    borderRadius: '50%', width: 16, height: 16,
+                    fontSize: 10, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    lineHeight: 1,
+                  }}>
+                    {totalUnread > 9 ? '9+' : totalUnread}
+                  </span>
+                )}
                 </Link>
                 <button onClick={handleLogout} className="btn-secondary text-sm py-2 px-4">Logout</button>
               </div>
