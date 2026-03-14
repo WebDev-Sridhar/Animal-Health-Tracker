@@ -161,7 +161,7 @@ export default function VolunteerDashboard() {
                       <button onClick={() => sendWhatsAppNotification(r)}
                         className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
                         style={{ background: "#25D366" }}>
-                        📩 Notify Reporter
+                         Notify Reporter
                       </button>
                     ) : (
                       <span className="px-4 py-2 rounded-full text-sm font-bold text-center bg-gray-100 text-gray-400 text-xs">
@@ -171,7 +171,7 @@ export default function VolunteerDashboard() {
                     <button onClick={() => unassignReport(r._id)}
                       className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
                       style={{ background: "#d97706" }}>
-                      ↩️ Give Back
+                       Give Back
                     </button>
                   </>
                 )}
@@ -184,7 +184,7 @@ export default function VolunteerDashboard() {
 
                 {r.status === "resolved" && (
                   <span className="px-4 py-2 rounded-full text-sm font-bold text-center badge-green">
-                    ✅ Completed
+                    Completed
                   </span>
                 )}
               </div>
@@ -231,13 +231,12 @@ export default function VolunteerDashboard() {
           {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: "Pending", value: pending.length, emoji: "⏳", color: "bg-amber-400" },
-              { label: "In Progress", value: accepted.length, emoji: "🚑", color: "bg-blue-400" },
-              { label: "Resolved", value: resolved.length, emoji: "✅", color: "bg-green-400" },
+              { label: "Pending", value: pending.length, color: "bg-amber-400" },
+              { label: "In Progress", value: accepted.length, color: "bg-blue-400" },
+              { label: "Resolved", value: resolved.length, color: "bg-green-400" },
             ].map((s) => (
               <div key={s.label} className="p-4 rounded-2xl text-white text-center"
                 style={{ background: "rgba(255,255,255,0.15)" }}>
-                <div className="text-2xl mb-1">{s.emoji}</div>
                 <div className="text-2xl font-extrabold" style={{ fontFamily: "'Fredoka', cursive" }}>{s.value}</div>
                 <div className="text-xs font-semibold" style={{ color: "#f7ede2" }}>{s.label}</div>
               </div>

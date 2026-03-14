@@ -141,6 +141,17 @@ export default function AccountPage() {
     }
   };
 
+  const handleGiveBack = async (id) => {
+    if (!window.confirm("Return this report to the pending queue? Another volunteer can then accept it.")) return;
+    try {
+      await apiClient.patch(`/reports/${id}/unassign`);
+      setAcceptedReports((prev) => prev.filter((r) => r._id !== id));
+      showToast("Report returned to pending queue");
+    } catch (err) {
+      showToast(err.message || "Failed to give back report", "error");
+    }
+  };
+
   const handleResolveReport = async (id) => {
     if (!window.confirm("Mark this report as resolved? This confirms the issue has been addressed.")) return;
     try {
@@ -533,24 +544,33 @@ export default function AccountPage() {
                           Accepted: {r.acceptedAt ? new Date(r.acceptedAt).toLocaleDateString("en-GB") : "—"}
                         </p>
 
-                        {r.status !== "resolved" && (
-                          hasBeenAccepted24h ? (
-                            <button onClick={sendWhatsApp}
+                        <div className="flex flex-col gap-2">
+                          {r.status !== "resolved" && (
+                            hasBeenAccepted24h ? (
+                              <button onClick={sendWhatsApp}
+                                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-white hover:scale-105 transition-all shadow-sm"
+                                style={{ background: "#25D366" }}>
+                                📩 Notify Reporter
+                              </button>
+                            ) : (
+                              <div className="w-full py-2.5 rounded-full text-sm font-bold text-center bg-gray-100 text-gray-400">
+                                📩 Notify available after 24h
+                              </div>
+                            )
+                          )}
+                          {r.status === "accepted" && (
+                            <button onClick={() => handleGiveBack(r._id)}
                               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-white hover:scale-105 transition-all shadow-sm"
-                              style={{ background: "#25D366" }}>
-                              📩 Notify Reporter
+                              style={{ background: "#d97706" }}>
+                              ↩️ Give Back
                             </button>
-                          ) : (
-                            <div className="w-full py-2.5 rounded-full text-sm font-bold text-center bg-gray-100 text-gray-400">
-                              📩 Notify available after 24h
+                          )}
+                          {r.status === "resolved" && (
+                            <div className="w-full py-2.5 rounded-full text-sm font-bold text-center badge-green">
+                              ✅ Resolved
                             </div>
-                          )
-                        )}
-                        {r.status === "resolved" && (
-                          <div className="w-full py-2.5 rounded-full text-sm font-bold text-center badge-green">
-                            ✅ Resolved
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
