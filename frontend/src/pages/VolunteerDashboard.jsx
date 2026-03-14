@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { useVolunteerLocation } from "../hooks/useVolunteerLocation";
 import VolunteerMapLayer from "../components/VolunteerMapLayer";
 import EmergencyAlert from "../components/EmergencyAlert";
+import ChatWidget from "../components/ChatWidget";
 
 const RESCUE_CONDITIONS = ["sick", "critical", "injured", "aggressive"];
 
@@ -32,6 +33,8 @@ export default function VolunteerDashboard() {
   const [toast, setToast] = useState(null);
   const { user } = useAuth();
   const { isSharing, startSharing, stopSharing, locationError } = useVolunteerLocation();
+  const [chatReportId, setChatReportId] = useState(null);
+  const [chatReporterName, setChatReporterName] = useState("");
 
   const showToast = (msg) => {
     setToast(msg);
@@ -163,6 +166,12 @@ export default function VolunteerDashboard() {
 
                 {r.status === "accepted" && isAssignedToMe && (
                   <>
+                    <button
+                      onClick={() => { setChatReportId(r._id); setChatReporterName(r.reportedBy?.name || "Reporter"); }}
+                      className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
+                      style={{ background: "var(--primary)" }}>
+                      💬 Chat
+                    </button>
                     {hasBeenAccepted24h ? (
                       <button onClick={() => sendWhatsAppNotification(r)}
                         className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
@@ -407,6 +416,13 @@ export default function VolunteerDashboard() {
           </div>
         )}
       </div>
+
+      <ChatWidget
+        reportId={chatReportId}
+        volunteerName={chatReporterName}
+        isOpen={!!chatReportId}
+        onClose={() => { setChatReportId(null); setChatReporterName(""); }}
+      />
     </div>
   );
 }
