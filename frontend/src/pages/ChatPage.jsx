@@ -29,11 +29,14 @@ function ChatConversation({ reportId, contactName, onBack }) {
   const { markChatRead } = useSocket();
   const { messages, sendMessage, markRead, loading, clearMessages } = useChat(reportId);
   const [input, setInput] = useState('');
-  const bottomRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const [showActions, setShowActions] = useState(false);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -112,7 +115,7 @@ function ChatConversation({ reportId, contactName, onBack }) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2" style={{ background: '#f9fbfa' }}>
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2" style={{ background: '#f9fbfa' }}>
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
@@ -151,7 +154,6 @@ function ChatConversation({ reportId, contactName, onBack }) {
             );
           })
         )}
-        <div ref={bottomRef} />
       </div>
 
       {/* Input */}
