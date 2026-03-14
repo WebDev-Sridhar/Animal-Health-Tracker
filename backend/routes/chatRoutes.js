@@ -221,8 +221,10 @@ router.delete('/:reportId', async (req, res) => {
   }
 });
 
-// DELETE /api/chat/:reportId/clear — Clear chat (per-user soft delete)
-// Adds userId to deletedFor on all messages; other user still sees everything
+// DELETE /api/chat/:reportId/clear — Clear chat
+// 1) Replace text of user's own sent messages with "This message was deleted" + set isDeleted=true
+// 2) Add userId to deletedFor on ALL messages (hides entire chat for this user)
+// Other user still sees their own messages; user's messages show "This message was deleted"
 router.delete('/:reportId/clear', async (req, res) => {
   try {
     const { reportId } = req.params;
@@ -246,7 +248,13 @@ router.delete('/:reportId/clear', async (req, res) => {
       return res.status(403).json({ error: 'Not a participant in this chat' });
     }
 
-    // Soft-delete: hide all messages for this user only
+    // Step 1: Mark user's own sent messages as deleted (other user sees "This message was deleted")
+    await ChatMessage.updateMany(
+      { reportId, senderId: userId },
+      { $set: { text: 'This message was deleted', isDeleted: true } }
+    );
+
+    // Step 2: Hide all messages from this user's view
     await ChatMessage.updateMany(
       { reportId },
       { $addToSet: { deletedFor: userId } }

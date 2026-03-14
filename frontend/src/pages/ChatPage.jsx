@@ -72,21 +72,12 @@ function ChatConversation({ reportId, contactName, onBack }) {
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm('Delete this chat? Your sent messages will show as "deleted" for the other user, and the chat will be removed from your list.')) return;
-    try {
-      await apiClient.delete(`/chat/${reportId}`);
-      clearMessages();
-      onBack();
-    } catch {
-      alert('Failed to delete conversation');
-    }
-  };
-
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 64px)' }}>
+    <div className="flex flex-col h-full overflow-hidden rounded-2xl border"
+      style={{ borderColor: 'rgba(61,140,120,0.15)', background: '#fff' }}>
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 flex-shrink-0" style={{ background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)' }}>
+      <div className="flex items-center gap-3 px-4 py-3 flex-shrink-0"
+        style={{ background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)', borderRadius: '16px 16px 0 0' }}>
         <button onClick={onBack} className="text-white text-lg font-bold hover:opacity-80 transition" aria-label="Back">
           ←
         </button>
@@ -100,14 +91,10 @@ function ChatConversation({ reportId, contactName, onBack }) {
             ⋮
           </button>
           {showActions && (
-            <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg py-1 z-10 min-w-[160px]">
+            <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg py-1 z-10 min-w-[150px]">
               <button onClick={() => { setShowActions(false); handleClear(); }}
                 className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-semibold">
                 Clear Chat
-              </button>
-              <button onClick={() => { setShowActions(false); handleDelete(); }}
-                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-semibold">
-                Delete Chat
               </button>
             </div>
           )}
@@ -157,7 +144,8 @@ function ChatConversation({ reportId, contactName, onBack }) {
       </div>
 
       {/* Input */}
-      <div className="flex gap-2 px-3 py-2.5 bg-white flex-shrink-0" style={{ borderTop: '1px solid rgba(61,140,120,0.1)' }}>
+      <div className="flex gap-2 px-3 py-2.5 bg-white flex-shrink-0"
+        style={{ borderTop: '1px solid rgba(61,140,120,0.1)', borderRadius: '0 0 16px 16px' }}>
         <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown}
           placeholder="Type a message..." rows={1}
           className="flex-1 resize-none outline-none text-sm py-2 px-3 rounded-xl"
@@ -197,6 +185,17 @@ function ChatList() {
     fetchConversations();
   }, [fetchConversations]);
 
+  const handleDeleteChat = async (e, reportId) => {
+    e.stopPropagation();
+    if (!window.confirm('Delete this chat? Your sent messages will show as "deleted" for the other user, and the chat will be removed from your list.')) return;
+    try {
+      await apiClient.delete(`/chat/${reportId}`);
+      setConversations((prev) => prev.filter((c) => c.reportId !== reportId));
+    } catch {
+      alert('Failed to delete conversation');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -223,7 +222,8 @@ function ChatList() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 overflow-y-auto rounded-2xl border"
+      style={{ borderColor: 'rgba(61,140,120,0.15)', background: '#fff' }}>
       {/* Header */}
       <div className="px-5 py-4" style={{ borderBottom: '1px solid #e8d9cc' }}>
         <h1 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: 'var(--text-dark)' }}>
@@ -235,36 +235,49 @@ function ChatList() {
         {conversations.map((conv) => {
           const unread = unreadChats[conv.reportId]?.count || conv.unreadCount || 0;
           return (
-            <button key={conv.reportId}
-              onClick={() => navigate(`/chat/${conv.reportId}`, { state: { contactName: conv.otherUser?.name || 'Chat' } })}
-              className="w-full text-left flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer">
-              {/* Avatar */}
-              <div className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-extrabold flex-shrink-0 uppercase"
-                style={{ background: '#d4e4e1', color: '#2e6b5a' }}>
-                {conv.otherUser?.name?.[0] || '?'}
-              </div>
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <p className="font-extrabold text-gray-800 text-sm truncate">{conv.otherUser?.name || 'Unknown'}</p>
-                  <span className="text-[11px] text-gray-400 font-semibold flex-shrink-0 ml-2">
-                    {formatDate(conv.lastMessageTime)}
-                  </span>
+            <div key={conv.reportId} className="flex items-center hover:bg-gray-50 transition-colors">
+              <button
+                onClick={() => navigate(`/chat/${conv.reportId}`, { state: { contactName: conv.otherUser?.name || 'Chat' } })}
+                className="flex-1 text-left flex items-center gap-3 px-5 py-4 cursor-pointer min-w-0">
+                {/* Avatar */}
+                <div className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-extrabold flex-shrink-0 uppercase"
+                  style={{ background: '#d4e4e1', color: '#2e6b5a' }}>
+                  {conv.otherUser?.name?.[0] || '?'}
                 </div>
-                <div className="flex items-center justify-between mt-0.5">
-                  <p className="text-xs text-gray-400 truncate flex-1">
-                    <span className="text-gray-500 capitalize">{conv.reportSpecies}</span>
-                    {conv.lastMessage && <span> · {conv.lastMessage}</span>}
-                  </p>
-                  {unread > 0 && (
-                    <span className="flex-shrink-0 ml-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white"
-                      style={{ background: '#ef4444' }}>
-                      {unread > 9 ? '9+' : unread}
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <p className="font-extrabold text-gray-800 text-sm truncate">{conv.otherUser?.name || 'Unknown'}</p>
+                    <span className="text-[11px] text-gray-400 font-semibold flex-shrink-0 ml-2">
+                      {formatDate(conv.lastMessageTime)}
                     </span>
-                  )}
+                  </div>
+                  <div className="flex items-center justify-between mt-0.5">
+                    <p className="text-xs text-gray-400 truncate flex-1">
+                      <span className="text-gray-500 capitalize">{conv.reportSpecies}</span>
+                      {conv.lastMessage && <span> · {conv.lastMessage}</span>}
+                    </p>
+                    {unread > 0 && (
+                      <span className="flex-shrink-0 ml-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white"
+                        style={{ background: '#ef4444' }}>
+                        {unread > 9 ? '9+' : unread}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </button>
+              </button>
+              {/* Delete button */}
+              <button
+                onClick={(e) => handleDeleteChat(e, conv.reportId)}
+                className="flex-shrink-0 mr-3 p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                aria-label="Delete chat"
+                title="Delete chat">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </div>
           );
         })}
       </div>
@@ -297,20 +310,23 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 64px)', background: 'var(--bg-gradient)' }}>
+    <div className="flex justify-center" style={{ height: 'calc(100dvh - 64px)', background: 'var(--bg-gradient)' }}>
       <Helmet>
         <title>{reportId ? (contactName || 'Chat') : 'My Chats'} | OurPetCare</title>
       </Helmet>
 
-      {reportId ? (
-        <ChatConversation
-          reportId={reportId}
-          contactName={contactName}
-          onBack={() => navigate('/chat')}
-        />
-      ) : (
-        <ChatList />
-      )}
+      <div className="flex flex-col w-full md:max-w-2xl px-3 py-3 md:px-0 md:py-5"
+        style={{ height: '100%' }}>
+        {reportId ? (
+          <ChatConversation
+            reportId={reportId}
+            contactName={contactName}
+            onBack={() => navigate('/chat')}
+          />
+        ) : (
+          <ChatList />
+        )}
+      </div>
     </div>
   );
 }
