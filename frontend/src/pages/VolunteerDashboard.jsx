@@ -128,6 +128,14 @@ export default function VolunteerDashboard() {
               <p className="text-xs text-gray-400">
                 📅 {new Date(r.createdAt).toLocaleDateString("en-GB")}
               </p>
+              {r.location?.coordinates?.length === 2 && (
+                <a href={`https://www.google.com/maps?q=${r.location.coordinates[1]},${r.location.coordinates[0]}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs font-bold mt-1"
+                  style={{ color: "#3d8c78" }}>
+                  Get Location
+                </a>
+              )}
             </div>
 
             <div className="flex flex-wrap items-start justify-between gap-3 pt-2 border-t border-gray-50">

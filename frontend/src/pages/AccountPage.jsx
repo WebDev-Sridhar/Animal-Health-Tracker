@@ -435,6 +435,25 @@ export default function AccountPage() {
                           <p className="text-sm text-gray-600 mb-3 line-clamp-2">{r.description}</p>
                         )}
 
+                        {(r.status === "accepted" || r.status === "resolved") && r.acceptedBy?.name && (
+                          <div className="p-3 rounded-xl mb-3" style={{ background: "#eaf5f1" }}>
+                            <p className="text-xs font-extrabold uppercase tracking-wide mb-1" style={{ color: "#2e6b5a" }}>
+                              Volunteer Assigned
+                            </p>
+                            <p className="font-bold text-gray-800 text-sm">{r.acceptedBy.name}</p>
+                            {r.acceptedBy.zone && (
+                              <p className="text-xs text-gray-500">{r.acceptedBy.zone}</p>
+                            )}
+                            {r.acceptedBy.phone && (
+                              <a href={`tel:${r.acceptedBy.phone}`}
+                                className="inline-flex items-center gap-1 text-xs font-bold mt-1"
+                                style={{ color: "#3d8c78" }}>
+                                 {r.acceptedBy.phone}
+                              </a>
+                            )}
+                          </div>
+                        )}
+
                         <p className="text-xs text-gray-400 mb-4">
                           Posted: {new Date(r.createdAt).toLocaleDateString('en-GB')}
                         </p>

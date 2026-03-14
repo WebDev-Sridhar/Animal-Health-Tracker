@@ -46,7 +46,7 @@ const getReportsByZone = async (zone, currentUser) => {
   const reports = await Report.find(query)
     .populate("animal")
     .populate("reportedBy", "name email phone")
-    .populate("acceptedBy", "name email")
+    .populate("acceptedBy", "name email phone zone")
     .sort({ createdAt: -1 });
 
   return reports.map((report) => {
@@ -71,7 +71,7 @@ const getReportById = async (id) => {
   const report = await Report.findById(id)
     .populate("animal")
     .populate("reportedBy", "name email phone role")
-    .populate("acceptedBy", "name email");
+    .populate("acceptedBy", "name email phone zone");
   if (!report) {
     throw new AppError("Report not found", 404);
   }
