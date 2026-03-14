@@ -126,15 +126,18 @@ export default function MainLayout() {
               <span className={`block h-0.5 rounded-full bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""}`} />
               <span className={`block h-0.5 rounded-full bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-2.5" : ""}`} />
             </div>
-                    {totalUnread > 0 && (
-                        <span style={{
-                          background: '#ef4444', color: '#fff',
-                          borderRadius: 10, padding: '1px 7px',
-                          fontSize: 11, fontWeight: 800,
-                        }}>
-                          {totalUnread > 9 ? '9+' : totalUnread}
-                        </span>
-                      )}
+             {totalUnread > 0 && (
+                  <span style={{
+                    position: 'absolute', top: 2, right: 2,
+                    background: '#ef4444', color: '#fff',
+                    borderRadius: '50%', width: 16, height: 16,
+                    fontSize: 10, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    lineHeight: 1,
+                  }}>
+                    {totalUnread > 9 ? '9+' : totalUnread}
+                  </span>
+                )}
           </button>
         </div>
 
@@ -176,7 +179,7 @@ export default function MainLayout() {
                       </div>
                       My Account
                     </Link>
-              
+                   
                     <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="w-full btn-secondary text-sm py-2.5">
                       Logout
                     </button>
