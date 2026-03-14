@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../context/SocketContext";
 import { useState } from "react";
 import Footer from "../components/Footer";
+import EmergencyAlert from "../components/EmergencyAlert";
 
 export default function MainLayout() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -77,19 +78,14 @@ export default function MainLayout() {
                 Admin
               </Link>
             )}
-          </div>
-
-          {/* Desktop Auth */}
-          <div className="hidden md:flex items-center gap-2">
-            <Link to="/report" className="btn-orange text-sm py-2 px-4">Report</Link>
-            {isAuthenticated && (
+                      {isAuthenticated && (
               <Link to="/account" style={{ position: 'relative', display: 'inline-flex' }}>
                 <button
                   className="p-2 rounded-xl transition-colors"
                   style={{ color: '#5c6b6a', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 18 }}
                   aria-label="Chat"
                 >
-                  💬
+                  Chat
                 </button>
                 {totalUnread > 0 && (
                   <span style={{
@@ -105,6 +101,12 @@ export default function MainLayout() {
                 )}
               </Link>
             )}
+          </div>
+
+          {/* Desktop Auth */}
+          <div className="hidden md:flex items-center gap-2">
+            <Link to="/report" className="btn-orange text-sm py-2 px-4">Report</Link>
+  
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <Link to="/account"
@@ -202,6 +204,8 @@ export default function MainLayout() {
           </div>
         )}
       </nav>
+
+      <EmergencyAlert />
 
       <main className="flex-1">
         <Outlet />

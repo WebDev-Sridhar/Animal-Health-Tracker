@@ -6,7 +6,6 @@ import { apiClient } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useVolunteerLocation } from "../hooks/useVolunteerLocation";
 import VolunteerMapLayer from "../components/VolunteerMapLayer";
-import EmergencyAlert from "../components/EmergencyAlert";
 
 const RESCUE_CONDITIONS = ["sick", "critical", "injured", "aggressive"];
 
@@ -259,10 +258,7 @@ export default function VolunteerDashboard() {
         </div>
       </div>
 
-      {/* ─── Emergency alerts (fixed position, volunteer-only) ─── */}
-      <EmergencyAlert />
-
-      <div className="max-w-5xl mx-auto px-6 py-8">
+<div className="max-w-5xl mx-auto px-6 py-8">
 
         {/* ─── Live Volunteer Map ─── */}
         <div className="card mb-6 overflow-hidden">

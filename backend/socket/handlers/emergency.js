@@ -6,6 +6,7 @@
  */
 
 const { getVolunteersNearby } = require('../utils');
+const { authenticatedSockets } = require('../state');
 
 const EMERGENCY_CONDITIONS = ['sick', 'critical', 'injured', 'aggressive'];
 const ALERT_RADIUS_KM = 50; // Increased from 5km — enough for any realistic zone
@@ -57,15 +58,23 @@ function emitEmergencyAlert(io, report, volunteerLocations) {
     zone: report.zone || '',
   };
 
+  // Use authenticatedSockets for current socketIds — vol.socketId may be stale
+  // if the socket reconnected since the last locationUpdate.
+  let alertCount = 0;
   for (const vol of targets) {
-    io.to(vol.socketId).emit('animalEmergency', {
-      ...payload,
-      distanceKm: vol.distanceKm,
-    });
+    for (const [sid, sess] of authenticatedSockets.entries()) {
+      if (sess.userId === vol.userId) {
+        io.to(sid).emit('animalEmergency', {
+          ...payload,
+          distanceKm: vol.distanceKm,
+        });
+        alertCount++;
+      }
+    }
   }
 
   console.log(
-    `[Emergency] Alerted ${targets.length} volunteer(s) for ${report.condition} report (${hasGPS ? `GPS: ${lat},${lng}` : 'no GPS'})`
+    `[Emergency] Alerted ${alertCount} socket(s) across ${targets.length} volunteer(s) for ${report.condition} report (${hasGPS ? `GPS: ${lat},${lng}` : 'no GPS'})`
   );
 }
 

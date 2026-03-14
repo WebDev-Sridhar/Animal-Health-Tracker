@@ -26,6 +26,8 @@ export function getSocket() {
 export function disconnectSocket() {
   if (socket) {
     socket.disconnect();
-    socket = null;
+    // Do NOT null socket — the SocketContext attaches listeners once (useEffect [])
+    // and they must survive logout/login cycles. A disconnected socket can reconnect
+    // on the same instance, preserving all registered event listeners.
   }
 }
