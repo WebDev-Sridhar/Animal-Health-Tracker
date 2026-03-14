@@ -281,7 +281,7 @@ export default function AdminDashboard() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: rc.badge }} />
-                          <span className="font-extrabold text-gray-800">{row.emoji} {row.label}</span>
+                          <span className="font-extrabold text-gray-800">{row.label}</span>
                         </div>
                       </td>
                       {/* Submitted */}
@@ -373,13 +373,12 @@ export default function AdminDashboard() {
         {/* ─── Additional Stats Row ─── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: "Reports This Week",   value: analytics?.reportsThisWeek ?? 0, emoji: "📅", color: "#2e6b5a" },
-            { label: "Total Animals",       value: summary.totalAnimals ?? 0,        emoji: "🐾", color: "#2e6b5a" },
-            { label: "Active Zones",        value: zones.length,                     emoji: "📍", color: "#2e6b5a" },
-            { label: "High Risk Zones",     value: zones.filter((z) => z.riskScore >= 80).length, emoji: "🔴", color: "#dc2626" },
+            { label: "Reports This Week",   value: analytics?.reportsThisWeek ?? 0, color: "#2e6b5a" },
+            { label: "Total Animals",       value: summary.totalAnimals ?? 0,         color: "#2e6b5a" },
+            { label: "Active Zones",        value: zones.length,                      color: "#2e6b5a" },
+            { label: "High Risk Zones",     value: zones.filter((z) => z.riskScore >= 80).length,  color: "#dc2626" },
           ].map((s) => (
             <div key={s.label} className="card p-5 text-center">
-              <div className="text-2xl mb-1">{s.emoji}</div>
               <p className="text-3xl font-extrabold mb-1" style={{ fontFamily: "'Fredoka', cursive", color: s.color }}>
                 {s.value}
               </p>
