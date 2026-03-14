@@ -1,5 +1,5 @@
 import { apiClient } from './client';
 
 export const analyticsApi = {
-  getAnalytics: () => apiClient.get('/analytics'),
+  getAnalytics: (timeframe = "all") => apiClient.get(`/analytics?timeframe=${timeframe}`),
 };

@@ -6,7 +6,8 @@ const analyticsService = require('../services/analyticsService');
 
 const getAnalytics = async (req, res, next) => {
   try {
-    const data = await analyticsService.getAnalytics();
+    const { timeframe = "all" } = req.query;
+    const data = await analyticsService.getAnalytics(timeframe);
     res.status(200).json({
       success: true,
       data,
