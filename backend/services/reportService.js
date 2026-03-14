@@ -92,6 +92,7 @@ const acceptReport = async (reportId, userId) => {
 
   report.status = "accepted";
   report.acceptedBy = userId;
+  report.acceptedAt = new Date();
   await report.save();
   return report.populate(["animal", "reportedBy", "acceptedBy"]);
 };
@@ -157,6 +158,7 @@ const unassignReport = async (reportId, user) => {
 
   report.status = "pending";
   report.acceptedBy = undefined;
+  report.acceptedAt = null;
 
   await report.save();
 

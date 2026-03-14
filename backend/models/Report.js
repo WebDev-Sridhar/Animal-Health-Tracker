@@ -53,6 +53,10 @@ const reportSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  acceptedAt: {
+    type: Date,
+    default: null,
+  },
   zone: {
     type: String,
     trim: true,

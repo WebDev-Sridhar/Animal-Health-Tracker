@@ -41,6 +41,7 @@ export default function AccountPage() {
   const [reportPhotoFile, setReportPhotoFile] = useState(null);
   const [reportPhotoPreview, setReportPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [acceptedReports, setAcceptedReports] = useState([]);
   const [toast, setToast] = useState(null); // { msg, type: "success"|"error" }
 
   const showToast = (msg, type = "success") => {
@@ -61,11 +62,17 @@ export default function AccountPage() {
     try {
       const reportRes = await apiClient.get("/reports");
       const userId = authUser?._id || authUser?.id;
-      const myReports = (reportRes.data || []).filter((r) => {
+      const allData = reportRes.data || [];
+      const myReports = allData.filter((r) => {
         const reporterId = r.reportedBy?._id || r.reportedBy;
         return reporterId?.toString() === userId?.toString();
       });
+      const myAccepted = allData.filter((r) => {
+        const acceptedById = r.acceptedBy?._id || r.acceptedBy;
+        return acceptedById?.toString() === userId?.toString();
+      });
       setReports(myReports);
+      setAcceptedReports(myAccepted);
     } catch (err) {
       console.error(err);
     } finally {
@@ -449,6 +456,109 @@ export default function AccountPage() {
             )}
           </div>
         </div>
+
+        {/* ─── Reports I'm Handling (volunteers only) ─── */}
+        {user.role === "volunteer" && (
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+                Reports I'm Handling ({acceptedReports.length})
+              </h2>
+            </div>
+
+            {acceptedReports.length === 0 ? (
+              <div className="card p-8 text-center">
+                <div className="text-4xl mb-3">🤝</div>
+                <p className="text-gray-600 font-semibold">You haven't accepted any reports yet.</p>
+                <p className="text-gray-400 text-sm mt-1">Visit the Volunteer Dashboard to accept and handle reports.</p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-5">
+                {acceptedReports.map((r) => {
+                  const hasBeenAccepted24h = r.acceptedAt &&
+                    Date.now() - new Date(r.acceptedAt).getTime() >= 24 * 60 * 60 * 1000;
+
+                  const sendWhatsApp = () => {
+                    const phone = r.reportedBy?.phone?.replace(/\D/g, "");
+                    if (!phone) { alert("Reporter has no phone number on file."); return; }
+                    const accountUrl = `${window.location.origin}/account`;
+                    const reportDate = new Date(r.createdAt).toLocaleDateString("en-GB");
+                    const message =
+                      `Hi ${r.reportedBy?.name || "there"},\n\n` +
+                      `A volunteer from OurPetCare has attended to your animal report 🐾\n\n` +
+                      `📋 Report Details:\n` +
+                      `• Animal: ${r.animal?.species || "Unknown"}\n` +
+                      `• Zone: ${r.zone || "Unknown"}\n` +
+                      `• Condition: ${r.condition}\n` +
+                      `• Reported on: ${reportDate}\n\n` +
+                      `The issue appears to have been resolved. Please visit your account page to confirm and mark it as resolved:\n` +
+                      `🔗 ${accountUrl}\n\n` +
+                      `You may also ask us for photos of the rescued animal to verify. Reply to this message if you have any questions.\n\n` +
+                      `Thank you for caring! 🌿\n— OurPetCare Team`;
+                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+                  };
+
+                  return (
+                    <div key={r._id} className="card overflow-hidden">
+                      {r.photo && (
+                        <img src={r.photo} alt="animal" className="w-full h-40 object-cover" />
+                      )}
+                      <div className="p-5">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h3 className="font-extrabold text-gray-800 capitalize" style={{ fontFamily: "'Fredoka', cursive" }}>
+                              {r.animal?.species?.toUpperCase() || "Animal"}
+                            </h3>
+                            <p className="text-xs text-gray-500 mt-0.5">{r.zone}</p>
+                          </div>
+                          <div className="flex flex-col gap-1 items-end">
+                            <span className={`badge ${conditionBadge(r.condition)} text-xs`}>{r.condition}</span>
+                            <span className={`badge ${statusBadge(r.status)} text-xs`}>{r.status}</span>
+                          </div>
+                        </div>
+
+                        {r.reportedBy && (
+                          <div className="p-3 rounded-xl mb-3" style={{ background: "#f7faf9" }}>
+                            <p className="text-xs font-extrabold text-gray-500 uppercase tracking-wide mb-1">Reporter</p>
+                            <p className="font-bold text-gray-800 text-sm">{r.reportedBy.name}</p>
+                            {r.reportedBy.phone && (
+                              <a href={`tel:${r.reportedBy.phone}`} className="text-xs font-bold" style={{ color: "#3d8c78" }}>
+                                📞 {r.reportedBy.phone}
+                              </a>
+                            )}
+                          </div>
+                        )}
+
+                        <p className="text-xs text-gray-400 mb-4">
+                          Accepted: {r.acceptedAt ? new Date(r.acceptedAt).toLocaleDateString("en-GB") : "—"}
+                        </p>
+
+                        {r.status !== "resolved" && (
+                          hasBeenAccepted24h ? (
+                            <button onClick={sendWhatsApp}
+                              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-white hover:scale-105 transition-all shadow-sm"
+                              style={{ background: "#25D366" }}>
+                              📩 Notify Reporter
+                            </button>
+                          ) : (
+                            <div className="w-full py-2.5 rounded-full text-sm font-bold text-center bg-gray-100 text-gray-400">
+                              📩 Notify available after 24h
+                            </div>
+                          )
+                        )}
+                        {r.status === "resolved" && (
+                          <div className="w-full py-2.5 rounded-full text-sm font-bold text-center badge-green">
+                            ✅ Resolved
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
