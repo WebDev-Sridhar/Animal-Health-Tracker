@@ -1,7 +1,9 @@
+const http = require("http");
 const express = require("express");
 const cors = require("cors");
 
 const config = require("./config");
+const { init: initSocket } = require("./socket/index");
 const { connectDatabase } = require("./config/database");
 const routes = require("./routes");
 const requestLogger = require("./middleware/logger");
@@ -46,7 +48,11 @@ app.use(errorHandler);
 const startServer = async () => {
   await connectDatabase();
 
-  app.listen(config.port, () => {
+  // Wrap Express app in a native HTTP server so Socket.IO can attach to it
+  const server = http.createServer(app);
+  initSocket(server);
+
+  server.listen(config.port, () => {
     console.log(`Server running in ${config.env} mode on port ${config.port}`);
   });
 };

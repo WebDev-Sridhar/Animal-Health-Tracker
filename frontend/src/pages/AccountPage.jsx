@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
+import ChatWidget from "../components/ChatWidget";
 
 const CONDITION_OPTIONS = [
   { value: "healthy", label: "Healthy" },
@@ -43,6 +44,8 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(false);
   const [acceptedReports, setAcceptedReports] = useState([]);
   const [toast, setToast] = useState(null); // { msg, type: "success"|"error" }
+  const [chatReportId, setChatReportId] = useState(null);
+  const [chatVolunteerName, setChatVolunteerName] = useState("");
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -459,6 +462,14 @@ export default function AccountPage() {
                         </p>
 
                         <div className="flex gap-2 flex-wrap">
+                          {r.status === "accepted" && r.acceptedBy?.name && (
+                            <button
+                              onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.acceptedBy.name); }}
+                              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-white transition-colors"
+                              style={{ background: "var(--primary)" }}>
+                              💬 Chat
+                            </button>
+                          )}
                           {r.status === "pending" && (
                             <button onClick={() => handleEditReport(r)}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold hover:bg-[#d0ece5] transition-colors" style={{ color: "#2e6b5a", background: "#eaf5f1" }}>
@@ -599,6 +610,14 @@ export default function AccountPage() {
           </div>
         )}
       </div>
+
+      {/* ─── Chat Widget (opens when reporter clicks Chat on an accepted report) ─── */}
+      <ChatWidget
+        reportId={chatReportId}
+        volunteerName={chatVolunteerName}
+        isOpen={!!chatReportId}
+        onClose={() => { setChatReportId(null); setChatVolunteerName(""); }}
+      />
     </div>
   );
 }

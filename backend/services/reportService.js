@@ -7,6 +7,9 @@ const Report = require("../models/Report");
 const Zone = require("../models/Zone");
 const riskService = require("./riskService");
 const AppError = require("../utils/AppError");
+const { getIO } = require("../socket/index");
+const { volunteerLocations } = require("../socket/state");
+const { emitEmergencyAlert } = require("../socket/handlers/emergency");
 
 const createReport = async (data, userId) => {
   let zone = await Zone.findOne({ name: data.zone });
@@ -37,6 +40,14 @@ const createReport = async (data, userId) => {
   });
 
   await riskService.recalculateAllZones();
+
+  // Trigger emergency socket alert for critical conditions (non-fatal if socket not ready)
+  try {
+    emitEmergencyAlert(getIO(), report, volunteerLocations);
+  } catch (e) {
+    console.error("[Emergency] Alert emit failed (non-fatal):", e.message);
+  }
+
   return report.populate(["animal", "reportedBy", "zone"]);
 };
 

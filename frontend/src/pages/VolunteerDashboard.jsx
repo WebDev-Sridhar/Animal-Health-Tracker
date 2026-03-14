@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { MapContainer, TileLayer } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 import { apiClient } from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { useVolunteerLocation } from "../hooks/useVolunteerLocation";
+import VolunteerMapLayer from "../components/VolunteerMapLayer";
+import EmergencyAlert from "../components/EmergencyAlert";
 
 const RESCUE_CONDITIONS = ["sick", "critical", "injured", "aggressive"];
 
@@ -26,6 +31,7 @@ export default function VolunteerDashboard() {
   const [category, setCategory] = useState("all");
   const [toast, setToast] = useState(null);
   const { user } = useAuth();
+  const { isSharing, startSharing, stopSharing, locationError } = useVolunteerLocation();
 
   const showToast = (msg) => {
     setToast(msg);
@@ -253,7 +259,52 @@ export default function VolunteerDashboard() {
         </div>
       </div>
 
+      {/* ─── Emergency alerts (fixed position, volunteer-only) ─── */}
+      <EmergencyAlert />
+
       <div className="max-w-5xl mx-auto px-6 py-8">
+
+        {/* ─── Live Volunteer Map ─── */}
+        <div className="card mb-6 overflow-hidden">
+          <div className="flex items-center justify-between px-5 pt-4 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🗺️</span>
+              <span className="font-extrabold text-gray-800" style={{ fontFamily: "'Fredoka', cursive" }}>
+                Live Volunteer Map
+              </span>
+              {isSharing && (
+                <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: "#dcfce7", color: "#15803d" }}>
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse inline-block" />
+                  Sharing
+                </span>
+              )}
+            </div>
+            <button
+              onClick={isSharing ? stopSharing : startSharing}
+              className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
+              style={{ background: isSharing ? "#d97706" : "var(--primary)" }}
+            >
+              {isSharing ? "⏹ Stop Sharing" : "📍 Share My Location"}
+            </button>
+          </div>
+          {locationError && (
+            <p className="text-xs text-red-500 font-semibold px-5 pb-2">{locationError}</p>
+          )}
+          <MapContainer
+            center={[10.8505, 76.2711]}
+            zoom={8}
+            style={{ height: 300, width: "100%" }}
+            scrollWheelZoom={false}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            />
+            <VolunteerMapLayer />
+          </MapContainer>
+        </div>
+
         {/* ─── How It Works Guide ─── */}
         <details className="card mb-6 group">
           <summary className="flex items-center justify-between p-5 cursor-pointer select-none list-none">

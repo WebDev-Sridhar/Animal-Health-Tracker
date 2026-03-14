@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { SocketProvider } from "./context/SocketContext";
 import MainLayout from "./layouts/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage";
@@ -22,6 +23,7 @@ import ScrollToTop from "./components/ScrollToTop";
 function App() {
   return (
     <AuthProvider>
+      <SocketProvider>
       <BrowserRouter>
       <ScrollToTop />
         <Routes>
@@ -66,6 +68,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
+      </SocketProvider>
     </AuthProvider>
   );
 }
