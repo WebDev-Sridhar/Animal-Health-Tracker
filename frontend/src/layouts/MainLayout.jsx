@@ -56,12 +56,12 @@ export default function MainLayout() {
               <Link key={to} to={to}
                 className="relative text-sm font-bold px-3 py-2 rounded-xl transition-all duration-200"
                 style={{
-                  color: isActive("/account") ? "var(--primary-dark)" : "#5c6b6a",
-                  background: isActive("/account") ? "#f0f5f4" : "transparent",
-                  fontWeight: isActive("/account") ? 800 : 700,
+                  color: isActive(to) ? "var(--primary-dark)" : "#5c6b6a",
+                  background: isActive(to) ? "#f0f5f4" : "transparent",
+                  fontWeight: isActive(to) ? 800 : 700,
                 }}>
                 {label}
-                {/* {isActive("/account") && (
+                {/* {isActive(to) && (
                   <span className="absolute bottom-0.5 left-3 right-3 h-0.5 rounded-full" style={{ background: "var(--primary)" }} />
                 )} */}
               </Link>
@@ -155,7 +155,7 @@ export default function MainLayout() {
               ].map(({ to, label }) => (
                 <Link key={to} to={to} onClick={closeMobileMenu}
                   className="block px-4 py-2.5 rounded-xl text-sm transition-colors"
-                  style={isActive("/account") ? { background: "#f0f5f4", color: "var(--primary-dark)", fontWeight: 800 } : { color: "#5c6b6a", fontWeight: 700 }}>
+                  style={isActive(to) ? { background: "#f0f5f4", color: "var(--primary-dark)", fontWeight: 800 } : { color: "#5c6b6a", fontWeight: 700 }}>
                   {label}
                 </Link>
               ))}
