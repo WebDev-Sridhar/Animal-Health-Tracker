@@ -38,9 +38,9 @@ export default function LoginPage() {
       </Helmet>
 
       {/* Left: Visual Panel */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #2e6b5a 0%, #3d8c78 60%, #4da090 100%)" }}>
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #745d17ff 0%, #61510cff 60%, #695d06ff 100%)" }}>
         <img
-          src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?auto=format&fit=crop&w=900&q=80"
+          src="https://plus.unsplash.com/premium_photo-1700166984667-dcec68ef58e2?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Person with dog"
           className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30"
         />

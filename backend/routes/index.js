@@ -10,9 +10,20 @@ const reportRoutes = require("./reportRoutes");
 const riskRoutes = require("./riskRoutes");
 const analyticsRoutes = require("./analyticsRoutes");
 const { protect, authorize } = require("../middleware/auth");
+const { getPublicStats } = require("../services/analyticsService");
 
 // Public routes
 router.use("/auth", authRoutes);
+
+// Public stats endpoint (no auth required)
+router.get("/stats", async (req, res) => {
+  try {
+    const stats = await getPublicStats();
+    res.json({ success: true, data: stats });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 // Public adoptions endpoint (no auth required)
 router.get(
   "/reports/adoptions",

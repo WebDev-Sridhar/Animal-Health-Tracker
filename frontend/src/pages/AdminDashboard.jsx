@@ -79,9 +79,10 @@ export default function AdminDashboard() {
     { label: "Total Animals", value: analytics?.totalAnimals ?? 0, emoji: "🐾", color: "from-green-500 to-green-600" },
     { label: "At Risk", value: atRisk, emoji: "🤒", color: "from-red-400 to-red-500" },
     { label: "Vaccinated", value: analytics?.vaccinatedAnimals ?? 0, emoji: "💉", color: "from-green-400 to-green-500" },
-    { label: "Vaccination Needed", value: hb["vaccination-needed"] ?? 0, emoji: "⚠️", color: "from-cyan-400 to-cyan-500" },
-    { label: "For Adoption", value: hb["for-adoption"] ?? 0, emoji: "🏡", color: "from-blue-400 to-blue-500" },
-    { label: "Reports This Week", value: analytics?.reportsThisWeek ?? 0, emoji: "📋", color: "from-violet-400 to-violet-500" },
+    { label: "Vaccination Needed", value: analytics?.vaccinationNeeded ?? 0, emoji: "⚠️", color: "from-cyan-400 to-cyan-500" },
+    { label: "For Adoption", value: analytics?.forAdoption ?? 0, emoji: "🏡", color: "from-blue-400 to-blue-500" },
+    { label: "Rescued", value: analytics?.rescuedAnimals ?? 0, emoji: "🚑", color: "from-violet-400 to-violet-500" },
+    { label: "Reports This Week", value: analytics?.reportsThisWeek ?? 0, emoji: "📋", color: "from-orange-400 to-orange-500" },
   ];
 
   const healthData = {
@@ -162,7 +163,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {statCards.map((stat) => (
             <div key={stat.label} className="card p-5 text-center">
               <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center mx-auto mb-3 text-2xl shadow-md`}>

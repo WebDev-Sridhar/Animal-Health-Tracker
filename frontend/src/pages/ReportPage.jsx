@@ -11,13 +11,13 @@ const MIN_DESCRIPTION_LENGTH = 10;
 const MAX_DESCRIPTION_LENGTH = 1000;
 
 const CONDITION_OPTIONS = [
+  { value: "for-adoption", label: "For Adoption", emoji: "🏡" },
   { value: "healthy", label: "Healthy", emoji: "✅" },
   { value: "injured", label: "Injured", emoji: "🤕" },
   { value: "sick", label: "Sick", emoji: "🤒" },
   { value: "aggressive", label: "Aggressive", emoji: "⚠️" },
   { value: "vaccination-needed", label: "Vaccination Needed", emoji: "💉" },
   { value: "critical", label: "Critical", emoji: "🚨" },
-  { value: "for-adoption", label: "For Adoption", emoji: "🏡" },
 ];
 
 const SPECIES_OPTIONS = [
@@ -64,10 +64,12 @@ export default function ReportPage() {
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
+  const [customSpecies, setCustomSpecies] = useState("");
+  const [ageUnit, setAgeUnit] = useState("months");
   const [form, setForm] = useState({
     species: "dog",
     gender: "unknown",
-    approxAge: "Unknown",
+    approxAge: "",
     vaccinationStatus: "",
     description: "",
     condition: "injured",
@@ -106,7 +108,16 @@ export default function ReportPage() {
 
   const removePhoto = useCallback(() => setForm((p) => ({ ...p, photo: "", photoFile: null })), []);
 
-  const validateForm = () => {
+  const validateStep0 = () => {
+    if (!form.species) { setError("Please select the animal's species."); return false; }
+    if (form.species === "other" && !customSpecies.trim()) { setError("Please enter the species name."); return false; }
+    if (!form.gender) { setError("Please select the animal's gender."); return false; }
+    if (!form.approxAge || Number(form.approxAge) <= 0) { setError("Please enter a valid age."); return false; }
+    return true;
+  };
+
+  const validateStep1 = () => {
+    if (!form.condition) { setError("Please select the animal's condition."); return false; }
     if (!form.description.trim()) { setError("Please describe the animal's condition."); return false; }
     if (form.description.trim().length < MIN_DESCRIPTION_LENGTH) {
       setError(`Description needs at least ${MIN_DESCRIPTION_LENGTH} characters.`); return false;
@@ -114,7 +125,12 @@ export default function ReportPage() {
     if (form.description.trim().length > MAX_DESCRIPTION_LENGTH) {
       setError(`Description exceeds ${MAX_DESCRIPTION_LENGTH} characters.`); return false;
     }
+    return true;
+  };
+
+  const validateForm = () => {
     if (!form.zone.trim()) { setError("Please enter the location/zone."); return false; }
+    if (!form.location?.coordinates) { setError("Please detect your location or enter a zone name."); return false; }
     return true;
   };
 
@@ -145,15 +161,21 @@ export default function ReportPage() {
     if (!validateForm()) return;
     setLoading(true);
     try {
+      const finalSpecies = form.species === "other" ? customSpecies.trim() : form.species;
+      const finalAge = form.approxAge ? `${form.approxAge} ${ageUnit}` : "";
       const formData = new FormData();
       Object.keys(form).forEach((key) => {
         if (!form[key] || key === "photoFile") return;
         if (key === "location") formData.append(key, JSON.stringify(form[key]));
+        else if (key === "species") formData.append("species", finalSpecies);
+        else if (key === "approxAge") formData.append("approxAge", finalAge);
         else formData.append(key, form[key]);
       });
       if (form.photoFile) formData.append("photo", form.photoFile);
       await apiClient.post("/reports", formData, { headers: { "Content-Type": "multipart/form-data" } });
       setForm({ species: "dog", gender: "unknown", approxAge: "", vaccinationStatus: "", description: "", condition: "injured", photo: "", photoFile: null, zone: "", location: null });
+      setCustomSpecies("");
+      setAgeUnit("months");
       setSuccess(true);
       setCurrentStep(0);
     } catch (err) {
@@ -259,7 +281,7 @@ export default function ReportPage() {
 
                   {/* Species Selector */}
                   <div>
-                    <label className="block text-sm font-extrabold text-gray-700 mb-2">Species</label>
+                    <label className="block text-sm font-extrabold text-gray-700 mb-2">Species <span className="text-red-500">*</span></label>
                     <div className="grid grid-cols-5 gap-2">
                       {SPECIES_OPTIONS.map((opt) => (
                         <label key={opt.value}
@@ -273,6 +295,15 @@ export default function ReportPage() {
                         </label>
                       ))}
                     </div>
+                    {form.species === "other" && (
+                      <input
+                        type="text"
+                        value={customSpecies}
+                        onChange={(e) => { setCustomSpecies(e.target.value); setError(""); }}
+                        className="input-field mt-3"
+                        placeholder="Enter species name (e.g. rabbit, parrot)"
+                      />
+                    )}
                   </div>
 
                   {/* Gender */}
@@ -296,9 +327,15 @@ export default function ReportPage() {
                   {/* Age + Vaccination */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-extrabold text-gray-700 mb-2">Approx Age (years)</label>
-                      <input type="number" name="approxAge" value={form.approxAge} onChange={handleChange}
-                        className="input-field" placeholder="e.g. 2" />
+                      <label className="block text-sm font-extrabold text-gray-700 mb-2">Approx Age <span className="text-red-500">*</span></label>
+                      <div className="flex gap-2">
+                        <input type="number" name="approxAge" value={form.approxAge} onChange={handleChange}
+                          className="input-field flex-1 min-w-0" placeholder="e.g. 3" min="0" />
+                        <select value={ageUnit} onChange={(e) => setAgeUnit(e.target.value)} className="input-field w-28 shrink-0">
+                          <option value="months">Months</option>
+                          <option value="years">Years</option>
+                        </select>
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm font-extrabold text-gray-700 mb-2">Vaccination</label>
@@ -311,7 +348,14 @@ export default function ReportPage() {
                     </div>
                   </div>
 
-                  <button type="button" onClick={() => setCurrentStep(1)} className="w-full btn-primary py-3.5">
+                  {error && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3">
+                      <span className="text-xl flex-shrink-0">⚠️</span>
+                      <p className="text-red-700 text-sm font-semibold">{error}</p>
+                    </div>
+                  )}
+
+                  <button type="button" onClick={() => { if (validateStep0()) { setError(""); setCurrentStep(1); } }} className="w-full btn-primary py-3.5">
                     Next: Condition & Photo →
                   </button>
                 </div>
@@ -384,11 +428,18 @@ export default function ReportPage() {
                     )}
                   </div>
 
+                  {error && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3">
+                      <span className="text-xl flex-shrink-0">⚠️</span>
+                      <p className="text-red-700 text-sm font-semibold">{error}</p>
+                    </div>
+                  )}
+
                   <div className="flex gap-3">
-                    <button type="button" onClick={() => setCurrentStep(0)} className="flex-1 btn-secondary py-3">
+                    <button type="button" onClick={() => { setError(""); setCurrentStep(0); }} className="flex-1 btn-secondary py-3">
                       ← Back
                     </button>
-                    <button type="button" onClick={() => { if (!form.description.trim() || form.description.length < MIN_DESCRIPTION_LENGTH) { setError(`Description needs at least ${MIN_DESCRIPTION_LENGTH} characters.`); return; } setError(""); setCurrentStep(2); }} className="flex-1 btn-primary py-3">
+                    <button type="button" onClick={() => { if (validateStep1()) { setError(""); setCurrentStep(2); } }} className="flex-1 btn-primary py-3">
                       Next: Location →
                     </button>
                   </div>

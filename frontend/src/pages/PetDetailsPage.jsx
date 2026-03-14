@@ -55,6 +55,8 @@ function PetDetailsPage() {
 
   const speciesEmoji = (s) => ({ dog: "🐕", cat: "🐈", bird: "🦜", goat: "🐐", cow: "🐄" }[s?.toLowerCase()] || "🐾");
 
+  const isAdopted = pet.status === "resolved" && pet.condition === "for-adoption";
+
   const conditionStyle = (condition) => {
     const map = {
       healthy: "badge-green", injured: "badge-orange", sick: "badge-red",
@@ -123,9 +125,13 @@ function PetDetailsPage() {
             {/* Status + Quick Info */}
             <div className="card p-7 sticky top-24">
               <div className="mb-5">
-                <span className={`badge ${conditionStyle(pet.condition)} text-sm`}>
-                  {pet.condition?.replace(/-/g, " ").toUpperCase()}
-                </span>
+                {isAdopted ? (
+                  <span className="badge badge-green text-sm">✅ ADOPTED</span>
+                ) : (
+                  <span className={`badge ${conditionStyle(pet.condition)} text-sm`}>
+                    {pet.condition?.replace(/-/g, " ").toUpperCase()}
+                  </span>
+                )}
               </div>
 
               <div className="space-y-4 mb-7">
@@ -147,31 +153,38 @@ function PetDetailsPage() {
               </div>
 
               {/* Contact Buttons */}
-              <div className="space-y-3">
-                {whatsappUrl && (
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-white transition-all hover:scale-105 shadow-md"
-                    style={{ background: "#25D366" }}>
-                    WhatsApp 
-                  </a>
-                )}
-                {pet.reportedBy?.phone && (
-                  <a href={`tel:${pet.reportedBy.phone}`}
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-white transition-all hover:scale-105 shadow-md"
-                    style={{ background: "var(--primary)" }}>
-                    Call
-                  </a>
-                )}
-                {mapsUrl && (
-                  <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold transition-colors"
-                    style={{ color: "#2e6b5a", background: "#eaf5f1" }}
-                    onMouseEnter={e => e.currentTarget.style.background = "#d0ece5"}
-                    onMouseLeave={e => e.currentTarget.style.background = "#eaf5f1"}>
-                    Get Directions
-                  </a>
-                )}
-              </div>
+              {isAdopted ? (
+                <div className="p-4 rounded-2xl text-center text-sm font-bold"
+                  style={{ background: "#eaf5f1", color: "#2e6b5a" }}>
+                  🏡 This animal has been adopted
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {whatsappUrl && (
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-white transition-all hover:scale-105 shadow-md"
+                      style={{ background: "#25D366" }}>
+                      WhatsApp
+                    </a>
+                  )}
+                  {pet.reportedBy?.phone && (
+                    <a href={`tel:${pet.reportedBy.phone}`}
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold text-white transition-all hover:scale-105 shadow-md"
+                      style={{ background: "var(--primary)" }}>
+                      Call
+                    </a>
+                  )}
+                  {mapsUrl && (
+                    <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-extrabold transition-colors"
+                      style={{ color: "#2e6b5a", background: "#eaf5f1" }}
+                      onMouseEnter={e => e.currentTarget.style.background = "#d0ece5"}
+                      onMouseLeave={e => e.currentTarget.style.background = "#eaf5f1"}>
+                      Get Directions
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -204,7 +204,7 @@ const deleteReport = async (reportId, userId) => {
 };
 
 const getAdoptionAnimals = async () => {
-  const animals = await Report.find({ condition: "for-adoption" })
+  const animals = await Report.find({ condition: "for-adoption", status: { $ne: "resolved" } })
     .populate("animal")
     .populate("reportedBy", "name email phone")
     .sort({ createdAt: -1 });

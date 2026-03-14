@@ -17,11 +17,13 @@ import AnimalFirstAidPage from "./pages/AnimalFirstAidPage";
 import ResponsiblePetOwnershipPage from "./pages/ResponsiblePetOwnershipPage";
 import FAQ from "./pages/FAQ";
 import PetDetailsPage from "./pages/PetDetailsPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />

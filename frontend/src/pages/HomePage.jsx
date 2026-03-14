@@ -8,12 +8,6 @@ import { apiClient } from "../api/client";
 const DEFAULT_CENTER = { lat: 12.9716, lng: 77.5946 };
 const DEFAULT_RADIUS = 10000;
 
-const STATS = [
-  { icon: "🐕", value: "2,400+", label: "Animals Rescued" },
-  { icon: "📋", value: "5,800+", label: "Reports Submitted" },
-  { icon: "🏡", value: "1,200+", label: "Pets Adopted" },
-  { icon: "🤝", value: "800+", label: "Volunteers Active" },
-];
 
 const HOW_IT_WORKS = [
   {
@@ -79,6 +73,7 @@ export default function HomePage() {
   const [error, setError] = useState("");
   const [selectedAnimal, setSelectedAnimal] = useState(null);
   const [featuredPets, setFeaturedPets] = useState([]);
+  const [siteStats, setSiteStats] = useState(null);
 
   useEffect(() => {
     const fetchLocationAndAnimals = async () => {
@@ -124,6 +119,12 @@ export default function HomePage() {
   useEffect(() => {
     apiClient.get("/reports/adoptions")
       .then((res) => setFeaturedPets((res.data || []).slice(0, 3)))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    apiClient.get("/stats")
+      .then((res) => setSiteStats(res.data))
       .catch(() => {});
   }, []);
 
@@ -187,7 +188,12 @@ export default function HomePage() {
 
           {/* Quick Stats Bar */}
           <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
-            {STATS.map((s) => (
+            {[
+              { icon: "🐕", value: siteStats ? siteStats.rescued : "—", label: "Animals Rescued" },
+              { icon: "📋", value: siteStats ? siteStats.totalReports : "—", label: "Reports Submitted" },
+              { icon: "🏡", value: siteStats ? siteStats.adopted : "—", label: "Pets Adopted" },
+              { icon: "🤝", value: siteStats ? siteStats.volunteers : "—", label: "Volunteers Active" },
+            ].map((s) => (
               <div key={s.label} className="text-center p-3 rounded-2xl"
                 style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)" }}>
                 <div className="text-2xl mb-1">{s.icon}</div>
