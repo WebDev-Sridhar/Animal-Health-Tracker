@@ -441,7 +441,7 @@ export default function AccountPage() {
                         )}
 
                         {r.status === "accepted" && r.acceptedBy?.name && (
-                          <div className="p-3 rounded-xl mb-3" style={{ background: "#eaf5f1" }}>
+                          <div className="p-3 rounded-lg mb-3" style={{ background: "#eaf5f1" }}>
                             <p className="text-xs font-extrabold uppercase tracking-wide mb-1" style={{ color: "#2e6b5a" }}>
                               Volunteer Assigned
                             </p>
@@ -469,7 +469,7 @@ export default function AccountPage() {
                               onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.acceptedBy.name); markChatRead(r._id); }}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-white transition-colors"
                               style={{ background: "var(--primary)", position: 'relative' }}>
-                              💬 Chat
+                              Chat
                               {unreadChats[r._id]?.count > 0 && (
                                 <span style={{ background: '#ef4444', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 800, marginLeft: 4 }}>
                                   {unreadChats[r._id].count}
@@ -566,7 +566,7 @@ export default function AccountPage() {
                         </div>
 
                         {r.reportedBy && (
-                          <div className="p-3 rounded-xl mb-3" style={{ background: "#f7faf9" }}>
+                          <div className="p-3 rounded-lg mb-3" style={{ background: "#f7faf9" }}>
                             <p className="text-xs font-extrabold text-gray-500 uppercase tracking-wide mb-1">Reporter</p>
                             <p className="font-bold text-gray-800 text-sm">{r.reportedBy.name}</p>
                             {r.reportedBy.phone && (

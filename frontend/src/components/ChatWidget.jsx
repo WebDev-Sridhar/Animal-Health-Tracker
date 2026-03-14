@@ -84,7 +84,7 @@ export default function ChatWidget({ reportId, volunteerName, isOpen, onClose })
       >
         <div>
           <p style={{ margin: 0, fontWeight: 800, fontFamily: "'Fredoka', cursive", fontSize: 16 }}>
-            💬 {volunteerName || 'Chat'}
+            {volunteerName || 'Chat'}
           </p>
           <p style={{ margin: 0, fontSize: 11, opacity: 0.8 }}>Volunteer chat</p>
         </div>
