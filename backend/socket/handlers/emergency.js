@@ -1,51 +1,59 @@
 /**
  * Emergency alert handler.
  * Called from reportService.js after a report is saved.
- * Emits 'animalEmergency' to nearby volunteers (50km radius),
- * or to ALL online volunteers if the report has no GPS coordinates.
+ * Emits 'animalEmergency' to ALL authenticated online volunteers.
+ * If the report has GPS coordinates, includes distance from each volunteer
+ * who has shared their location. Volunteers who haven't shared location
+ * still receive the alert — just without distance info.
  */
 
-const { getVolunteersNearby } = require('../utils');
+const { haversineKm } = require('../utils');
 const { authenticatedSockets } = require('../state');
 
 const EMERGENCY_CONDITIONS = ['sick', 'critical', 'injured', 'aggressive'];
-const ALERT_RADIUS_KM = 50; // Increased from 5km — enough for any realistic zone
 
 /**
  * @param {import('socket.io').Server} io
  * @param {object} report - Mongoose Report document
- * @param {Map} volunteerLocations - Shared in-memory locations Map
+ * @param {Map} volunteerLocations - Shared in-memory locations Map (for distance calc only)
  */
 function emitEmergencyAlert(io, report, volunteerLocations) {
   if (!EMERGENCY_CONDITIONS.includes(report.condition)) return;
 
-  if (volunteerLocations.size === 0) {
-    console.log('[Emergency] No online volunteers to alert.');
+  // Build a map of all currently authenticated volunteers: userId → [socketId, ...]
+  // This is the authoritative "who is online" source — does NOT require location sharing.
+  const targets = new Map(); // userId → { socketIds: [], distanceKm: null }
+  for (const [sid, sess] of authenticatedSockets.entries()) {
+    if (sess.role !== 'volunteer') continue;
+    if (!targets.has(sess.userId)) {
+      targets.set(sess.userId, { socketIds: [], distanceKm: null });
+    }
+    targets.get(sess.userId).socketIds.push(sid);
+  }
+
+  if (targets.size === 0) {
+    console.log('[Emergency] No authenticated volunteers online.');
     return;
   }
 
-  // GeoJSON stores [longitude, latitude] — flip to [lat, lng] for haversine
+  // GPS handling — GeoJSON stores [longitude, latitude], flip to [lat, lng]
   const coords = report.location && report.location.coordinates;
   const hasGPS = coords && coords.length === 2;
-
-  let targets;
   let lat = null;
   let lng = null;
-
   if (hasGPS) {
     lat = coords[1];
     lng = coords[0];
-    // Filter to volunteers within 50km
-    targets = getVolunteersNearby(lat, lng, volunteerLocations, ALERT_RADIUS_KM);
-    if (targets.length === 0) {
-      // No one nearby — fall back to alerting all online volunteers
-      targets = [...volunteerLocations.values()].map((v) => ({ ...v, distanceKm: null }));
-      console.log('[Emergency] No volunteers within 50km — alerting all online volunteers');
+  }
+
+  // For volunteers who have shared their location, compute distance to the report
+  if (hasGPS) {
+    for (const [userId, target] of targets.entries()) {
+      const loc = volunteerLocations.get(userId);
+      if (loc && loc.lat && loc.lng) {
+        target.distanceKm = Math.round(haversineKm(lat, lng, loc.lat, loc.lng) * 10) / 10;
+      }
     }
-  } else {
-    // No GPS on report — alert everyone online
-    targets = [...volunteerLocations.values()].map((v) => ({ ...v, distanceKm: null }));
-    console.log('[Emergency] No GPS on report — alerting all online volunteers');
   }
 
   const payload = {
@@ -58,23 +66,16 @@ function emitEmergencyAlert(io, report, volunteerLocations) {
     zone: report.zone || '',
   };
 
-  // Use authenticatedSockets for current socketIds — vol.socketId may be stale
-  // if the socket reconnected since the last locationUpdate.
   let alertCount = 0;
-  for (const vol of targets) {
-    for (const [sid, sess] of authenticatedSockets.entries()) {
-      if (sess.userId === vol.userId) {
-        io.to(sid).emit('animalEmergency', {
-          ...payload,
-          distanceKm: vol.distanceKm,
-        });
-        alertCount++;
-      }
+  for (const { socketIds, distanceKm } of targets.values()) {
+    for (const sid of socketIds) {
+      io.to(sid).emit('animalEmergency', { ...payload, distanceKm });
+      alertCount++;
     }
   }
 
   console.log(
-    `[Emergency] Alerted ${alertCount} socket(s) across ${targets.length} volunteer(s) for ${report.condition} report (${hasGPS ? `GPS: ${lat},${lng}` : 'no GPS'})`
+    `[Emergency] Alerted ${alertCount} socket(s) across ${targets.size} volunteer(s) for ${report.condition} (${hasGPS ? `GPS: ${lat},${lng}` : 'no GPS'})`
   );
 }
 

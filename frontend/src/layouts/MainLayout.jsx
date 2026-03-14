@@ -78,14 +78,18 @@ export default function MainLayout() {
                 Admin
               </Link>
             )}
-                      {isAuthenticated && (
+              {isAuthenticated && (
               <Link to="/account" style={{ position: 'relative', display: 'inline-flex' }}>
                 <button
-                  className="p-2 rounded-xl transition-colors"
-                  style={{ color: '#5c6b6a', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                className="relative text-sm font-bold px-3 py-2 rounded-xl transition-all duration-200"
+                style={{
+                  color: isActive(to) ? "var(--primary-dark)" : "#5c6b6a",
+                  background: isActive(to) ? "#f0f5f4" : "transparent",
+                  fontWeight: isActive(to) ? 800 : 700,
+                }}
                   aria-label="Chat"
                 >
-                  Chat
+                  Messages
                 </button>
                 {totalUnread > 0 && (
                   <span style={{
