@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { authApi } from "../api/auth";
+import { apiClient } from "../api/client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,11 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [siteStats, setSiteStats] = useState(null);
+
+  useEffect(() => {
+    apiClient.get("/stats").then((res) => setSiteStats(res.data)).catch(() => {});
+  }, []);
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,10 +60,10 @@ export default function LoginPage() {
           </p>
           <div className="mt-10 grid grid-cols-2 gap-4 w-full max-w-xs">
             {[
-              { icon: "🐕", label: "2,400+ Rescued" },
-              { icon: "🏡", label: "1,200+ Adopted" },
-              { icon: "🤝", label: "800+ Volunteers" },
-              { icon: "📋", label: "5,800+ Reports" },
+              { icon: "🐕", label: `${siteStats ? siteStats.rescued : "—"} Rescued` },
+              { icon: "🏡", label: `${siteStats ? siteStats.adopted : "—"} Adopted` },
+              { icon: "🤝", label: `${siteStats ? siteStats.volunteers : "—"} Volunteers` },
+              { icon: "📋", label: `${siteStats ? siteStats.totalReports : "—"} Reports` },
             ].map((s) => (
               <div key={s.label} className="p-3 rounded-2xl text-center" style={{ background: "rgba(255,255,255,0.12)" }}>
                 <div className="text-2xl mb-1">{s.icon}</div>

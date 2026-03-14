@@ -103,16 +103,24 @@ const resolveReport = async (reportId, user) => {
     throw new AppError("Report not found", 404);
   }
 
-  if (report.status !== "accepted") {
-    throw new AppError("Only accepted reports can be resolved", 400);
+  if (report.status === "resolved") {
+    throw new AppError("Report is already resolved", 400);
   }
 
   const isAdmin = user.role === "admin";
   const isAssigned =
     report.acceptedBy && report.acceptedBy.toString() === user._id.toString();
+  const isReporter =
+    report.reportedBy && report.reportedBy.toString() === user._id.toString();
 
-  if (!isAdmin && !isAssigned) {
+  if (!isAdmin && !isAssigned && !isReporter) {
     throw new AppError("Not authorized to resolve this report", 403);
+  }
+
+  // Volunteers (assigned) must have the report in accepted status
+  // Reporters and admins can resolve from any non-resolved status
+  if (!isAdmin && !isReporter && report.status !== "accepted") {
+    throw new AppError("Only accepted reports can be resolved by volunteers", 400);
   }
 
   report.status = "resolved";

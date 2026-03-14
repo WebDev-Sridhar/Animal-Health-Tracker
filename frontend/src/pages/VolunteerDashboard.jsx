@@ -198,11 +198,6 @@ export default function VolunteerDashboard() {
                         {r.status === "accepted" && (
                           r.acceptedBy?._id === user.id ? (
                             <>
-                              <button onClick={() => resolveReport(r._id)}
-                                className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
-                                style={{ background: "#1e3a5f" }}>
-                                🏁 Resolve
-                              </button>
                               <button onClick={() => unassignReport(r._id)}
                                 className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
                                 style={{ background: "#d97706" }}>

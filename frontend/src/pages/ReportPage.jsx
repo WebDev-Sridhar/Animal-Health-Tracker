@@ -113,6 +113,7 @@ export default function ReportPage() {
     if (form.species === "other" && !customSpecies.trim()) { setError("Please enter the species name."); return false; }
     if (!form.gender) { setError("Please select the animal's gender."); return false; }
     if (!form.approxAge || Number(form.approxAge) <= 0) { setError("Please enter a valid age."); return false; }
+    if (!form.vaccinationStatus) { setError("Please select the vaccination status."); return false; }
     return true;
   };
 
@@ -325,21 +326,21 @@ export default function ReportPage() {
                   </div>
 
                   {/* Age + Vaccination */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-extrabold text-gray-700 mb-2">Approx Age <span className="text-red-500">*</span></label>
                       <div className="flex gap-2">
                         <input type="number" name="approxAge" value={form.approxAge} onChange={handleChange}
                           className="input-field flex-1 min-w-0" placeholder="e.g. 3" min="0" />
-                        <select value={ageUnit} onChange={(e) => setAgeUnit(e.target.value)} className="input-field w-28 shrink-0">
+                        <select value={ageUnit} onChange={(e) => setAgeUnit(e.target.value)} className="input-field shrink-0" style={{ width: "7rem" }}>
                           <option value="months">Months</option>
                           <option value="years">Years</option>
                         </select>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-extrabold text-gray-700 mb-2">Vaccination</label>
-                      <select name="vaccinationStatus" value={form.vaccinationStatus} onChange={handleChange} className="input-field">
+                      <label className="block text-sm font-extrabold text-gray-700 mb-2">Vaccination Status <span className="text-red-500">*</span></label>
+                      <select name="vaccinationStatus" value={form.vaccinationStatus} onChange={handleChange} className="input-field w-full">
                         <option value="">Select status</option>
                         {VACCINATION_STATUS_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>{opt.label}</option>

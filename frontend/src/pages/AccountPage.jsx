@@ -134,6 +134,17 @@ export default function AccountPage() {
     }
   };
 
+  const handleResolveReport = async (id) => {
+    if (!window.confirm("Mark this report as resolved? This confirms the issue has been addressed.")) return;
+    try {
+      await apiClient.patch(`/reports/${id}/resolve`, {});
+      setReports(reports.map((r) => r._id === id ? { ...r, status: "resolved" } : r));
+      showToast("Report marked as resolved");
+    } catch (err) {
+      showToast(err.message || "Failed to resolve report", "error");
+    }
+  };
+
   const deleteReport = async (id) => {
     if (!window.confirm("Delete this report? This cannot be undone.")) return;
     try {
@@ -377,17 +388,25 @@ export default function AccountPage() {
                           Posted: {new Date(r.createdAt).toLocaleDateString('en-GB')}
                         </p>
 
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                           {r.status === "pending" && (
                             <button onClick={() => handleEditReport(r)}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold hover:bg-[#d0ece5] transition-colors" style={{ color: "#2e6b5a", background: "#eaf5f1" }}>
-                              Edit
+                              ✏️ Edit
                             </button>
                           )}
-                          <button onClick={() => deleteReport(r._id)}
-                            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
-                             Delete
-                          </button>
+                          {r.status !== "resolved" && (
+                            <button onClick={() => handleResolveReport(r._id)}
+                              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-green-700 bg-green-50 hover:bg-green-100 transition-colors">
+                              ✅ Resolved
+                            </button>
+                          )}
+                          {r.status !== "resolved" && (
+                            <button onClick={() => deleteReport(r._id)}
+                              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
+                              🗑️ Delete
+                            </button>
+                          )}
                         </div>
                       </>
                     )}
