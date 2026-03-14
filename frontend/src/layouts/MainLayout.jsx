@@ -88,14 +88,12 @@ export default function MainLayout() {
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <Link to="/account"
-                  className=" relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-colors"
+                  className="  flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-colors"
                   style={{ color: "#5c6b6a" }}>
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
+                  <div className="relative w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
                     style={{ background: "#d4e4e1", color: "#6b8c85" }}>
                     {user?.name?.[0] || "U"}
-                  </div>
-                  {user?.name?.split(" ")[0]}
-                  {totalUnread > 0 && (
+                        {totalUnread > 0 && (
                   <span style={{
                     position: 'absolute', top: 2, right: 2,
                     background: '#ef4444', color: '#fff',
@@ -107,6 +105,9 @@ export default function MainLayout() {
                     {totalUnread > 9 ? '9+' : totalUnread}
                   </span>
                 )}
+                  </div>
+                  {user?.name?.split(" ")[0]}
+              
                 </Link>
                 <button onClick={handleLogout} className="btn-secondary text-sm py-2 px-4">Logout</button>
               </div>
@@ -119,12 +120,21 @@ export default function MainLayout() {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button onClick={toggleMobileMenu} className="md:hidden p-2 rounded-xl transition-colors" aria-label="Toggle mobile menu">
+          <button onClick={toggleMobileMenu} className="relative md:hidden p-2 rounded-xl transition-colors" aria-label="Toggle mobile menu">
             <div className="w-5 h-4 flex flex-col justify-between">
               <span className={`block h-0.5 rounded-full bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""}`} />
               <span className={`block h-0.5 rounded-full bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""}`} />
               <span className={`block h-0.5 rounded-full bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-2.5" : ""}`} />
             </div>
+                    {totalUnread > 0 && (
+                        <span style={{
+                          background: '#ef4444', color: '#fff',
+                          borderRadius: 10, padding: '1px 7px',
+                          fontSize: 11, fontWeight: 800,
+                        }}>
+                          {totalUnread > 9 ? '9+' : totalUnread}
+                        </span>
+                      )}
           </button>
         </div>
 
@@ -166,19 +176,7 @@ export default function MainLayout() {
                       </div>
                       My Account
                     </Link>
-                    <Link to="/account" onClick={closeMobileMenu}
-                      className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold" style={{ color: "#5c6b6a" }}>
-                      <span>💬 Messages</span>
-                      {totalUnread > 0 && (
-                        <span style={{
-                          background: '#ef4444', color: '#fff',
-                          borderRadius: 10, padding: '1px 7px',
-                          fontSize: 11, fontWeight: 800,
-                        }}>
-                          {totalUnread > 9 ? '9+' : totalUnread}
-                        </span>
-                      )}
-                    </Link>
+              
                     <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="w-full btn-secondary text-sm py-2.5">
                       Logout
                     </button>
