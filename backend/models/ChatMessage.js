@@ -38,6 +38,18 @@ const chatMessageSchema = new Schema(
         ref: 'User',
       },
     ],
+    // Tracks which users have cleared/deleted this message from their view
+    deletedFor: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    // True when the sender's message content was replaced with "This message was deleted"
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

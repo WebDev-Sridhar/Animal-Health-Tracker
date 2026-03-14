@@ -69,11 +69,11 @@ export default function VolunteerMapLayer() {
             <Popup>
               <div style={{ minWidth: 150 }}>
                 <p style={{ fontWeight: 800, color: vol.isOnline !== false ? '#2e6b5a' : '#6b7280', margin: '0 0 4px' }}>
-                  🤝 {vol.name}
+                  🤝 {vol.name} (Volunteer)
                 </p>
                 {vol.zone && (
                   <p style={{ fontSize: 12, color: '#6b8075', margin: '0 0 2px' }}>
-                    📍 {vol.zone}
+                    {vol.zone}
                   </p>
                 )}
                 <p style={{ fontSize: 11, color: '#94a3b8', margin: 0 }}>

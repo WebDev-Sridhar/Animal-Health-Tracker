@@ -87,27 +87,34 @@ export default function MainLayout() {
   
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
+                <Link to="/chat"
+                  className="relative flex items-center justify-center w-9 h-9 rounded-xl transition-colors"
+                  style={{ color: isActive("/chat") ? "var(--primary-dark)" : "#5c6b6a", background: isActive("/chat") ? "#f0f5f4" : "transparent" }}
+                  aria-label="My Chats">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  {totalUnread > 0 && (
+                    <span style={{
+                      position: 'absolute', top: 0, right: 0,
+                      background: '#ef4444', color: '#fff',
+                      borderRadius: '50%', width: 16, height: 16,
+                      fontSize: 10, fontWeight: 800,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      lineHeight: 1,
+                    }}>
+                      {totalUnread > 9 ? '9+' : totalUnread}
+                    </span>
+                  )}
+                </Link>
                 <Link to="/account"
-                  className="  flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-colors"
                   style={{ color: "#5c6b6a" }}>
-                  <div className="relative w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
                     style={{ background: "#d4e4e1", color: "#6b8c85" }}>
                     {user?.name?.[0] || "U"}
-                        {totalUnread > 0 && (
-                  <span style={{
-                    position: 'absolute', top: 2, right: 2,
-                    background: '#ef4444', color: '#fff',
-                    borderRadius: '50%', width: 16, height: 16,
-                    fontSize: 10, fontWeight: 800,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    lineHeight: 1,
-                  }}>
-                    {totalUnread > 9 ? '9+' : totalUnread}
-                  </span>
-                )}
                   </div>
                   {user?.name?.split(" ")[0]}
-              
                 </Link>
                 <button onClick={handleLogout} className="btn-secondary text-sm py-2 px-4">Logout</button>
               </div>
@@ -171,6 +178,22 @@ export default function MainLayout() {
               <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #e8d9cc" }}>
                 {isAuthenticated ? (
                   <>
+                    <Link to="/chat" onClick={closeMobileMenu}
+                      className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold"
+                      style={isActive("/chat") ? { background: "#f0f5f4", color: "var(--primary-dark)", fontWeight: 800 } : { color: "#5c6b6a", fontWeight: 700 }}>
+                      <span>My Chats</span>
+                      {totalUnread > 0 && (
+                        <span style={{
+                          background: '#ef4444', color: '#fff',
+                          borderRadius: '50%', width: 18, height: 18,
+                          fontSize: 10, fontWeight: 800,
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          lineHeight: 1,
+                        }}>
+                          {totalUnread > 9 ? '9+' : totalUnread}
+                        </span>
+                      )}
+                    </Link>
                     <Link to="/account" onClick={closeMobileMenu}
                       className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold" style={{ color: "#5c6b6a" }}>
                       <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"

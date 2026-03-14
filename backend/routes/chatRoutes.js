@@ -27,20 +27,32 @@ router.get('/conversations', async (req, res) => {
 
     const reportIds = reports.map((r) => r._id);
 
-    // Aggregate last message + unread count per report
+    // Aggregate last message + unread count per report, excluding messages deleted for this user
     const msgAgg = await ChatMessage.aggregate([
-      { $match: { reportId: { $in: reportIds } } },
+      {
+        $match: {
+          reportId: { $in: reportIds },
+          deletedFor: { $nin: [userId] },
+        },
+      },
       { $sort: { createdAt: -1 } },
       {
         $group: {
           _id: '$reportId',
-          lastMessage: { $first: '$text' },
+          lastMessage: { $first: { $cond: [{ $eq: ['$isDeleted', true] }, 'This message was deleted', '$text'] } },
           lastSenderName: { $first: '$senderName' },
           lastMessageTime: { $first: '$createdAt' },
           totalMessages: { $sum: 1 },
           unreadCount: {
             $sum: {
-              $cond: [{ $not: { $in: [userId, '$readBy'] } }, 1, 0],
+              $cond: [
+                { $and: [
+                  { $not: { $in: [userId, '$readBy'] } },
+                  { $ne: ['$senderId', userId] },
+                ] },
+                1,
+                0,
+              ],
             },
           },
         },
@@ -75,7 +87,7 @@ router.get('/conversations', async (req, res) => {
           reportStatus: r.status,
         };
       })
-      // Only show conversations that have messages or are accepted
+      // Only show conversations that have visible messages or are accepted
       .filter((c) => c.totalMessages > 0 || c.reportStatus === 'accepted')
       .sort(
         (a, b) =>
@@ -114,6 +126,7 @@ router.get('/unread', async (req, res) => {
           reportId: { $in: reportIds },
           readBy: { $nin: [userId] },
           senderId: { $ne: userId },
+          deletedFor: { $nin: [userId] },
         },
       },
       { $sort: { createdAt: -1 } },
@@ -163,7 +176,9 @@ router.patch('/:reportId/read', async (req, res) => {
   }
 });
 
-// DELETE /api/chat/:reportId — delete entire conversation
+// DELETE /api/chat/:reportId — Delete chat
+// 1) Replace text of user's own sent messages with "This message was deleted" + set isDeleted=true
+// 2) Add userId to deletedFor on ALL messages (hides entire chat for this user)
 router.delete('/:reportId', async (req, res) => {
   try {
     const { reportId } = req.params;
@@ -171,7 +186,6 @@ router.delete('/:reportId', async (req, res) => {
       return res.status(400).json({ error: 'Invalid report ID' });
     }
 
-    // Verify user is a participant
     const report = await Report.findById(reportId)
       .select('reportedBy acceptedBy')
       .lean();
@@ -179,16 +193,27 @@ router.delete('/:reportId', async (req, res) => {
       return res.status(404).json({ error: 'Report not found' });
     }
 
-    const userId = req.user._id.toString();
+    const userId = req.user._id;
     const isParticipant =
-      report.reportedBy?.toString() === userId ||
-      report.acceptedBy?.toString() === userId;
+      report.reportedBy?.toString() === userId.toString() ||
+      report.acceptedBy?.toString() === userId.toString();
 
     if (!isParticipant) {
       return res.status(403).json({ error: 'Not a participant in this chat' });
     }
 
-    await ChatMessage.deleteMany({ reportId });
+    // Step 1: Mark user's own sent messages as deleted (other user sees "This message was deleted")
+    await ChatMessage.updateMany(
+      { reportId, senderId: userId },
+      { $set: { text: 'This message was deleted', isDeleted: true } }
+    );
+
+    // Step 2: Hide all messages from this user's view
+    await ChatMessage.updateMany(
+      { reportId },
+      { $addToSet: { deletedFor: userId } }
+    );
+
     res.json({ success: true });
   } catch (err) {
     console.error('[Chat API] delete error:', err.message);
@@ -196,7 +221,8 @@ router.delete('/:reportId', async (req, res) => {
   }
 });
 
-// DELETE /api/chat/:reportId/clear — clear all messages (same as delete)
+// DELETE /api/chat/:reportId/clear — Clear chat (per-user soft delete)
+// Adds userId to deletedFor on all messages; other user still sees everything
 router.delete('/:reportId/clear', async (req, res) => {
   try {
     const { reportId } = req.params;
@@ -211,16 +237,21 @@ router.delete('/:reportId/clear', async (req, res) => {
       return res.status(404).json({ error: 'Report not found' });
     }
 
-    const userId = req.user._id.toString();
+    const userId = req.user._id;
     const isParticipant =
-      report.reportedBy?.toString() === userId ||
-      report.acceptedBy?.toString() === userId;
+      report.reportedBy?.toString() === userId.toString() ||
+      report.acceptedBy?.toString() === userId.toString();
 
     if (!isParticipant) {
       return res.status(403).json({ error: 'Not a participant in this chat' });
     }
 
-    await ChatMessage.deleteMany({ reportId });
+    // Soft-delete: hide all messages for this user only
+    await ChatMessage.updateMany(
+      { reportId },
+      { $addToSet: { deletedFor: userId } }
+    );
+
     res.json({ success: true });
   } catch (err) {
     console.error('[Chat API] clear error:', err.message);

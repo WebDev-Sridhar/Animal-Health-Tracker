@@ -31,8 +31,11 @@ function registerChatHandlers(socket, io) {
     socket.join(reportId);
 
     try {
-      // Send last 50 messages in chronological order
-      const history = await ChatMessage.find({ reportId })
+      // Send last 50 messages in chronological order, excluding messages deleted for this user
+      const history = await ChatMessage.find({
+        reportId,
+        deletedFor: { $nin: [session.userId] },
+      })
         .sort({ createdAt: 1 })
         .limit(50)
         .lean();
