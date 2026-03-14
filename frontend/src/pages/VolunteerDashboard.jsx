@@ -91,9 +91,9 @@ export default function VolunteerDashboard() {
 
   const CATEGORY_PILLS = [
     { key: "all", label: "All" },
-    { key: "rescue", label: "🚑 Rescue" },
-    { key: "vaccination", label: "💉 Vaccination" },
-    { key: "adoption", label: "🏡 Adoption" },
+    { key: "rescue", label: "Rescue" },
+    { key: "vaccination", label: "Vaccination" },
+    { key: "adoption", label: "Adoption" },
   ];
 
   const ReportCard = ({ r }) => {
@@ -231,12 +231,13 @@ export default function VolunteerDashboard() {
           {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: "Pending", value: pending.length, color: "bg-amber-400" },
-              { label: "In Progress", value: accepted.length, color: "bg-blue-400" },
-              { label: "Resolved", value: resolved.length, color: "bg-green-400" },
+              { label: "Pending", value: pending.length, emoji: "⏳", color: "bg-amber-400" },
+              { label: "In Progress", value: accepted.length, emoji: "🚑", color: "bg-blue-400" },
+              { label: "Resolved", value: resolved.length, emoji: "✅", color: "bg-green-400" },
             ].map((s) => (
               <div key={s.label} className="p-4 rounded-2xl text-white text-center"
                 style={{ background: "rgba(255,255,255,0.15)" }}>
+                <div className="text-2xl mb-1">{s.emoji}</div>
                 <div className="text-2xl font-extrabold" style={{ fontFamily: "'Fredoka', cursive" }}>{s.value}</div>
                 <div className="text-xs font-semibold" style={{ color: "#f7ede2" }}>{s.label}</div>
               </div>
@@ -332,13 +333,13 @@ export default function VolunteerDashboard() {
         ) : (
           <div className="space-y-2">
             {[
-              { label: "Pending", emoji: "⏳", data: pending, color: "#d97706" },
-              { label: "In Progress", emoji: "🚑", data: accepted, color: "#3b82f6" },
-              { label: "Resolved", emoji: "✅", data: resolved, color: "#16a34a" },
-            ].map(({ label, emoji, data, color }) =>
+              { label: "Pending", data: pending, color: "#d97706" },
+              { label: "In Progress", data: accepted, color: "#3b82f6" },
+              { label: "Resolved", data: resolved, color: "#16a34a" },
+            ].map(({ label, data, color }) =>
               data.length > 0 && (
                 <div key={label}>
-                  <SectionHeader emoji={emoji} label={label} count={data.length} color={color} />
+                  <SectionHeader label={label} count={data.length} color={color} />
                   <div className="space-y-4">
                     {data.map((r) => <ReportCard key={r._id} r={r} />)}
                   </div>
