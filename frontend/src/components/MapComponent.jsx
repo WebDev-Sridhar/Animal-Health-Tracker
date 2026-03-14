@@ -58,6 +58,7 @@ export default function MapComponent({
   height = "400px",
   onMarkerClick,
   className = "",
+  children,
 }) {
   const animalMarkers = useMemo(
     () =>
@@ -121,6 +122,7 @@ export default function MapComponent({
             </Popup>
           </Marker>
         ))}
+        {children}
       </MapContainer>
     </div>
   );

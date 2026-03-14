@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { MapContainer, TileLayer } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import { apiClient } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useVolunteerLocation } from "../hooks/useVolunteerLocation";
-import VolunteerMapLayer from "../components/VolunteerMapLayer";
 
 const RESCUE_CONDITIONS = ["sick", "critical", "injured", "aggressive"];
 
@@ -260,19 +257,19 @@ export default function VolunteerDashboard() {
 
 <div className="max-w-5xl mx-auto px-6 py-8">
 
-        {/* ─── Live Volunteer Map ─── */}
-        <div className="card mb-6 overflow-hidden">
-          <div className="flex items-center justify-between px-5 pt-4 pb-3">
+        {/* ─── Location Sharing ─── */}
+        <div className="card p-5 mb-6">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-xl">🗺️</span>
+              <span className="text-xl">📍</span>
               <span className="font-extrabold text-gray-800" style={{ fontFamily: "'Fredoka', cursive" }}>
-                Live Volunteer Map
+                Location Sharing
               </span>
               {isSharing && (
                 <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full"
                   style={{ background: "#dcfce7", color: "#15803d" }}>
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse inline-block" />
-                  Sharing
+                  Active
                 </span>
               )}
             </div>
@@ -281,24 +278,15 @@ export default function VolunteerDashboard() {
               className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
               style={{ background: isSharing ? "#d97706" : "var(--primary)" }}
             >
-              {isSharing ? "⏹ Stop Sharing" : "📍 Share My Location"}
+              {isSharing ? "Stop Sharing" : "Share My Location"}
             </button>
           </div>
           {locationError && (
-            <p className="text-xs text-red-500 font-semibold px-5 pb-2">{locationError}</p>
+            <p className="text-xs text-red-500 font-semibold mt-2">{locationError}</p>
           )}
-          <MapContainer
-            center={[10.8505, 76.2711]}
-            zoom={8}
-            style={{ height: 300, width: "100%" }}
-            scrollWheelZoom={false}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            />
-            <VolunteerMapLayer />
-          </MapContainer>
+          <p className="text-xs text-gray-400 mt-2">
+            Your location will be shared on the home page map so reporters can see nearby volunteers. Sharing stays active even if you navigate away.
+          </p>
         </div>
 
         {/* ─── How It Works Guide ─── */}

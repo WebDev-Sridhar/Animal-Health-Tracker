@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import MapComponent from "../components/MapComponent";
+import VolunteerMapLayer from "../components/VolunteerMapLayer";
+import { useAuth } from "../context/AuthContext";
 import { animalsApi } from "../api/animals";
 import { apiClient } from "../api/client";
 
@@ -67,6 +69,7 @@ const TESTIMONIALS = [
 ];
 
 export default function HomePage() {
+  const { isAuthenticated } = useAuth();
   const [center, setCenter] = useState(DEFAULT_CENTER);
   const [animals, setAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -298,7 +301,9 @@ export default function HomePage() {
                   animals={animals}
                   height="480px"
                   onMarkerClick={setSelectedAnimal}
-                />
+                >
+                  {isAuthenticated && <VolunteerMapLayer />}
+                </MapComponent>
               </div>
             </div>
 
@@ -311,6 +316,8 @@ export default function HomePage() {
                 { color: "bg-red-500", label: "Critical" },
                 { color: "bg-red-600", label: "Aggressive" },
                 { color: "bg-blue-500", label: "For Adoption" },
+                { color: "bg-emerald-800", label: "Volunteer (online)" },
+                { color: "bg-gray-400", label: "Volunteer (offline)" },
               ].map(({ color, label }) => (
                 <div key={label} className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-full">
                   <div className={`w-3 h-3 rounded-full ${color}`} />
@@ -318,6 +325,13 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+            {!isAuthenticated && (
+              <div className="px-6 pb-4 text-center">
+                <p className="text-sm text-gray-500">
+                  <Link to="/login" className="font-bold" style={{ color: "#3d8c78" }}>Login</Link> to see nearby volunteers on the map.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>

@@ -9,6 +9,7 @@ const animalRoutes = require("./animalRoutes");
 const reportRoutes = require("./reportRoutes");
 const riskRoutes = require("./riskRoutes");
 const analyticsRoutes = require("./analyticsRoutes");
+const chatRoutes = require("./chatRoutes");
 const { protect, authorize } = require("../middleware/auth");
 const { getPublicStats } = require("../services/analyticsService");
 
@@ -40,6 +41,7 @@ router.use("/animals", animalRoutes);
 router.use("/reports", protect, reportRoutes);
 router.use("/risk", protect, riskRoutes);
 router.use("/analytics", protect, analyticsRoutes);
+router.use("/chat", protect, chatRoutes);
 
 // Health check
 router.get("/", (req, res) => {

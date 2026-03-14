@@ -73,11 +73,14 @@ function init(httpServer) {
       const session = authenticatedSockets.get(socket.id);
 
       if (session) {
-        // Remove volunteer from live map and notify all clients
+        // Mark volunteer offline but keep their last location (gray marker)
         if (session.role === 'volunteer' && volunteerLocations.has(session.userId)) {
-          volunteerLocations.delete(session.userId);
-          _io.emit('volunteerLeft', { userId: session.userId });
-          console.log(`[Socket] Volunteer offline: ${session.name}`);
+          const existing = volunteerLocations.get(session.userId);
+          existing.isOnline = false;
+          existing.offlineSince = new Date().toISOString();
+          volunteerLocations.set(session.userId, existing);
+          _io.emit('volunteerLocations', [...volunteerLocations.values()]);
+          console.log(`[Socket] Volunteer offline (kept location): ${session.name}`);
         }
         authenticatedSockets.delete(socket.id);
       }
@@ -86,6 +89,16 @@ function init(httpServer) {
       console.log(`[Socket] Disconnected: ${socket.id} (${reason})`);
     });
   });
+
+  // Clean up stale offline volunteer entries every 24 hours
+  setInterval(() => {
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    for (const [userId, vol] of volunteerLocations.entries()) {
+      if (!vol.isOnline && vol.offlineSince && new Date(vol.offlineSince).getTime() < cutoff) {
+        volunteerLocations.delete(userId);
+      }
+    }
+  }, 24 * 60 * 60 * 1000);
 
   console.log('[Socket] Socket.IO initialized');
   return _io;

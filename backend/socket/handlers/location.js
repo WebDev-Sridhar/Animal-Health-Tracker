@@ -46,8 +46,14 @@ function registerLocationHandlers(socket, io) {
     const session = authenticatedSockets.get(socket.id);
     if (!session || session.role !== 'volunteer') return;
 
-    volunteerLocations.delete(session.userId);
-    io.emit('volunteerLeft', { userId: session.userId });
+    const existing = volunteerLocations.get(session.userId);
+    if (existing) {
+      existing.isOnline = false;
+      existing.offlineSince = new Date().toISOString();
+      volunteerLocations.set(session.userId, existing);
+    }
+    // Broadcast updated list with isOnline: false so clients show gray marker
+    io.emit('volunteerLocations', [...volunteerLocations.values()]);
   });
 }
 

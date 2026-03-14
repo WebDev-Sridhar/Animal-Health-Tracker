@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
-import ChatWidget from "../components/ChatWidget";
 import { useSocket } from "../context/SocketContext";
+import { useChat } from "../hooks/useChat";
 
 const CONDITION_OPTIONS = [
   { value: "healthy", label: "Healthy" },
@@ -30,6 +30,169 @@ const statusBadge = (status) => {
   return map[status] || "badge-teal";
 };
 
+function formatTime(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 60000) return 'Just now';
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  if (diff < 86400000) return formatTime(iso);
+  if (diff < 172800000) return 'Yesterday';
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+}
+
+// ── Inline Chat Conversation Component ──
+function ChatConversation({ reportId, contactName, onBack, onClearChat, onDeleteChat }) {
+  const { user } = useAuth();
+  const { markChatRead } = useSocket();
+  const { messages, sendMessage, markRead, loading, clearMessages } = useChat(reportId);
+  const [input, setInput] = useState('');
+  const bottomRef = useRef(null);
+  const [showActions, setShowActions] = useState(false);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  useEffect(() => {
+    if (reportId) {
+      markRead();
+      markChatRead(reportId);
+      // Mark as read on backend
+      apiClient.patch(`/chat/${reportId}/read`).catch(() => {});
+    }
+  }, [reportId, markRead, markChatRead, messages.length]);
+
+  const handleSend = () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    sendMessage(trimmed);
+    setInput('');
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleClear = async () => {
+    if (!window.confirm('Clear all messages in this chat? This cannot be undone.')) return;
+    try {
+      await apiClient.delete(`/chat/${reportId}/clear`);
+      clearMessages();
+      if (onClearChat) onClearChat();
+    } catch {
+      alert('Failed to clear chat');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Delete this entire conversation? This cannot be undone.')) return;
+    try {
+      await apiClient.delete(`/chat/${reportId}`);
+      clearMessages();
+      if (onDeleteChat) onDeleteChat();
+    } catch {
+      alert('Failed to delete conversation');
+    }
+  };
+
+  return (
+    <div className="card overflow-hidden flex flex-col" style={{ height: 520 }}>
+      {/* Header */}
+      <div className="flex items-center gap-3 px-4 py-3" style={{ background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)' }}>
+        <button onClick={onBack} className="text-white text-lg font-bold hover:opacity-80 transition" aria-label="Back">
+          ←
+        </button>
+        <div className="flex-1 min-w-0">
+          <p className="text-white font-extrabold text-sm truncate" style={{ fontFamily: "'Fredoka', cursive" }}>
+            {contactName || 'Chat'}
+          </p>
+        </div>
+        <div className="relative">
+          <button onClick={() => setShowActions(!showActions)} className="text-white text-lg hover:opacity-80 transition" aria-label="Actions">
+            ⋮
+          </button>
+          {showActions && (
+            <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg py-1 z-10 min-w-[140px]">
+              <button onClick={() => { setShowActions(false); handleClear(); }}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-semibold">
+                Clear Chat
+              </button>
+              <button onClick={() => { setShowActions(false); handleDelete(); }}
+                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-semibold">
+                Delete Chat
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2" style={{ background: '#f9fbfa' }}>
+        {loading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-8 h-8 border-3 rounded-full animate-spin mx-auto mb-2" style={{ borderColor: '#d0ece5', borderTopColor: '#3d8c78' }} />
+              <p className="text-gray-400 text-xs font-semibold">Loading messages...</p>
+            </div>
+          </div>
+        ) : messages.length === 0 ? (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-gray-400 text-sm text-center">No messages yet. Start the conversation!</p>
+          </div>
+        ) : (
+          messages.map((msg) => {
+            const isOwn = msg.senderId === (user?.id || user?._id);
+            return (
+              <div key={msg._id} className="flex flex-col" style={{ alignItems: isOwn ? 'flex-end' : 'flex-start' }}>
+                {!isOwn && (
+                  <span className="text-[10px] text-gray-400 font-semibold mb-0.5 ml-1">{msg.senderName}</span>
+                )}
+                <div style={{
+                  maxWidth: '78%', padding: '8px 12px',
+                  borderRadius: isOwn ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+                  background: isOwn ? 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)' : '#fff',
+                  color: isOwn ? '#fff' : '#1e3d30',
+                  fontSize: 13, boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                  wordBreak: 'break-word', lineHeight: 1.45,
+                }}>
+                  {msg.text}
+                </div>
+                <span className="text-[10px] text-gray-300 mt-0.5 mx-1">{formatTime(msg.createdAt)}</span>
+              </div>
+            );
+          })
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Input */}
+      <div className="flex gap-2 px-3 py-2.5 bg-white" style={{ borderTop: '1px solid rgba(61,140,120,0.1)' }}>
+        <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown}
+          placeholder="Type a message..." rows={1}
+          className="flex-1 resize-none outline-none text-sm py-2 px-3 rounded-xl"
+          style={{ border: '1.5px solid rgba(61,140,120,0.25)', fontFamily: 'inherit', lineHeight: 1.4 }}
+          onFocus={(e) => (e.target.style.borderColor = 'var(--primary)')}
+          onBlur={(e) => (e.target.style.borderColor = 'rgba(61,140,120,0.25)')}
+        />
+        <button onClick={handleSend} disabled={!input.trim()} className="btn-primary"
+          style={{ padding: '8px 16px', fontSize: 13, minWidth: 'auto', flexShrink: 0 }}>
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function AccountPage() {
   const navigate = useNavigate();
   const { user: authUser, login, isAuthenticated } = useAuth();
@@ -45,9 +208,14 @@ export default function AccountPage() {
   const [reportPhotoPreview, setReportPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [acceptedReports, setAcceptedReports] = useState([]);
-  const [toast, setToast] = useState(null); // { msg, type: "success"|"error" }
-  const [chatReportId, setChatReportId] = useState(null);
-  const [chatVolunteerName, setChatVolunteerName] = useState("");
+  const [toast, setToast] = useState(null);
+
+  // Chat state
+  const [chatView, setChatView] = useState('list'); // 'list' | 'conversation'
+  const [activeChatReportId, setActiveChatReportId] = useState(null);
+  const [activeChatName, setActiveChatName] = useState('');
+  const [conversations, setConversations] = useState([]);
+  const [loadingConversations, setLoadingConversations] = useState(true);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -61,6 +229,23 @@ export default function AccountPage() {
       fetchReports();
     }
   }, [authUser]);
+
+  // Fetch conversations
+  useEffect(() => {
+    if (isAuthenticated) fetchConversations();
+  }, [isAuthenticated]);
+
+  const fetchConversations = async () => {
+    setLoadingConversations(true);
+    try {
+      const res = await apiClient.get('/chat/conversations');
+      setConversations(res.data || res || []);
+    } catch {
+      setConversations([]);
+    } finally {
+      setLoadingConversations(false);
+    }
+  };
 
   const fetchReports = async () => {
     setLoadingReports(true);
@@ -180,6 +365,16 @@ export default function AccountPage() {
     }
   };
 
+  const openChat = (reportId, name) => {
+    setActiveChatReportId(reportId);
+    setActiveChatName(name);
+    setChatView('conversation');
+    markChatRead(reportId);
+    setTimeout(() => {
+      document.getElementById('my-chats-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "var(--bg-gradient)" }}>
@@ -288,18 +483,88 @@ export default function AccountPage() {
           ) : (
             <div className="grid md:grid-cols-3 gap-5">
               {[
-                { label: "Full Name", value: user.name, },
-                { label: "Email", value: user.email, },
-                { label: "Phone", value: user.phone || "Not added", },
+                { label: "Full Name", value: user.name },
+                { label: "Email", value: user.email },
+                { label: "Phone", value: user.phone || "Not added" },
                 { label: "Role", value: user.role, capitalize: true },
-                { label: "Zone", value: user.zone || "Not added", },
-                { label: "Member Since", value: new Date(user.createdAt).toLocaleDateString('en-GB'), },
+                { label: "Zone", value: user.zone || "Not added" },
+                { label: "Member Since", value: new Date(user.createdAt).toLocaleDateString('en-GB') },
               ].map(({ label, value, capitalize }) => (
                 <div key={label} className="p-4 rounded-2xl bg-gray-50">
                   <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{label}</p>
                   <p className={`font-bold text-gray-800 ${capitalize ? "capitalize" : ""}`}>{value}</p>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* ─── My Chats ─── */}
+        <div id="my-chats-section">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
+              My Chats
+            </h2>
+          </div>
+
+          {chatView === 'conversation' && activeChatReportId ? (
+            <ChatConversation
+              reportId={activeChatReportId}
+              contactName={activeChatName}
+              onBack={() => { setChatView('list'); setActiveChatReportId(null); fetchConversations(); }}
+              onClearChat={() => fetchConversations()}
+              onDeleteChat={() => { setChatView('list'); setActiveChatReportId(null); fetchConversations(); }}
+            />
+          ) : (
+            <div className="space-y-2">
+              {loadingConversations ? (
+                <div className="card p-10 text-center">
+                  <div className="w-8 h-8 border-3 rounded-full animate-spin mx-auto mb-2" style={{ borderColor: '#d0ece5', borderTopColor: '#3d8c78' }} />
+                  <p className="text-gray-500 text-sm font-semibold">Loading chats...</p>
+                </div>
+              ) : conversations.length === 0 ? (
+                <div className="card p-10 text-center">
+                  <div className="text-4xl mb-3">💬</div>
+                  <h3 className="text-lg font-bold text-gray-700 mb-1" style={{ fontFamily: "'Fredoka', cursive" }}>No chats yet</h3>
+                  <p className="text-gray-400 text-sm">Chats will appear here when you or a volunteer starts a conversation on an accepted report.</p>
+                </div>
+              ) : (
+                conversations.map((conv) => {
+                  const unread = unreadChats[conv.reportId]?.count || conv.unreadCount || 0;
+                  return (
+                    <button key={conv.reportId}
+                      onClick={() => openChat(conv.reportId, conv.otherUser?.name || 'Chat')}
+                      className="card w-full text-left flex items-center gap-3 p-4 hover:shadow-md transition-shadow cursor-pointer">
+                      {/* Avatar */}
+                      <div className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-extrabold flex-shrink-0 uppercase"
+                        style={{ background: '#d4e4e1', color: '#2e6b5a' }}>
+                        {conv.otherUser?.name?.[0] || '?'}
+                      </div>
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="font-extrabold text-gray-800 text-sm truncate">{conv.otherUser?.name || 'Unknown'}</p>
+                          <span className="text-[11px] text-gray-400 font-semibold flex-shrink-0 ml-2">
+                            {formatDate(conv.lastMessageTime)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between mt-0.5">
+                          <p className="text-xs text-gray-400 truncate flex-1">
+                            <span className="text-gray-500 capitalize">{conv.reportSpecies}</span>
+                            {conv.lastMessage && <span> · {conv.lastMessage}</span>}
+                          </p>
+                          {unread > 0 && (
+                            <span className="flex-shrink-0 ml-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white"
+                              style={{ background: '#ef4444' }}>
+                              {unread > 9 ? '9+' : unread}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })
+              )}
             </div>
           )}
         </div>
@@ -398,11 +663,8 @@ export default function AccountPage() {
                           <label className="text-xs font-extrabold text-gray-600 uppercase tracking-wide">Photo</label>
                           <div className="mt-1.5">
                             {(reportPhotoPreview || r.photo) && (
-                              <img
-                                src={reportPhotoPreview || r.photo}
-                                alt="preview"
-                                className="w-full h-32 object-cover rounded-xl mb-2"
-                              />
+                              <img src={reportPhotoPreview || r.photo} alt="preview"
+                                className="w-full h-32 object-cover rounded-xl mb-2" />
                             )}
                             <label className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-bold cursor-pointer border-2 border-dashed transition-colors hover:border-[#3d8c78] hover:bg-[#eaf5f1]"
                               style={{ borderColor: "#d0ece5", color: "#3d8c78" }}>
@@ -466,15 +728,10 @@ export default function AccountPage() {
                         <div className="flex gap-2 flex-wrap">
                           {r.status === "accepted" && r.acceptedBy?.name && (
                             <button
-                              onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.acceptedBy.name); markChatRead(r._id); }}
+                              onClick={() => openChat(r._id, r.acceptedBy.name)}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-white transition-colors"
-                              style={{ background: "var(--primary)", position: 'relative' }}>
+                              style={{ background: "var(--primary)" }}>
                               Chat
-                              {unreadChats[r._id]?.count > 0 && (
-                                <span style={{ background: '#ef4444', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 800, marginLeft: 4 }}>
-                                  {unreadChats[r._id].count}
-                                </span>
-                              )}
                             </button>
                           )}
                           {r.status === "pending" && (
@@ -597,15 +854,10 @@ export default function AccountPage() {
                           )}
                           {r.status === "accepted" && (
                             <button
-                              onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.reportedBy?.name || "Reporter"); markChatRead(r._id); }}
+                              onClick={() => openChat(r._id, r.reportedBy?.name || "Reporter")}
                               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-white hover:scale-105 transition-all shadow-sm"
                               style={{ background: "var(--primary)" }}>
                               💬 Chat with Reporter
-                              {unreadChats[r._id]?.count > 0 && (
-                                <span style={{ background: '#ef4444', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 800, marginLeft: 4 }}>
-                                  {unreadChats[r._id].count}
-                                </span>
-                              )}
                             </button>
                           )}
                           {r.status === "accepted" && (
@@ -630,14 +882,6 @@ export default function AccountPage() {
           </div>
         )}
       </div>
-
-      {/* ─── Chat Widget (opens when reporter clicks Chat on an accepted report) ─── */}
-      <ChatWidget
-        reportId={chatReportId}
-        volunteerName={chatVolunteerName}
-        isOpen={!!chatReportId}
-        onClose={() => { setChatReportId(null); setChatVolunteerName(""); }}
-      />
     </div>
   );
 }

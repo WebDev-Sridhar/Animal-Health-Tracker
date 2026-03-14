@@ -12,9 +12,13 @@ export function useChat(reportId) {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!reportId || !socket) return;
+
+    setLoading(true);
+    setMessages([]);
 
     // Join the room and request history
     socket.emit('joinChatRoom', { reportId });
@@ -22,11 +26,11 @@ export function useChat(reportId) {
     const onHistory = (history) => {
       setMessages(history);
       setUnreadCount(0);
+      setLoading(false);
     };
 
     const onNewMessage = (msg) => {
       setMessages((prev) => [...prev, msg]);
-      // Only count as unread if it came from someone else
       if (msg.senderId !== user?.id) {
         setUnreadCount((c) => c + 1);
       }
@@ -51,8 +55,9 @@ export function useChat(reportId) {
     [socket, reportId]
   );
 
-  // Reset unread when the chat window is opened/focused
   const markRead = useCallback(() => setUnreadCount(0), []);
 
-  return { messages, sendMessage, unreadCount, markRead };
+  const clearMessages = useCallback(() => setMessages([]), []);
+
+  return { messages, sendMessage, unreadCount, markRead, loading, clearMessages };
 }
