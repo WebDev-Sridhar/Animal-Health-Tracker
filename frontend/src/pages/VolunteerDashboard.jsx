@@ -24,7 +24,13 @@ export default function VolunteerDashboard() {
   const [loading, setLoading] = useState(true);
   const [zone, setZone] = useState("");
   const [category, setCategory] = useState("all");
+  const [toast, setToast] = useState(null);
   const { user } = useAuth();
+
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 5000);
+  };
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -45,6 +51,7 @@ export default function VolunteerDashboard() {
     try {
       const res = await apiClient.patch(`/reports/${id}/accept`);
       setAllReports((prev) => prev.map((r) => (r._id === id ? res.data : r)));
+      showToast("Thanks for accepting! You can view the report and reporter details in your Account page.");
     } catch (err) { alert(err.message); }
   };
 
@@ -203,6 +210,13 @@ export default function VolunteerDashboard() {
 
   return (
     <div className="overflow-x-hidden" style={{ background: "var(--bg-gradient)" }}>
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl shadow-lg text-white text-sm font-bold max-w-sm text-center"
+          style={{ background: "#2e6b5a" }}>
+          {toast}
+        </div>
+      )}
+
       <Helmet>
         <title>Volunteer Dashboard | OurPetCare</title>
         <meta name="description" content="Manage animal welfare reports and contribute to saving animals across Tamil Nadu." />
