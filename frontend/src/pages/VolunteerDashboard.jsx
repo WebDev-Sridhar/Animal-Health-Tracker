@@ -63,6 +63,26 @@ export default function VolunteerDashboard() {
     } catch (err) { alert(err.message); }
   };
 
+  const sendWhatsAppNotification = (r) => {
+    const phone = r.reportedBy?.phone?.replace(/\D/g, "");
+    if (!phone) { alert("Reporter has no phone number on file."); return; }
+    const accountUrl = `${window.location.origin}/account`;
+    const reportDate = new Date(r.createdAt).toLocaleDateString("en-GB");
+    const message =
+      `Hi ${r.reportedBy?.name || "there"},\n\n` +
+      `A volunteer from OurPetCare has attended to your animal report 🐾\n\n` +
+      `📋 Report Details:\n` +
+      `• Animal: ${r.animal?.species || "Unknown"}\n` +
+      `• Zone: ${r.zone || "Unknown"}\n` +
+      `• Condition: ${r.condition}\n` +
+      `• Reported on: ${reportDate}\n\n` +
+      `The issue appears to have been resolved. Please visit your account page to confirm and mark it as resolved:\n` +
+      `🔗 ${accountUrl}\n\n` +
+      `You may also ask us for photos of the rescued animal to verify. Reply to this message if you have any questions.\n\n` +
+      `Thank you for caring! 🌿\n— OurPetCare Team`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
   const pending = reports.filter((r) => r.status === "pending");
   const accepted = reports.filter((r) => r.status === "accepted");
   const resolved = reports.filter((r) => r.status === "resolved");
@@ -106,6 +126,43 @@ export default function VolunteerDashboard() {
       </div>
 
       <div className="max-w-5xl mx-auto px-6 py-8">
+        {/* ─── How It Works Guide ─── */}
+        <details className="card mb-6 group">
+          <summary className="flex items-center justify-between p-5 cursor-pointer select-none list-none">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">📖</span>
+              <span className="font-extrabold text-gray-800" style={{ fontFamily: "'Fredoka', cursive" }}>
+                How to Use This Dashboard
+              </span>
+            </div>
+            <span className="text-gray-400 text-sm font-bold group-open:hidden">Show guide ▼</span>
+            <span className="text-gray-400 text-sm font-bold hidden group-open:inline">Hide ▲</span>
+          </summary>
+          <div className="px-5 pb-5 border-t border-gray-100 pt-4">
+            <p className="text-sm text-gray-500 mb-4">As a volunteer, you help connect reporters with rescued animals. Here's how the workflow works:</p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {[
+                { step: "1", emoji: "⏳", title: "Accept a Pending Report", desc: "Browse pending reports and click Accept to take responsibility. The report moves to In Progress and is assigned to you." },
+                { step: "2", emoji: "🚑", title: "Attend to the Animal", desc: "Go to the reported location and help the animal — rescue, vaccination, or connect with an adopter, depending on the condition." },
+                { step: "3", emoji: "📩", title: "Notify the Reporter", desc: "Once the issue is resolved, click Notify Reporter to send a WhatsApp message to the reporter with a link to confirm." },
+                { step: "4", emoji: "✅", title: "Reporter Confirms & Closes", desc: "The reporter visits their account page, reviews the update, and clicks Resolved to officially close the report." },
+                { step: "5", emoji: "↩️", title: "Give Back (if needed)", desc: "If you're unable to attend to a report, use Give Back to return it to the pending queue for another volunteer." },
+              ].map((item) => (
+                <div key={item.step} className="flex gap-3 p-3 rounded-2xl" style={{ background: "#f7faf9" }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-extrabold text-white flex-shrink-0"
+                    style={{ background: "var(--primary)" }}>
+                    {item.step}
+                  </div>
+                  <div>
+                    <p className="font-extrabold text-gray-800 text-sm">{item.emoji} {item.title}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </details>
+
         {/* Zone Filter */}
         <div className="card p-4 mb-6 flex items-center gap-4 flex-wrap">
           <label className="text-sm font-extrabold text-gray-600">🔍 Filter by zone:</label>
@@ -198,6 +255,11 @@ export default function VolunteerDashboard() {
                         {r.status === "accepted" && (
                           r.acceptedBy?._id === user.id ? (
                             <>
+                              <button onClick={() => sendWhatsAppNotification(r)}
+                                className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
+                                style={{ background: "#25D366" }}>
+                                📩 Notify Reporter
+                              </button>
                               <button onClick={() => unassignReport(r._id)}
                                 className="px-4 py-2 rounded-full text-sm font-extrabold text-white transition-all hover:scale-105 shadow-sm"
                                 style={{ background: "#d97706" }}>

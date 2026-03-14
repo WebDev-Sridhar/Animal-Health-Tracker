@@ -283,11 +283,44 @@ export default function AccountPage() {
 
         {/* ─── My Reports ─── */}
         <div>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold" style={{ fontFamily: "'Fredoka', cursive", color: "var(--text-dark)" }}>
               My Reports ({reports.length})
             </h2>
           </div>
+
+          {/* How It Works note */}
+          <details className="card mb-5 group">
+            <summary className="flex items-center justify-between p-4 cursor-pointer select-none list-none">
+              <div className="flex items-center gap-3">
+                <span className="text-xl">💡</span>
+                <span className="font-extrabold text-gray-700 text-sm">How does the report process work?</span>
+              </div>
+              <span className="text-gray-400 text-xs font-bold group-open:hidden">Show ▼</span>
+              <span className="text-gray-400 text-xs font-bold hidden group-open:inline">Hide ▲</span>
+            </summary>
+            <div className="px-4 pb-4 border-t border-gray-100 pt-3">
+              <div className="space-y-2.5">
+                {[
+                  { emoji: "📋", title: "You submit a report", desc: "Describe the animal's condition, location, and photo. Your report is listed as Pending." },
+                  { emoji: "🤝", title: "A volunteer accepts it", desc: "A local volunteer accepts your report and attends to the animal. The status changes to In Progress." },
+                  { emoji: "📩", title: "You get a WhatsApp message", desc: "Once the volunteer has handled the issue, they'll send you a WhatsApp notification with details." },
+                  { emoji: "✅", title: "You confirm & mark resolved", desc: "Visit this page and click the Resolved button on your report card to officially close it. You can also ask the volunteer for photos before confirming." },
+                ].map((item) => (
+                  <div key={item.emoji} className="flex gap-3 items-start">
+                    <span className="text-lg flex-shrink-0">{item.emoji}</span>
+                    <div>
+                      <span className="font-extrabold text-gray-700 text-sm">{item.title} — </span>
+                      <span className="text-gray-500 text-sm">{item.desc}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-3 border-t border-gray-100 pt-3">
+                You can also mark your own report as resolved at any time — for example, if the animal was already taken care of before a volunteer responded.
+              </p>
+            </div>
+          </details>
 
           <div className="grid md:grid-cols-2 gap-5">
             {loadingReports ? (
@@ -392,19 +425,19 @@ export default function AccountPage() {
                           {r.status === "pending" && (
                             <button onClick={() => handleEditReport(r)}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold hover:bg-[#d0ece5] transition-colors" style={{ color: "#2e6b5a", background: "#eaf5f1" }}>
-                              ✏️ Edit
+                              Edit
                             </button>
                           )}
                           {r.status !== "resolved" && (
                             <button onClick={() => handleResolveReport(r._id)}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-green-700 bg-green-50 hover:bg-green-100 transition-colors">
-                              ✅ Resolved
+                              Resolved
                             </button>
                           )}
                           {r.status !== "resolved" && (
                             <button onClick={() => deleteReport(r._id)}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-red-700 bg-red-50 hover:bg-red-100 transition-colors">
-                              🗑️ Delete
+                              Delete
                             </button>
                           )}
                         </div>
