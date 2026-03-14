@@ -589,6 +589,14 @@ export default function AccountPage() {
                             )
                           )}
                           {r.status === "accepted" && (
+                            <button
+                              onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.reportedBy?.name || "Reporter"); }}
+                              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-white hover:scale-105 transition-all shadow-sm"
+                              style={{ background: "var(--primary)" }}>
+                              💬 Chat with Reporter
+                            </button>
+                          )}
+                          {r.status === "accepted" && (
                             <button onClick={() => handleGiveBack(r._id)}
                               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-white hover:scale-105 transition-all shadow-sm"
                               style={{ background: "#d97706" }}>
