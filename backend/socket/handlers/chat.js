@@ -2,9 +2,14 @@
  * Real-time chat handler.
  * Uses Socket.IO rooms keyed by reportId so only participants in that
  * report's conversation receive messages.
+ *
+ * Also emits 'chatNotification' directly to the recipient's socket
+ * when their chat widget is closed (not in the room), so they get a
+ * badge/alert even without the chat open.
  */
 
 const ChatMessage = require('../../models/ChatMessage');
+const Report = require('../../models/Report');
 const { authenticatedSockets, messageCounts } = require('../state');
 const { checkRateLimit, isValidObjectId } = require('../utils');
 
@@ -65,8 +70,7 @@ function registerChatHandlers(socket, io) {
         readBy: [session.userId], // sender has already "read" it
       });
 
-      // Broadcast to everyone in this report's room (including sender)
-      io.to(reportId).emit('newMessage', {
+      const msgPayload = {
         _id: msg._id.toString(),
         reportId: msg.reportId.toString(),
         senderId: msg.senderId.toString(),
@@ -74,7 +78,37 @@ function registerChatHandlers(socket, io) {
         senderRole: msg.senderRole,
         text: msg.text,
         createdAt: msg.createdAt,
-      });
+      };
+
+      // Broadcast to everyone in this report's room (chat widget open)
+      io.to(reportId).emit('newMessage', msgPayload);
+
+      // ── Push notification to recipient if they are NOT in the room ──
+      // Look up the report to find the other party (reporter & assigned volunteer)
+      const report = await Report.findById(reportId)
+        .select('reportedBy acceptedBy')
+        .lean();
+
+      if (report) {
+        const recipientIds = [
+          report.reportedBy?.toString(),
+          report.acceptedBy?.toString(),
+        ].filter(Boolean).filter((id) => id !== session.userId);
+
+        const roomMembers = io.sockets.adapter.rooms.get(reportId) || new Set();
+
+        for (const [sid, sess] of authenticatedSockets.entries()) {
+          if (recipientIds.includes(sess.userId) && !roomMembers.has(sid)) {
+            io.to(sid).emit('chatNotification', {
+              reportId,
+              senderId: session.userId,
+              senderName: session.name,
+              text: trimmed,
+              createdAt: msg.createdAt,
+            });
+          }
+        }
+      }
     } catch (err) {
       console.error('[Chat] Failed to save message:', err.message);
     }

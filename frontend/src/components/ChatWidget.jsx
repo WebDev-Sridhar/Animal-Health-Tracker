@@ -12,6 +12,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useChat } from '../hooks/useChat';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 
 function formatTime(iso) {
   if (!iso) return '';
@@ -20,6 +21,7 @@ function formatTime(iso) {
 
 export default function ChatWidget({ reportId, volunteerName, isOpen, onClose }) {
   const { user } = useAuth();
+  const { markChatRead } = useSocket();
   const { messages, sendMessage, unreadCount, markRead } = useChat(isOpen ? reportId : null);
   const [input, setInput] = useState('');
   const bottomRef = useRef(null);
@@ -31,8 +33,11 @@ export default function ChatWidget({ reportId, volunteerName, isOpen, onClose })
 
   // Mark as read when opened
   useEffect(() => {
-    if (isOpen) markRead();
-  }, [isOpen, markRead, messages.length]);
+    if (isOpen) {
+      markRead();
+      markChatRead(reportId);
+    }
+  }, [isOpen, markRead, markChatRead, reportId, messages.length]);
 
   if (!isOpen) return null;
 

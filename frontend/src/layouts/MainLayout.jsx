@@ -1,10 +1,12 @@
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useSocket } from "../context/SocketContext";
 import { useState } from "react";
 import Footer from "../components/Footer";
 
 export default function MainLayout() {
   const { user, logout, isAuthenticated } = useAuth();
+  const { totalUnread } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -80,6 +82,29 @@ export default function MainLayout() {
           {/* Desktop Auth */}
           <div className="hidden md:flex items-center gap-2">
             <Link to="/report" className="btn-orange text-sm py-2 px-4">Report</Link>
+            {isAuthenticated && (
+              <Link to="/account" style={{ position: 'relative', display: 'inline-flex' }}>
+                <button
+                  className="p-2 rounded-xl transition-colors"
+                  style={{ color: '#5c6b6a', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  aria-label="Chat"
+                >
+                  💬
+                </button>
+                {totalUnread > 0 && (
+                  <span style={{
+                    position: 'absolute', top: 2, right: 2,
+                    background: '#ef4444', color: '#fff',
+                    borderRadius: '50%', width: 16, height: 16,
+                    fontSize: 10, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    lineHeight: 1,
+                  }}>
+                    {totalUnread > 9 ? '9+' : totalUnread}
+                  </span>
+                )}
+              </Link>
+            )}
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <Link to="/account"
@@ -148,6 +173,19 @@ export default function MainLayout() {
                         {user?.name?.[0] || "U"}
                       </div>
                       My Account
+                    </Link>
+                    <Link to="/account" onClick={closeMobileMenu}
+                      className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold" style={{ color: "#5c6b6a" }}>
+                      <span>💬 Messages</span>
+                      {totalUnread > 0 && (
+                        <span style={{
+                          background: '#ef4444', color: '#fff',
+                          borderRadius: 10, padding: '1px 7px',
+                          fontSize: 11, fontWeight: 800,
+                        }}>
+                          {totalUnread > 9 ? '9+' : totalUnread}
+                        </span>
+                      )}
                     </Link>
                     <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="w-full btn-secondary text-sm py-2.5">
                       Logout

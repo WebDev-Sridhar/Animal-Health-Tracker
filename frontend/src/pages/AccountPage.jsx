@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
 import ChatWidget from "../components/ChatWidget";
+import { useSocket } from "../context/SocketContext";
 
 const CONDITION_OPTIONS = [
   { value: "healthy", label: "Healthy" },
@@ -32,6 +33,7 @@ const statusBadge = (status) => {
 export default function AccountPage() {
   const navigate = useNavigate();
   const { user: authUser, login, isAuthenticated } = useAuth();
+  const { unreadChats, markChatRead } = useSocket();
   const [user, setUser] = useState(null);
   const [reports, setReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(true);
@@ -464,10 +466,15 @@ export default function AccountPage() {
                         <div className="flex gap-2 flex-wrap">
                           {r.status === "accepted" && r.acceptedBy?.name && (
                             <button
-                              onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.acceptedBy.name); }}
+                              onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.acceptedBy.name); markChatRead(r._id); }}
                               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-extrabold text-white transition-colors"
-                              style={{ background: "var(--primary)" }}>
+                              style={{ background: "var(--primary)", position: 'relative' }}>
                               💬 Chat
+                              {unreadChats[r._id]?.count > 0 && (
+                                <span style={{ background: '#ef4444', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 800, marginLeft: 4 }}>
+                                  {unreadChats[r._id].count}
+                                </span>
+                              )}
                             </button>
                           )}
                           {r.status === "pending" && (
@@ -590,10 +597,15 @@ export default function AccountPage() {
                           )}
                           {r.status === "accepted" && (
                             <button
-                              onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.reportedBy?.name || "Reporter"); }}
+                              onClick={() => { setChatReportId(r._id); setChatVolunteerName(r.reportedBy?.name || "Reporter"); markChatRead(r._id); }}
                               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-extrabold text-white hover:scale-105 transition-all shadow-sm"
                               style={{ background: "var(--primary)" }}>
                               💬 Chat with Reporter
+                              {unreadChats[r._id]?.count > 0 && (
+                                <span style={{ background: '#ef4444', borderRadius: 10, padding: '1px 6px', fontSize: 11, fontWeight: 800, marginLeft: 4 }}>
+                                  {unreadChats[r._id].count}
+                                </span>
+                              )}
                             </button>
                           )}
                           {r.status === "accepted" && (
