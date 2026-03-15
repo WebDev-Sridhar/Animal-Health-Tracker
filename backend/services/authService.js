@@ -20,10 +20,6 @@ const register = async (data) => {
     throw new AppError("Please provide name, email and password", 400);
   }
 
-  if (!phoneVerified) {
-    throw new AppError("Phone number must be verified via OTP before registering", 400);
-  }
-
   const existingUser = await User.findOne({ email: email.toLowerCase() });
   if (existingUser) {
     throw new AppError("User already exists with this email", 409);
@@ -36,7 +32,7 @@ const register = async (data) => {
     role: role || "public",
     zone,
     phone,
-    phoneVerified: true,
+    phoneVerified: phoneVerified === true,
   });
 
   const token = generateToken(user._id);

@@ -24,10 +24,6 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!phoneVerified) {
-      setError("Please verify your phone number before registering.");
-      return;
-    }
     setLoading(true);
     try {
       const res = await authApi.register({ ...form, phoneVerified: true });
@@ -144,6 +140,7 @@ export default function RegisterPage() {
             <div>
               <label className="block text-sm font-extrabold text-gray-700 mb-2">
                 Phone Number
+                <span className="ml-1 text-xs font-normal text-gray-400">(optional)</span>
                 {phoneVerified && (
                   <span className="ml-2 text-xs font-bold" style={{ color: 'var(--primary)' }}>✓ Verified</span>
                 )}
