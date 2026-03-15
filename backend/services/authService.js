@@ -150,10 +150,12 @@ const forgotPassword = async (email) => {
   try {
     await sendResetEmail(user.email, resetUrl);
   } catch (err) {
+    console.error("[ForgotPassword] Email send failed:", err.message, err.code, err.response);
+    console.error("[ForgotPassword] EMAIL_USER:", config.email.user, "| EMAIL_PASS set:", !!config.email.pass);
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
-    throw new AppError("Failed to send reset email. Please try again later.", 500);
+    throw new AppError(`Failed to send reset email: ${err.message}`, 500);
   }
 };
 
