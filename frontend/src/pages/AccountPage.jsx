@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { apiClient } from "../api/client";
+import PhoneVerification from "../components/PhoneVerification";
 
 const CONDITION_OPTIONS = [
   { value: "healthy", label: "Healthy" },
@@ -44,6 +45,7 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(false);
   const [acceptedReports, setAcceptedReports] = useState([]);
   const [toast, setToast] = useState(null);
+  const [phoneVerified, setPhoneVerified] = useState(false);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -83,17 +85,26 @@ export default function AccountPage() {
 
   const handleEditUser = () => {
     setEditingUser(true);
+    setPhoneVerified(false);
     setFormData({ name: user.name, phone: user.phone || "", zone: user.zone || "" });
   };
 
   const handleSaveUser = async () => {
+    const phoneChanged = formData.phone !== (user.phone || "");
+    if (phoneChanged && !phoneVerified) {
+      showToast("Please verify your new phone number before saving", "error");
+      return;
+    }
     setLoading(true);
     try {
-      const res = await apiClient.patch("/auth/profile", formData);
+      const payload = { ...formData };
+      if (phoneChanged) payload.phoneVerified = true;
+      const res = await apiClient.patch("/auth/profile", payload);
       const updatedUser = { ...user, ...res.data };
       setUser(updatedUser);
       login(updatedUser, localStorage.getItem("token"));
       setEditingUser(false);
+      setPhoneVerified(false);
     } catch (err) {
       console.error(err);
       showToast("Failed to update profile", "error");
@@ -260,23 +271,51 @@ export default function AccountPage() {
 
           {editingUser ? (
             <div className="space-y-4">
-              {[
-                { label: "Name", key: "name", type: "text" },
-                { label: "Phone", key: "phone", type: "tel" },
-                { label: "Zone", key: "zone", type: "text" },
-              ].map(({ label, key, type }) => (
-                <div key={key}>
-                  <label className="block text-sm font-extrabold text-gray-700 mb-2">{label}</label>
-                  <input type={type} value={formData[key]} onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                    className="input-field" />
-                </div>
-              ))}
+              <div>
+                <label className="block text-sm font-extrabold text-gray-700 mb-2">Name</label>
+                <input type="text" value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="input-field" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-extrabold text-gray-700 mb-2">
+                  Phone Number
+                  {formData.phone === (user.phone || "") && user.phoneVerified && (
+                    <span className="ml-2 text-xs font-bold" style={{ color: "var(--primary)" }}>✓ Verified</span>
+                  )}
+                </label>
+                {formData.phone !== (user.phone || "") ? (
+                  <PhoneVerification
+                    initialPhone={formData.phone}
+                    onPhoneChange={(phone) => { setFormData((p) => ({ ...p, phone })); setPhoneVerified(false); }}
+                    onVerified={(phone) => { setFormData((p) => ({ ...p, phone })); setPhoneVerified(true); }}
+                  />
+                ) : (
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="input-field"
+                    placeholder="+91XXXXXXXXXX"
+                  />
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-extrabold text-gray-700 mb-2">Zone</label>
+                <input type="text" value={formData.zone}
+                  onChange={(e) => setFormData({ ...formData, zone: e.target.value })}
+                  className="input-field" />
+              </div>
+
               <div className="flex gap-3 pt-2">
                 <button onClick={handleSaveUser} disabled={loading}
                   className="flex-1 btn-primary py-3 disabled:opacity-50">
                   {loading ? "Saving..." : "Save Changes"}
                 </button>
-                <button onClick={() => setEditingUser(false)} className="flex-1 btn-secondary py-3">
+                <button onClick={() => { setEditingUser(false); setPhoneVerified(false); }}
+                  className="flex-1 btn-secondary py-3">
                   Cancel
                 </button>
               </div>

@@ -14,10 +14,14 @@ const generateToken = (userId) => {
 };
 
 const register = async (data) => {
-  const { name, email, password, role, zone, phone } = data;
+  const { name, email, password, role, zone, phone, phoneVerified } = data;
 
   if (!name || !email || !password) {
     throw new AppError("Please provide name, email and password", 400);
+  }
+
+  if (!phoneVerified) {
+    throw new AppError("Phone number must be verified via OTP before registering", 400);
   }
 
   const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -32,6 +36,7 @@ const register = async (data) => {
     role: role || "public",
     zone,
     phone,
+    phoneVerified: true,
   });
 
   const token = generateToken(user._id);
@@ -44,6 +49,7 @@ const register = async (data) => {
       role: user.role,
       zone: user.zone,
       phone: user.phone,
+      phoneVerified: user.phoneVerified,
       createdAt: user.createdAt,
     },
     token,
@@ -77,6 +83,7 @@ const login = async (email, password) => {
       role: user.role,
       zone: user.zone,
       phone: user.phone,
+      phoneVerified: user.phoneVerified,
       createdAt: user.createdAt,
     },
     token,
@@ -84,7 +91,7 @@ const login = async (email, password) => {
 };
 
 const updateProfile = async (userId, data) => {
-  const allowedFields = ["name", "phone", "zone"];
+  const allowedFields = ["name", "phone", "zone", "phoneVerified"];
   const user = await User.findById(userId);
 
   if (!user) {
@@ -105,6 +112,7 @@ const updateProfile = async (userId, data) => {
     role: user.role,
     zone: user.zone,
     phone: user.phone,
+    phoneVerified: user.phoneVerified,
     createdAt: user.createdAt,
   };
 };

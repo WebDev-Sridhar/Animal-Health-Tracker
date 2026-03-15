@@ -178,6 +178,15 @@ export default function MainLayout() {
               <div className="pt-3 space-y-2" style={{ borderTop: "1px solid #e8d9cc" }}>
                 {isAuthenticated ? (
                   <>
+                    
+                    <Link to="/account" onClick={closeMobileMenu}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold" style={{ color: "#5c6b6a" }}>
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
+                        style={{ background: "#d4e4e1", color: "#6b8c85" }}>
+                        {user?.name?.[0] || "U"}
+                      </div>
+                      My Account
+                    </Link>
                     <Link to="/chat" onClick={closeMobileMenu}
                       className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold"
                       style={isActive("/chat") ? { background: "#f0f5f4", color: "var(--primary-dark)", fontWeight: 800 } : { color: "#5c6b6a", fontWeight: 700 }}>
@@ -193,14 +202,6 @@ export default function MainLayout() {
                           {totalUnread > 9 ? '9+' : totalUnread}
                         </span>
                       )}
-                    </Link>
-                    <Link to="/account" onClick={closeMobileMenu}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold" style={{ color: "#5c6b6a" }}>
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold uppercase"
-                        style={{ background: "#d4e4e1", color: "#6b8c85" }}>
-                        {user?.name?.[0] || "U"}
-                      </div>
-                      My Account
                     </Link>
                    
                     <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="w-full btn-secondary text-sm py-2.5">

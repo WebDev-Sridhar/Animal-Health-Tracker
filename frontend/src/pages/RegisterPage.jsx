@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { authApi } from "../api/auth";
+import PhoneVerification from "../components/PhoneVerification";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -16,15 +17,20 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (!phoneVerified) {
+      setError("Please verify your phone number before registering.");
+      return;
+    }
     setLoading(true);
     try {
-      const res = await authApi.register(form);
+      const res = await authApi.register({ ...form, phoneVerified: true });
       login(res.data.user, res.data.token);
       navigate("/");
     } catch (err) {
@@ -136,10 +142,16 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-extrabold text-gray-700 mb-2">Phone Number</label>
-              <input
-                type="tel" name="phone" value={form.phone} onChange={handleChange}
-                className="input-field" placeholder="Your phone number"
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">
+                Phone Number
+                {phoneVerified && (
+                  <span className="ml-2 text-xs font-bold" style={{ color: 'var(--primary)' }}>✓ Verified</span>
+                )}
+              </label>
+              <PhoneVerification
+                initialPhone={form.phone}
+                onPhoneChange={(phone) => { setForm((p) => ({ ...p, phone })); setPhoneVerified(false); }}
+                onVerified={(phone) => { setForm((p) => ({ ...p, phone })); setPhoneVerified(true); }}
               />
             </div>
 
