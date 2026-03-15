@@ -22,6 +22,12 @@ const config = {
     maxFileSize: 5 * 1024 * 1024, // 5MB
     allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
   },
+  email: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+  },
+  clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
 };
 
 module.exports = config;

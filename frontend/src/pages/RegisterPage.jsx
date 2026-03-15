@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "../context/AuthContext";
 import { authApi } from "../api/auth";
-import PhoneVerification from "../components/PhoneVerification";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     role: "public",
     zone: "",
     phone: "",
@@ -17,16 +17,21 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
     setLoading(true);
     try {
-      const res = await authApi.register({ ...form, phoneVerified: true });
+      const { confirmPassword, ...payload } = form;
+      const res = await authApi.register(payload);
       login(res.data.user, res.data.token);
       navigate("/");
     } catch (err) {
@@ -110,6 +115,26 @@ export default function RegisterPage() {
             </div>
 
             <div>
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  name="confirmPassword" value={form.confirmPassword} onChange={handleChange}
+                  required minLength={6}
+                  className={`input-field pr-12 ${form.confirmPassword && form.password !== form.confirmPassword ? "border-red-400 focus:border-red-400" : ""}`}
+                  placeholder="Re-enter your password"
+                />
+                <button type="button" onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  {showConfirm ? "🙈" : "👁️"}
+                </button>
+              </div>
+              {form.confirmPassword && form.password !== form.confirmPassword && (
+                <p className="text-xs text-red-500 mt-1">Passwords do not match</p>
+              )}
+            </div>
+
+            <div>
               <label className="block text-sm font-extrabold text-gray-700 mb-2">I want to join as</label>
               <div className="grid grid-cols-2 gap-3">
                 {[
@@ -138,17 +163,10 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-extrabold text-gray-700 mb-2">
-                Phone Number
-                <span className="ml-1 text-xs font-normal text-gray-400">(optional)</span>
-                {phoneVerified && (
-                  <span className="ml-2 text-xs font-bold" style={{ color: 'var(--primary)' }}>✓ Verified</span>
-                )}
-              </label>
-              <PhoneVerification
-                initialPhone={form.phone}
-                onPhoneChange={(phone) => { setForm((p) => ({ ...p, phone })); setPhoneVerified(false); }}
-                onVerified={(phone) => { setForm((p) => ({ ...p, phone })); setPhoneVerified(true); }}
+              <label className="block text-sm font-extrabold text-gray-700 mb-2">Phone Number</label>
+              <input
+                type="tel" name="phone" value={form.phone} onChange={handleChange} required
+                className="input-field" placeholder="+91XXXXXXXXXX"
               />
             </div>
 

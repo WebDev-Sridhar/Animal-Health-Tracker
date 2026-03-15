@@ -19,6 +19,8 @@ import AnimalFirstAidPage from "./pages/AnimalFirstAidPage";
 import ResponsiblePetOwnershipPage from "./pages/ResponsiblePetOwnershipPage";
 import FAQ from "./pages/FAQ";
 import PetDetailsPage from "./pages/PetDetailsPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
@@ -37,6 +39,8 @@ function App() {
             <Route path="/chat/:reportId" element={<ChatPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/pet/:id" element={<PetDetailsPage />} />
             <Route path="/petcaretips" element={<PetCareTipsPage />} />
             

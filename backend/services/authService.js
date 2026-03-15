@@ -2,10 +2,34 @@
  * Auth service - business logic for authentication
  */
 
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const User = require("../models/User");
 const config = require("../config");
 const AppError = require("../utils/AppError");
+
+const sendResetEmail = async (to, resetUrl) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: config.email.user, pass: config.email.pass },
+  });
+  await transporter.sendMail({
+    from: `OurPetCare <${config.email.from}>`,
+    to,
+    subject: "Password Reset Request — OurPetCare",
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+        <h2 style="color:#3d8c78">Reset Your Password</h2>
+        <p>You requested a password reset. Click the button below to set a new password.</p>
+        <a href="${resetUrl}" style="display:inline-block;background:#3d8c78;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;margin:16px 0">
+          Reset Password
+        </a>
+        <p style="color:#888;font-size:13px">This link expires in <strong>1 hour</strong>. If you didn't request this, ignore this email.</p>
+      </div>
+    `,
+  });
+};
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, config.jwt.secret, {
@@ -113,9 +137,54 @@ const updateProfile = async (userId, data) => {
   };
 };
 
+const forgotPassword = async (email) => {
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) throw new AppError("No account found with that email address", 404);
+
+  const token = crypto.randomBytes(32).toString("hex");
+  user.passwordResetToken = crypto.createHash("sha256").update(token).digest("hex");
+  user.passwordResetExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+  await user.save({ validateBeforeSave: false });
+
+  const resetUrl = `${config.clientUrl}/reset-password/${token}`;
+  try {
+    await sendResetEmail(user.email, resetUrl);
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    throw new AppError("Failed to send reset email. Please try again later.", 500);
+  }
+};
+
+const resetPassword = async (token, newPassword) => {
+  if (!newPassword || newPassword.length < 6) {
+    throw new AppError("Password must be at least 6 characters", 400);
+  }
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  if (!user) throw new AppError("Reset link is invalid or has expired", 400);
+
+  user.password = newPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  const jwtToken = generateToken(user._id);
+  return {
+    user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    token: jwtToken,
+  };
+};
+
 module.exports = {
   register,
   login,
   updateProfile,
+  forgotPassword,
+  resetPassword,
   generateToken,
 };
