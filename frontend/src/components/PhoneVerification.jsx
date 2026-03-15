@@ -68,7 +68,7 @@ export default function PhoneVerification({ onVerified, initialPhone = '', onPho
             }}
           >
             {isSending
-              ? 'Sending...'
+              ? 'Check below ↓'
               : isSent && cooldown > 0
               ? `Resend (${cooldown}s)`
               : isSent
@@ -119,6 +119,11 @@ export default function PhoneVerification({ onVerified, initialPhone = '', onPho
             style={{ background: 'var(--primary)' }}>✓</span>
           Phone Verified
         </div>
+      )}
+
+      {/* reCAPTCHA solving hint */}
+      {isSending && (
+        <p className="text-xs text-gray-500">Complete the reCAPTCHA below, then OTP will be sent automatically.</p>
       )}
 
       {/* OTP sent hint */}

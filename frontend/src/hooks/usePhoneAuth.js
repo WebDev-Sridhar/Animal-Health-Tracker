@@ -43,21 +43,38 @@ export function usePhoneAuth(onVerified) {
     try {
       setStep('sending');
 
-      // Clear any existing recaptcha
+      // Clear any existing recaptcha instance and wipe the container
       if (recaptchaRef.current) {
         try { recaptchaRef.current.clear(); } catch (_) {}
         recaptchaRef.current = null;
       }
+      const container = document.getElementById('recaptcha-container');
+      if (container) container.innerHTML = '';
 
+      // Use normal (visible) reCAPTCHA — more reliable without Enterprise
       recaptchaRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-        callback: () => {},
+        size: 'normal',
+        callback: async (token) => {
+          // reCAPTCHA solved — now send OTP
+          try {
+            const result = await signInWithPhoneNumber(auth, phoneNumber, recaptchaRef.current);
+            confirmationRef.current = result;
+            setStep('sent');
+            startCooldown(30);
+          } catch (err) {
+            setStep('idle');
+            setError(mapFirebaseError(err.code));
+          }
+        },
+        'expired-callback': () => {
+          setStep('idle');
+          setError('reCAPTCHA expired. Please try again.');
+        },
       });
 
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaRef.current);
-      confirmationRef.current = confirmationResult;
-      setStep('sent');
-      startCooldown(30);
+      await recaptchaRef.current.render();
+      // Step changes to 'sending' — UI shows the reCAPTCHA checkbox
+      // User checks the box → callback fires → OTP is sent
     } catch (err) {
       setStep('idle');
       recaptchaRef.current = null;
