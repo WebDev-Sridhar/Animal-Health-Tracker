@@ -11,7 +11,10 @@ const AppError = require("../utils/AppError");
 
 const sendResetEmail = async (to, resetUrl) => {
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    family: 4, // force IPv4 — avoids ENETUNREACH on IPv6-limited hosts
     auth: { user: config.email.user, pass: config.email.pass },
   });
   await transporter.sendMail({
