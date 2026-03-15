@@ -4,21 +4,15 @@
 
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const User = require("../models/User");
 const config = require("../config");
 const AppError = require("../utils/AppError");
 
 const sendResetEmail = async (to, resetUrl) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    family: 4, // force IPv4 — avoids ENETUNREACH on IPv6-limited hosts
-    auth: { user: config.email.user, pass: config.email.pass },
-  });
-  await transporter.sendMail({
-    from: `OurPetCare <${config.email.from}>`,
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  await resend.emails.send({
+    from: `OurPetCare <onboarding@resend.dev>`,
     to,
     subject: "Password Reset Request — OurPetCare",
     html: `
