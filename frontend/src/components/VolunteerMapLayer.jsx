@@ -61,6 +61,7 @@ export default function VolunteerMapLayer() {
       volunteerLocations
         .filter((v) => v.lat && v.lng)
         .map((vol) => (
+
           <Marker
             key={vol.userId}
             position={[vol.lat, vol.lng]}
@@ -76,7 +77,8 @@ export default function VolunteerMapLayer() {
                     {vol.zone}
                   </p>
                 )}
-                <p style={{ fontSize: 11, color: '#94a3b8', margin: 0 }}>
+             <div className="flex items-center justify-between mt-1">
+                 <p style={{ fontSize: 11, color: '#94a3b8', margin: 0 }}>
                   <span style={{
                     display: 'inline-block',
                     width: 8, height: 8,
@@ -87,9 +89,17 @@ export default function VolunteerMapLayer() {
                   }} />
                   {vol.isOnline !== false ? 'Online' : 'Offline'} · {timeAgo(vol.timestamp)}
                 </p>
+               {vol.isOnline !== false && vol.phone && (
+                 <a href={`tel:+91${vol.phone}`} className="text-green-700 font-bold text-md mt-2  hover:underline">
+                  call {vol.phone}
+                 
+                </a> )}
+             </div>
               </div>
             </Popup>
           </Marker>
+          
+                          
         )),
     [volunteerLocations]
   );

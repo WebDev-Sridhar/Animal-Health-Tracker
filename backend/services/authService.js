@@ -4,28 +4,38 @@
 
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const { Resend } = require("resend");
 const User = require("../models/User");
 const config = require("../config");
 const AppError = require("../utils/AppError");
 
 const sendResetEmail = async (to, resetUrl) => {
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  await resend.emails.send({
-    from: `OurPetCare <onboarding@resend.dev>`,
-    to,
-    subject: "Password Reset Request — OurPetCare",
-    html: `
-      <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-        <h2 style="color:#3d8c78">Reset Your Password</h2>
-        <p>You requested a password reset. Click the button below to set a new password.</p>
-        <a href="${resetUrl}" style="display:inline-block;background:#3d8c78;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;margin:16px 0">
-          Reset Password
-        </a>
-        <p style="color:#888;font-size:13px">This link expires in <strong>1 hour</strong>. If you didn't request this, ignore this email.</p>
-      </div>
-    `,
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "accept": "application/json",
+      "api-key": process.env.BREVO_API_KEY,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      sender: { name: "OurPetCare", email: process.env.BREVO_FROM_EMAIL },
+      to: [{ email: to }],
+      subject: "Password Reset Request — OurPetCare",
+      htmlContent: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+          <h2 style="color:#3d8c78">Reset Your Password</h2>
+          <p>You requested a password reset. Click the button below to set a new password.</p>
+          <a href="${resetUrl}" style="display:inline-block;background:#3d8c78;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;margin:16px 0">
+            Reset Password
+          </a>
+          <p style="color:#888;font-size:13px">This link expires in <strong>1 hour</strong>. If you didn't request this, ignore this email.</p>
+        </div>
+      `,
+    }),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `Brevo API error ${res.status}`);
+  }
 };
 
 const generateToken = (userId) => {

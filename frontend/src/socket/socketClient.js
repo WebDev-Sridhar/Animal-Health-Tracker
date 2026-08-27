@@ -12,7 +12,7 @@ let socket = null;
 
 export function getSocket() {
   if (!socket) {
-    socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000', {
+    socket = io(import.meta.env.VITE_SOCKET_URL || 'https://animal-health-tracker.onrender.com', {
       autoConnect: false,
       // Try WebSocket first (faster), fall back to long-polling for Render free tier
       transports: ['websocket', 'polling'],

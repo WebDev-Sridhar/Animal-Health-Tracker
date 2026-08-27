@@ -22,7 +22,7 @@ function registerAuthHandlers(socket) {
 
     try {
       const decoded = jwt.verify(token, config.jwt.secret);
-      const user = await User.findById(decoded.id).select('name role zone').lean();
+      const user = await User.findById(decoded.id).select('name role zone phone').lean();
 
       if (!user) {
         socket.emit('authError', { message: 'User not found' });
@@ -35,6 +35,7 @@ function registerAuthHandlers(socket) {
         name: user.name,
         role: user.role,
         zone: user.zone || '',
+        phone: user.phone || '',
       });
 
       socket.emit('authenticated', { userId: user._id.toString(), role: user.role });

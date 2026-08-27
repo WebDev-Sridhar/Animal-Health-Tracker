@@ -30,6 +30,7 @@ function registerLocationHandlers(socket, io) {
       userId: session.userId,
       name: session.name,
       zone: session.zone,
+      phone: session.phone,
       lat,
       lng,
       socketId: socket.id,
