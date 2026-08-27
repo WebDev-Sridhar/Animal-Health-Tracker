@@ -91,7 +91,7 @@ export default function VolunteerMapLayer() {
                 </p>
                {vol.isOnline !== false && vol.phone && (
                  <a href={`tel:+91${vol.phone}`} className="text-green-700 font-bold text-md mt-2  hover:underline">
-                  call {vol.phone}
+                  call
                  
                 </a> )}
              </div>
